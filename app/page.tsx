@@ -30,6 +30,19 @@ const starterDecks: Deck[] = [
 
 function countDue(deck: Deck) { return deck.words.filter((word) => word.nextReview <= Date.now()).length; }
 
+async function fetchJson(url: string, timeoutMs = 3500) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    return response.ok ? await response.json() : null;
+  } catch {
+    return null;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
 export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
@@ -79,14 +92,17 @@ export default function Home() {
   const knownWords = decks.flatMap((deck) => deck.words).filter((word) => word.level === 'known').length;
 
   function speak(text: string) {
-    if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.86;
-    const englishVoice = speechSynthesis.getVoices().find((voice) => voice.lang.startsWith('en-US')) ?? speechSynthesis.getVoices().find((voice) => voice.lang.startsWith('en'));
-    if (englishVoice) utterance.voice = englishVoice;
-    speechSynthesis.speak(utterance);
+    const cleanText = text.trim();
+    if (!cleanText) return;
+    const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(cleanText)}`);
+    audio.play().catch(() => {
+      if (!('speechSynthesis' in window)) return;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.86;
+      speechSynthesis.speak(utterance);
+    });
   }
   function rateWord(level: Level) {
     if (!currentDeck || !currentWord) return;
@@ -181,12 +197,16 @@ function AddWordModal({ onClose, onSave, onSpeak }: { onClose: () => void; onSav
 
   async function chooseWord(word: string) {
     setTerm(word); setSuggestions([]); setEnriching(true); setNote('Đang tìm nghĩa, phiên âm và ví dụ…');
-    const dictionaryRequest = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then((response) => response.ok ? response.json() : null).catch(() => null);
-    const translationRequest = fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`).then((response) => response.ok ? response.json() : null).catch(() => null);
+    const dictionaryRequest = fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, 2500);
+    const translationRequest = fetchJson(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`, 3500);
     const [dictionary, translation] = await Promise.all([dictionaryRequest, translationRequest]);
     const entry = Array.isArray(dictionary) ? dictionary[0] : null;
     const firstDefinition = entry?.meanings?.flatMap((item: { definitions?: { example?: string }[] }) => item.definitions ?? []).find((item: { example?: string }) => item.example);
-    const translated = translation?.responseData?.translatedText;
+    let translated = Array.isArray(translation?.[0]) ? translation[0].map((part: unknown[]) => part?.[0] ?? '').join('').trim() : '';
+    if (!translated || translated.toLowerCase() === word.toLowerCase()) {
+      const fallback = await fetchJson(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`, 3500);
+      translated = fallback?.responseData?.translatedText ?? '';
+    }
     if (translated && translated.toLowerCase() !== word.toLowerCase()) setMeaning(translated);
     setPhonetic(entry?.phonetic ?? entry?.phonetics?.find((item: { text?: string }) => item.text)?.text ?? '');
     setExample(firstDefinition?.example ?? '');
