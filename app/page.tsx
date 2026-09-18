@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, BookOpen, Brain, Check, ChevronRight, Clock3, Flame, Folder, FolderPlus, Globe2, Headphones, LayoutGrid, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Brain, Check, ChevronRight, Clock3, Flame, FolderPlus, Languages, LoaderCircle, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type Level = 'new' | 'learning' | 'known';
-type Word = { id: number; term: string; meaning: string; example: string; level: Level; nextReview: number };
+type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number };
 type Deck = { id: number; name: string; emoji: string; description: string; words: Word[] };
 
 const DAY = 86400000;
@@ -78,7 +78,16 @@ export default function Home() {
   const dueWords = decks.reduce((sum, deck) => sum + countDue(deck), 0);
   const knownWords = decks.flatMap((deck) => deck.words).filter((word) => word.level === 'known').length;
 
-  function speak(text: string) { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } }
+  function speak(text: string) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.86;
+    const englishVoice = speechSynthesis.getVoices().find((voice) => voice.lang.startsWith('en-US')) ?? speechSynthesis.getVoices().find((voice) => voice.lang.startsWith('en'));
+    if (englishVoice) utterance.voice = englishVoice;
+    speechSynthesis.speak(utterance);
+  }
   function rateWord(level: Level) {
     if (!currentDeck || !currentWord) return;
     const delay = level === 'new' ? 10 * 60000 : level === 'learning' ? DAY : DAY * 7;
@@ -86,12 +95,12 @@ export default function Home() {
     setRevealed(false);
     setStudyIndex((index) => index + 1);
   }
-  function addWord(form: FormData) {
+  function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
     if (!currentDeck) return;
-    const term = String(form.get('term') || '').trim();
-    const meaning = String(form.get('meaning') || '').trim();
+    const term = value.term.trim();
+    const meaning = value.meaning.trim();
     if (!term || !meaning) return;
-    const word: Word = { id: Date.now(), term, meaning, example: String(form.get('example') || ''), level: 'new', nextReview: Date.now() };
+    const word: Word = { id: Date.now(), term, meaning, example: value.example.trim(), phonetic: value.phonetic, level: 'new', nextReview: Date.now() };
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: [...deck.words, word] } : deck));
     setShowAddWord(false);
   }
@@ -114,7 +123,7 @@ export default function Home() {
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ đang chờ bạn` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{Math.min(studyIndex + 1, studyWords.length)}/{studyWords.length}</span></div>
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term)} className="sound" aria-label="Nghe phát âm"><Volume2 size={21}/></button>
-              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
+              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><button onClick={() => rateWord('new')} className="rate again"><RotateCcw/> Chưa nhớ<small>10 phút</small></button><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
             </div> : <div className="empty-state"><div className="text-6xl">🎉</div><h2 className="font-display mt-4 text-3xl font-black">Xong bài hôm nay!</h2><p>Hãy quay lại khi đến lịch ôn tiếp theo.</p></div>}
           </section>
@@ -122,7 +131,7 @@ export default function Home() {
           <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-sm font-bold text-[#71817b]">{currentDeck.words.length} từ</span></div><div className="space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className="text-sm text-[#71817b]">{word.meaning}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button aria-label={`Xóa ${word.term}`} onClick={() => setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck))} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
         </div>
       </div>
-      {showAddWord && <Modal title="Thêm từ mới" onClose={() => setShowAddWord(false)}><form action={addWord} className="space-y-4"><Field name="term" label="Từ tiếng Anh" placeholder="wanderlust" autoFocus/><Field name="meaning" label="Nghĩa tiếng Việt" placeholder="niềm đam mê du lịch"/><Field name="example" label="Câu ví dụ (không bắt buộc)" placeholder="She has a strong sense of wanderlust."/><Button type="submit" className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Lưu vào bộ từ</Button></form></Modal>}
+      {showAddWord && <AddWordModal onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={speak} />}
     </main>;
   }
 
@@ -143,3 +152,62 @@ function Header({ compact, onHome }: { compact?: boolean; onHome?: () => void })
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | number; label: string }) { return <div className="flex items-center gap-3"><span className="stat-icon">{icon}</span><div><b className="font-display block text-3xl font-black text-[#f8d467]">{value}</b><span className="text-xs font-bold text-white/55 sm:text-sm">{label}</span></div></div> }
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
+
+function AddWordModal({ onClose, onSave, onSpeak }: { onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string }) => void; onSpeak: (text: string) => void }) {
+  const [term, setTerm] = useState('');
+  const [meaning, setMeaning] = useState('');
+  const [example, setExample] = useState('');
+  const [phonetic, setPhonetic] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [note, setNote] = useState('Gõ ít nhất 2 chữ để xem từ gợi ý.');
+
+  useEffect(() => {
+    const query = term.trim().toLowerCase();
+    if (query.length < 2) { setSuggestions([]); setLoadingSuggestions(false); return; }
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const response = await fetch(`https://api.datamuse.com/sug?s=${encodeURIComponent(query)}&max=6`, { signal: controller.signal });
+        const data = await response.json() as { word: string }[];
+        setSuggestions(data.map((item) => item.word));
+      } catch { if (!controller.signal.aborted) setSuggestions([]); }
+      finally { if (!controller.signal.aborted) setLoadingSuggestions(false); }
+    }, 280);
+    return () => { window.clearTimeout(timer); controller.abort(); };
+  }, [term]);
+
+  async function chooseWord(word: string) {
+    setTerm(word); setSuggestions([]); setEnriching(true); setNote('Đang tìm nghĩa, phiên âm và ví dụ…');
+    const dictionaryRequest = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then((response) => response.ok ? response.json() : null).catch(() => null);
+    const translationRequest = fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`).then((response) => response.ok ? response.json() : null).catch(() => null);
+    const [dictionary, translation] = await Promise.all([dictionaryRequest, translationRequest]);
+    const entry = Array.isArray(dictionary) ? dictionary[0] : null;
+    const firstDefinition = entry?.meanings?.flatMap((item: { definitions?: { example?: string }[] }) => item.definitions ?? []).find((item: { example?: string }) => item.example);
+    const translated = translation?.responseData?.translatedText;
+    if (translated && translated.toLowerCase() !== word.toLowerCase()) setMeaning(translated);
+    setPhonetic(entry?.phonetic ?? entry?.phonetics?.find((item: { text?: string }) => item.text)?.text ?? '');
+    setExample(firstDefinition?.example ?? '');
+    setEnriching(false);
+    setNote(translated ? 'Đã tự điền thông tin. Bạn có thể sửa lại trước khi lưu.' : 'Chưa dịch được tự động. Bạn hãy nhập nghĩa thủ công.');
+  }
+
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!term.trim() || !meaning.trim()) { setNote('Vui lòng nhập từ tiếng Anh và nghĩa tiếng Việt.'); return; }
+    onSave({ term, meaning, example, phonetic });
+  }
+
+  return <Modal title="Thêm từ mới" onClose={onClose}>
+    <form onSubmit={submit} className="space-y-4">
+      <div className="relative"><label className="block text-sm font-extrabold">Từ tiếng Anh</label><div className="word-input-wrap"><input value={term} onChange={(event) => { setTerm(event.target.value); setNote('Chọn một từ gợi ý để tự điền thông tin.'); }} placeholder="Ví dụ: accommodation" autoFocus autoComplete="off"/><button type="button" onClick={() => onSpeak(term)} disabled={!term.trim()} aria-label="Nghe phát âm"><Volume2 size={18}/></button></div>{(loadingSuggestions || suggestions.length > 0) && <div className="suggestions" role="listbox">{loadingSuggestions ? <div className="suggestion-loading"><LoaderCircle className="animate-spin" size={17}/> Đang tìm từ…</div> : suggestions.map((word) => <button type="button" role="option" key={word} onClick={() => chooseWord(word)}><Search size={15}/><b>{word}</b><span>Chọn</span></button>)}</div>}</div>
+      <div className="helper-note">{enriching ? <LoaderCircle className="animate-spin" size={16}/> : <Languages size={16}/>}<span>{note}</span></div>
+      {phonetic && <div className="phonetic-preview"><span>Phiên âm</span><b>/{phonetic.replaceAll('/', '')}/</b><button type="button" onClick={() => onSpeak(term)}><Volume2 size={16}/> Nghe thử</button></div>}
+      <Field value={meaning} onChange={(event) => setMeaning(event.target.value)} name="meaning" label="Nghĩa tiếng Việt" placeholder="Nghĩa gợi ý sẽ hiện ở đây"/>
+      <Field value={example} onChange={(event) => setExample(event.target.value)} name="example" label="Câu ví dụ (không bắt buộc)" placeholder="Câu ví dụ sẽ được tự điền nếu có"/>
+      <Button type="submit" disabled={enriching} className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Lưu vào bộ từ</Button>
+    </form>
+  </Modal>;
+}
