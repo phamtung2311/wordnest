@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     return new Response(audio.body, {
       headers: {
         'Content-Type': audio.headers.get('Content-Type') || 'audio/mpeg',
-        'Cache-Control': 'public, max-age=86400',
+        'Cache-Control': 'public, max-age=604800, s-maxage=2592000, stale-while-revalidate=86400',
         'X-Content-Type-Options': 'nosniff',
       },
     });

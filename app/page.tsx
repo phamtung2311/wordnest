@@ -54,6 +54,8 @@ export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioCacheRef = useRef(new Map<string, string>());
+  const audioPrefetchRef = useRef(new Map<string, Promise<string | null>>());
 
   useEffect(() => {
     const saved = localStorage.getItem('wordnest-decks');
@@ -99,6 +101,41 @@ export default function Home() {
   const recentWords = [...newWords].sort((a, b) => (b.createdAt ?? b.id) - (a.createdAt ?? a.id)).slice(0, 6);
   const firstDueDeck = decks.find((deck) => countDue(deck) > 0);
 
+  async function prefetchSpeech(text: string) {
+    const cleanText = text.trim().toLowerCase();
+    if (!cleanText) return null;
+    const cached = audioCacheRef.current.get(cleanText);
+    if (cached) return cached;
+    const pending = audioPrefetchRef.current.get(cleanText);
+    if (pending) return pending;
+    const request = fetch(`/api/tts?text=${encodeURIComponent(cleanText)}`)
+      .then(async (response) => {
+        if (!response.ok) return null;
+        const objectUrl = URL.createObjectURL(await response.blob());
+        audioCacheRef.current.set(cleanText, objectUrl);
+        return objectUrl;
+      })
+      .catch(() => null)
+      .finally(() => audioPrefetchRef.current.delete(cleanText));
+    audioPrefetchRef.current.set(cleanText, request);
+    return request;
+  }
+
+  useEffect(() => {
+    if (!currentWord || !studyWords.length) return;
+    setAudioStatus('idle');
+    void prefetchSpeech(currentWord.term);
+    for (let offset = 1; offset <= 2; offset += 1) {
+      const upcoming = studyWords[(studyIndex + offset) % studyWords.length];
+      if (upcoming) void prefetchSpeech(upcoming.term);
+    }
+  }, [currentWord?.id, studyIndex, studyWords]);
+
+  useEffect(() => () => {
+    audioCacheRef.current.forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
+    audioCacheRef.current.clear();
+  }, []);
+
   function speak(text: string) {
     const cleanText = text.trim();
     if (!cleanText) return;
@@ -106,7 +143,7 @@ export default function Home() {
     if (!audio) return;
     audio.pause();
     audio.currentTime = 0;
-    audio.src = `/api/tts?text=${encodeURIComponent(cleanText)}`;
+    audio.src = audioCacheRef.current.get(cleanText.toLowerCase()) ?? `/api/tts?text=${encodeURIComponent(cleanText)}`;
     audio.volume = 1;
     setAudioStatus('loading');
     audio.load();
@@ -152,7 +189,7 @@ export default function Home() {
 
   if (activeDeck && currentDeck) {
     return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-      <audio ref={audioRef} className="hidden" preload="none" onEnded={() => setAudioStatus('idle')} onError={() => setAudioStatus('error')} />
+      <audio ref={audioRef} className="hidden" preload="auto" onLoadStart={() => setAudioStatus('loading')} onWaiting={() => setAudioStatus('loading')} onPlaying={() => setAudioStatus('playing')} onEnded={() => setAudioStatus('idle')} onError={() => setAudioStatus('error')} />
       <Header compact onHome={() => { setActiveDeck(null); setRevealed(false); }} />
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
         <button onClick={() => setActiveDeck(null)} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
@@ -162,8 +199,10 @@ export default function Home() {
           <section className="study-panel">
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ đang chờ bạn` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{Math.min(studyIndex + 1, studyWords.length)}/{studyWords.length}</span></div>
             {currentWord ? <div className="flashcard">
-              <button onClick={() => speak(currentWord.term)} className="sound" aria-label="Nghe phát âm"><Volume2 size={21}/></button>
+              <button onClick={() => speak(currentWord.term)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
               <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
+              {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
+              {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
               {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><button onClick={() => rateWord('new')} className="rate again"><RotateCcw/> Chưa nhớ<small>10 phút</small></button><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
             </div> : <div className="empty-state"><div className="text-6xl">🎉</div><h2 className="font-display mt-4 text-3xl font-black">Xong bài hôm nay!</h2><p>Hãy quay lại khi đến lịch ôn tiếp theo.</p></div>}
           </section>
