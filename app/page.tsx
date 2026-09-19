@@ -51,6 +51,7 @@ export default function Home() {
   const [showAddWord, setShowAddWord] = useState(false);
   const [showAddDeck, setShowAddDeck] = useState(false);
   const [showDeleteDeck, setShowDeleteDeck] = useState(false);
+  const [showRetryOptions, setShowRetryOptions] = useState(false);
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
@@ -99,6 +100,10 @@ export default function Home() {
     return word ? [word] : [];
   });
   const currentWord = studyWords[0];
+  const scheduledRetries = currentDeck?.words.filter((word) => word.level === 'new' && word.nextReview > Date.now()) ?? [];
+  const nextRetryMinutes = scheduledRetries.length
+    ? Math.max(1, Math.ceil((Math.min(...scheduledRetries.map((word) => word.nextReview)) - Date.now()) / 60000))
+    : 0;
   const now = Date.now();
   const allWords = decks.flatMap((deck) => deck.words.map((word) => ({ ...word, deckId: deck.id, deckName: deck.name, deckEmoji: deck.emoji })));
   const totalWords = allWords.length;
@@ -146,6 +151,20 @@ export default function Home() {
     audioCacheRef.current.clear();
   }, []);
 
+  useEffect(() => {
+    setShowRetryOptions(false);
+  }, [currentWord?.id]);
+
+  useEffect(() => {
+    if (!currentDeck || !scheduledRetries.length) return;
+    const nextReview = Math.min(...scheduledRetries.map((word) => word.nextReview));
+    const timeout = window.setTimeout(() => {
+      const dueIds = currentDeck.words.filter((word) => word.level === 'new' && word.nextReview <= Date.now()).map((word) => word.id);
+      setStudyQueue((queue) => [...queue, ...dueIds.filter((wordId) => !queue.includes(wordId))]);
+    }, Math.max(0, nextReview - Date.now()) + 250);
+    return () => window.clearTimeout(timeout);
+  }, [currentDeck?.words, scheduledRetries.length]);
+
   function speak(text: string) {
     const cleanText = text.trim();
     if (!cleanText) return;
@@ -173,14 +192,13 @@ export default function Home() {
       }, 600);
     });
   }
-  function rateWord(level: Level) {
+  function rateWord(level: Level, retryMinutes = 0) {
     if (!currentDeck || !currentWord) return;
-    const delay = level === 'new' ? 0 : level === 'learning' ? DAY : DAY * 7;
+    const delay = level === 'new' ? retryMinutes * 60000 : level === 'learning' ? DAY : DAY * 7;
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
     setRevealed(false);
-    setStudyQueue((queue) => level === 'new'
-      ? [...queue.filter((wordId) => wordId !== currentWord.id), currentWord.id]
-      : queue.filter((wordId) => wordId !== currentWord.id));
+    setShowRetryOptions(false);
+    setStudyQueue((queue) => queue.filter((wordId) => wordId !== currentWord.id));
   }
   function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
     if (!currentDeck) return;
@@ -232,8 +250,8 @@ export default function Home() {
               <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
-              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><button onClick={() => rateWord('new')} className="rate again"><RotateCcw/> Chưa nhớ<small>Học lại</small></button><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
-            </div> : <div className="empty-state"><div className="text-6xl">🎉</div><h2 className="font-display mt-4 text-3xl font-black">Xong bài hôm nay!</h2><p>Hãy quay lại khi đến lịch ôn tiếp theo.</p></div>}
+              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><div className="retry-choice"><button onClick={() => setShowRetryOptions((visible) => !visible)} className="rate again"><RotateCcw/> Chưa nhớ<small>Chọn thời gian</small></button>{showRetryOptions && <div className="retry-options" role="menu" aria-label="Chọn thời gian học lại">{[5, 10, 30].map((minutes) => <button key={minutes} type="button" role="menuitem" onClick={() => rateWord('new', minutes)}><Clock3 size={15}/>{minutes} phút</button>)}</div>}</div><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
+            </div> : <div className="empty-state"><div className="text-6xl">{scheduledRetries.length ? '⏳' : '🎉'}</div><h2 className="font-display mt-4 text-3xl font-black">{scheduledRetries.length ? 'Đã xong lượt hiện tại!' : 'Xong bài hôm nay!'}</h2><p>{scheduledRetries.length ? `${scheduledRetries.length} từ sẽ quay lại sau khoảng ${nextRetryMinutes} phút.` : 'Hãy quay lại khi đến lịch ôn tiếp theo.'}</p></div>}
           </section>
 
           <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-sm font-bold text-[#71817b]">{currentDeck.words.length} từ</span></div><div className="space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className="text-sm text-[#71817b]">{word.meaning}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button aria-label={`Xóa ${word.term}`} onClick={() => { setStudyQueue((queue) => queue.filter((wordId) => wordId !== word.id)); setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck)); }} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
