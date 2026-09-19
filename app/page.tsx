@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, FolderPlus, Languages, LoaderCircle, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, Cloud, FolderPlus, Languages, LoaderCircle, LogIn, LogOut, Plus, RotateCcw, Search, Sparkles, Trash2, Volume2, X } from 'lucide-react';
+import { onAuthStateChanged, signInWithPopup, signOut, type User } from 'firebase/auth';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
+import { auth, db, googleProvider } from '@/lib/firebase';
 
 type Level = 'new' | 'learning' | 'known';
 type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
@@ -54,10 +57,12 @@ export default function Home() {
   const [showRetryOptions, setShowRetryOptions] = useState(false);
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [cloudReady, setCloudReady] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'local' | 'loading' | 'saved' | 'error'>('local');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const audioCacheRef = useRef(new Map<string, string>());
-  const audioPrefetchRef = useRef(new Map<string, Promise<string | null>>());
+  const saveTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('wordnest-decks');
@@ -67,7 +72,42 @@ export default function Home() {
     }
     setLoaded(true);
   }, []);
-  useEffect(() => { if (loaded) localStorage.setItem('wordnest-decks', JSON.stringify(decks)); }, [decks, loaded]);
+  useEffect(() => onAuthStateChanged(auth, (nextUser) => {
+    setUser(nextUser);
+    setAuthReady(true);
+    if (!nextUser) { setCloudReady(false); setSyncStatus('local'); }
+  }), []);
+
+  useEffect(() => {
+    if (!loaded || !user) return;
+    let cancelled = false;
+    setSyncStatus('loading');
+    void getDoc(doc(db, 'users', user.uid)).then(async (snapshot) => {
+      if (cancelled) return;
+      const cloudDecks = snapshot.data()?.decks as Deck[] | undefined;
+      if (cloudDecks?.length) {
+        setDecks(cloudDecks);
+      } else {
+        await setDoc(doc(db, 'users', user.uid), { decks, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+      }
+      if (!cancelled) { setCloudReady(true); setSyncStatus('saved'); }
+    }).catch(() => { if (!cancelled) setSyncStatus('error'); });
+    return () => { cancelled = true; };
+  }, [loaded, user?.uid]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    localStorage.setItem('wordnest-decks', JSON.stringify(decks));
+    if (!user || !cloudReady) return;
+    setSyncStatus('loading');
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => {
+      void setDoc(doc(db, 'users', user.uid), { decks, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
+        .then(() => setSyncStatus('saved'))
+        .catch(() => setSyncStatus('error'));
+    }, 500);
+    return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
+  }, [decks, loaded, user?.uid, cloudReady]);
   useEffect(() => {
     const context = (document as Document & { modelContext?: { registerTool: (tool: unknown, options?: { signal?: AbortSignal }) => void | Promise<void> } }).modelContext;
     if (!context?.registerTool) return;
@@ -116,40 +156,10 @@ export default function Home() {
   const recentWords = [...addedWords].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0)).slice(0, 6);
   const firstDueDeck = decks.find((deck) => countDue(deck, now) > 0);
 
-  async function prefetchSpeech(text: string) {
-    const cleanText = text.trim().toLowerCase();
-    if (!cleanText) return null;
-    const cached = audioCacheRef.current.get(cleanText);
-    if (cached) return cached;
-    const pending = audioPrefetchRef.current.get(cleanText);
-    if (pending) return pending;
-    const request = fetch(`/api/tts?text=${encodeURIComponent(cleanText)}`)
-      .then(async (response) => {
-        if (!response.ok) return null;
-        const objectUrl = URL.createObjectURL(await response.blob());
-        audioCacheRef.current.set(cleanText, objectUrl);
-        return objectUrl;
-      })
-      .catch(() => null)
-      .finally(() => audioPrefetchRef.current.delete(cleanText));
-    audioPrefetchRef.current.set(cleanText, request);
-    return request;
-  }
-
   useEffect(() => {
     if (!currentWord || !studyWords.length) return;
     setAudioStatus('idle');
-    void prefetchSpeech(currentWord.term);
-    for (let offset = 1; offset <= 2; offset += 1) {
-      const upcoming = studyWords[offset % studyWords.length];
-      if (upcoming) void prefetchSpeech(upcoming.term);
-    }
   }, [currentWord?.id, studyQueue]);
-
-  useEffect(() => () => {
-    audioCacheRef.current.forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-    audioCacheRef.current.clear();
-  }, []);
 
   useEffect(() => {
     setShowRetryOptions(false);
@@ -168,29 +178,29 @@ export default function Home() {
   function speak(text: string) {
     const cleanText = text.trim();
     if (!cleanText) return;
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = 0;
-    audio.src = audioCacheRef.current.get(cleanText.toLowerCase()) ?? `/api/tts?text=${encodeURIComponent(cleanText)}`;
-    audio.volume = 1;
+    if (!('speechSynthesis' in window)) { setAudioStatus('error'); return; }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.86;
+    const preferredVoice = speechSynthesis.getVoices().find((voice) => voice.lang.toLowerCase().startsWith('en-us'));
+    if (preferredVoice) utterance.voice = preferredVoice;
     setAudioStatus('loading');
-    audio.load();
-    audio.play().then(() => setAudioStatus('playing')).catch(() => {
-      if (!('speechSynthesis' in window)) return;
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.86;
-      utterance.onstart = () => setAudioStatus('playing');
-      utterance.onend = () => setAudioStatus('idle');
-      utterance.onerror = () => setAudioStatus('error');
-      speechSynthesis.speak(utterance);
-    }).finally(() => {
-      window.setTimeout(() => {
-        if (audio.paused && !('speechSynthesis' in window)) setAudioStatus('error');
-      }, 600);
-    });
+    utterance.onstart = () => setAudioStatus('playing');
+    utterance.onend = () => setAudioStatus('idle');
+    utterance.onerror = () => setAudioStatus('error');
+    speechSynthesis.speak(utterance);
+  }
+
+  async function signInGoogle() {
+    setSyncStatus('loading');
+    try { await signInWithPopup(auth, googleProvider); }
+    catch { setSyncStatus('error'); }
+  }
+
+  async function signOutGoogle() {
+    await signOut(auth);
+    setSyncStatus('local');
   }
   function rateWord(level: Level, retryMinutes = 0) {
     if (!currentDeck || !currentWord) return;
@@ -236,8 +246,7 @@ export default function Home() {
 
   if (activeDeck && currentDeck) {
     return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-      <audio ref={audioRef} className="hidden" preload="auto" onLoadStart={() => setAudioStatus('loading')} onWaiting={() => setAudioStatus('loading')} onPlaying={() => setAudioStatus('playing')} onEnded={() => setAudioStatus('idle')} onError={() => setAudioStatus('error')} />
-      <Header compact onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); }} />
+      <Header compact user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); }} />
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
         <button onClick={() => { setActiveDeck(null); setStudyQueue([]); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{currentDeck.description} · {currentDeck.words.length} từ</p></div><div className="flex flex-wrap gap-2"><Button onClick={() => setShowDeleteDeck(true)} variant="outline" className="h-11 rounded-full border-2 border-[#c65342]/30 bg-transparent px-5 font-bold text-[#b84b3c] hover:bg-[#fbe5df]"><Trash2/> Xóa bộ từ</Button><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div></div>
@@ -264,7 +273,7 @@ export default function Home() {
 
   const filtered = decks.filter((deck) => deck.name.toLowerCase().includes(search.toLowerCase()));
   return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-    <Header />
+    <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} />
     <section className="learning-overview" aria-label="Việc học hôm nay">
       <div className="mx-auto max-w-6xl px-5 py-6 md:px-8">
         <div className="overview-grid">
@@ -285,12 +294,12 @@ export default function Home() {
     <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Tổng số từ"/><Stat icon={<Clock3/>} value={dueWords} label="Cần học hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<FolderPlus/>} value={decks.length} label="Bộ từ của bạn"/></div></section>
 
     <section className="mx-auto max-w-6xl px-5 py-16 md:px-8"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Thư viện của bạn</p><h2 className="font-display text-4xl font-black tracking-tight">Các bộ từ vựng</h2></div><div className="search-box"><Search size={18}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm bộ từ..." aria-label="Tìm bộ từ"/></div></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((deck, index) => <button className={`deck-card color-${index % 3}`} onClick={() => openDeck(deck.id)} key={deck.id}><div className="flex items-start justify-between"><span className="deck-icon">{deck.emoji}</span><ChevronRight/></div><h3 className="font-display mt-6 text-2xl font-black text-[#213a34]">{deck.name}</h3><p className="mt-1 text-sm text-[#697a74]">{deck.description}</p><div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold"><span>{deck.words.length} từ</span><span className={countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'}>{countDue(deck) ? `${countDue(deck)} cần ôn` : 'Đã xong ✓'}</span></div></button>)}<button className="new-deck" onClick={() => setShowAddDeck(true)}><span className="grid size-12 place-items-center rounded-full bg-[#213a34] text-white"><Plus/></span><b className="mt-4">Tạo bộ từ mới</b><span className="text-sm text-[#71817b]">20 từ hay 200 từ — tùy bạn</span></button></div></section>
-    <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>Dữ liệu được lưu riêng trên thiết bị của bạn.</span><span>Học ít · Nhớ lâu</span></div></footer>
+    <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>{user ? 'Dữ liệu đang được đồng bộ theo tài khoản Google.' : 'Đăng nhập Google để đồng bộ dữ liệu giữa các thiết bị.'}</span><span>Học ít · Nhớ lâu</span></div></footer>
     {showAddDeck && <Modal title="Tạo bộ từ mới" onClose={() => setShowAddDeck(false)}><form action={addDeck} className="space-y-4"><Field name="name" label="Tên bộ từ" placeholder="20 từ cho chuyến đi Đà Lạt" autoFocus/><Field name="emoji" label="Biểu tượng" placeholder="📚"/><Field name="description" label="Mô tả ngắn" placeholder="Những từ mình cần học tuần này"/><Button type="submit" className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Tạo bộ từ</Button></form></Modal>}
   </main>;
 }
 
-function Header({ compact, onHome }: { compact?: boolean; onHome?: () => void }) { return <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8"><div className="mx-auto flex max-w-6xl items-center justify-between"><button onClick={onHome} className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#213a34] text-[#f8d467] shadow-[3px_3px_0_#eb6a52]"><BookOpen size={21}/></span><span className="font-display text-xl font-black">Word<span className="text-[#eb6a52]">Nest</span></span></button>{!compact && <nav className="hidden items-center gap-7 text-sm font-extrabold md:flex"><a href="#decks">Bộ từ</a><a href="#review">Lịch ôn</a><a href="#progress">Tiến độ</a></nav>}<button className="grid size-10 place-items-center rounded-full border-2 border-[#213a34]/10 bg-white/60" aria-label="Cài đặt"><Settings size={19}/></button></div></header> }
+function Header({ compact, onHome, user, authReady, syncStatus, onSignIn, onSignOut }: { compact?: boolean; onHome?: () => void; user: User | null; authReady: boolean; syncStatus: 'local' | 'loading' | 'saved' | 'error'; onSignIn: () => void; onSignOut: () => void }) { return <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8"><div className="mx-auto flex max-w-6xl items-center justify-between gap-3"><button onClick={onHome} className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#213a34] text-[#f8d467] shadow-[3px_3px_0_#eb6a52]"><BookOpen size={21}/></span><span className="font-display text-xl font-black">Word<span className="text-[#eb6a52]">Nest</span></span></button>{!compact && <nav className="hidden items-center gap-7 text-sm font-extrabold lg:flex"><a href="#decks">Bộ từ</a><a href="#review">Lịch ôn</a><a href="#progress">Tiến độ</a></nav>}<div className="account-area">{user ? <><span className={`sync-state ${syncStatus}`}><Cloud size={14}/>{syncStatus === 'loading' ? 'Đang lưu' : syncStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ'}</span><span className="account-name">{user.photoURL && <img src={user.photoURL} alt=""/>}<b>{user.displayName || user.email}</b></span><button onClick={onSignOut} className="account-button" aria-label="Đăng xuất Google"><LogOut size={17}/><span>Đăng xuất</span></button></> : <button onClick={onSignIn} disabled={!authReady} className="google-button"><LogIn size={18}/>{authReady ? 'Đăng nhập Google' : 'Đang tải…'}</button>}</div></div></header> }
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | number; label: string }) { return <div className="flex items-center gap-3"><span className="stat-icon">{icon}</span><div><b className="font-display block text-3xl font-black text-[#f8d467]">{value}</b><span className="text-xs font-bold text-white/55 sm:text-sm">{label}</span></div></div> }
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
