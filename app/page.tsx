@@ -60,6 +60,7 @@ function isUntouchedLegacyDeck(deck: Deck) {
 }
 
 function countDue(deck: Deck, now = Date.now()) { return deck.words.filter((word) => word.nextReview <= now).length; }
+function normalizeTerm(term: string) { return term.trim().toLocaleLowerCase('en-US').replace(/\s+/g, ' '); }
 
 async function fetchJson(url: string, timeoutMs = 3500) {
   const controller = new AbortController();
@@ -188,6 +189,10 @@ export default function Home() {
         const target = decks.find((deck) => deck.name.toLowerCase() === value.deckName?.trim().toLowerCase());
         if (!target) throw new Error('Không tìm thấy bộ từ.');
         if (!Array.isArray(value.words) || !value.words.length || value.words.some((word) => !word.term?.trim() || !word.meaning?.trim())) throw new Error('Mỗi từ cần có từ tiếng Anh và nghĩa tiếng Việt.');
+        const existingTerms = new Set(target.words.map((word) => normalizeTerm(word.term)));
+        const incomingTerms = value.words.map((word) => normalizeTerm(word.term!));
+        const duplicateIndex = incomingTerms.findIndex((term, index) => existingTerms.has(term) || incomingTerms.indexOf(term) !== index);
+        if (duplicateIndex >= 0) throw new Error(`Từ “${value.words[duplicateIndex].term}” đã có trong bộ từ này.`);
         const stamp = Date.now();
         const additions: Word[] = value.words.map((word, index) => ({ id: stamp + index, term: word.term!.trim(), meaning: word.meaning!.trim(), example: word.example?.trim() ?? '', level: 'new', nextReview: stamp, createdAt: stamp + index }));
         setDecks((all) => all.map((deck) => deck.id === target.id ? { ...deck, words: [...deck.words, ...additions] } : deck));
@@ -322,15 +327,17 @@ export default function Home() {
     setStudyQueue((queue) => queue.filter((wordId) => wordId !== currentWord.id));
   }
   function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
-    if (!currentDeck) return;
+    if (!currentDeck) return 'Không tìm thấy bộ từ hiện tại.';
     const term = value.term.trim();
     const meaning = value.meaning.trim();
-    if (!term || !meaning) return;
+    if (!term || !meaning) return 'Vui lòng nhập từ tiếng Anh và nghĩa tiếng Việt.';
+    if (currentDeck.words.some((word) => normalizeTerm(word.term) === normalizeTerm(term))) return `Từ “${term}” đã có trong bộ từ này.`;
     const createdAt = Date.now();
     const word: Word = { id: createdAt, term, meaning, example: value.example.trim(), phonetic: value.phonetic, level: 'new', nextReview: createdAt, createdAt };
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: [...deck.words, word] } : deck));
     setStudyQueue((queue) => [...queue, word.id]);
     setShowAddWord(false);
+    return null;
   }
   function addDeck(form: FormData) {
     const name = String(form.get('name') || '').trim();
@@ -429,7 +436,7 @@ function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | n
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
 
-function AddWordModal({ onClose, onSave, onSpeak, audioStatus }: { onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string }) => void; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
+function AddWordModal({ onClose, onSave, onSpeak, audioStatus }: { onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string }) => string | null; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
   const [term, setTerm] = useState('');
   const [meaning, setMeaning] = useState('');
   const [example, setExample] = useState('');
@@ -477,7 +484,8 @@ function AddWordModal({ onClose, onSave, onSpeak, audioStatus }: { onClose: () =
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!term.trim() || !meaning.trim()) { setNote('Vui lòng nhập từ tiếng Anh và nghĩa tiếng Việt.'); return; }
-    onSave({ term, meaning, example, phonetic });
+    const error = onSave({ term, meaning, example, phonetic });
+    if (error) setNote(error);
   }
 
   return <Modal title="Thêm từ mới" onClose={onClose}>
