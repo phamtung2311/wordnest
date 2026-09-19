@@ -7,21 +7,21 @@ const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin', 'vie
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wordnest-english-vocab.web.app'),
-  title: 'WordNest — Học từ vựng tiếng Anh',
-  description: 'Tạo bộ từ riêng, học bằng flashcard và ôn lại đúng lúc với phương pháp lặp ngắt quãng.',
+  title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
+  description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, học bằng flashcard và ôn lại đúng lúc với phương pháp lặp ngắt quãng.',
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
     shortcut: '/favicon.svg',
   },
   openGraph: {
-    title: 'WordNest — Học từ vựng tiếng Anh',
-    description: 'Tạo bộ từ riêng, học bằng flashcard và ôn lại đúng lúc.',
+    title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
+    description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, học bằng flashcard và ôn lại đúng lúc.',
     images: [{ url: '/og.png', width: 1200, height: 630, alt: 'WordNest — Học ít, nhớ lâu' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'WordNest — Học từ vựng tiếng Anh',
-    description: 'Tạo bộ từ riêng, học bằng flashcard và ôn lại đúng lúc.',
+    title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
+    description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, học bằng flashcard và ôn lại đúng lúc.',
     images: ['/og.png'],
   },
 };

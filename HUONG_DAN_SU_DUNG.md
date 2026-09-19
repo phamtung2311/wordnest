@@ -22,14 +22,17 @@ Khi đăng nhập, mỗi người chỉ nhìn thấy dữ liệu thuộc tài kh
 ### Tạo bộ từ vựng
 
 1. Bấm **Tạo bộ từ mới**.
-2. Nhập tên bộ từ, biểu tượng và mô tả.
-3. Bấm nút tạo bộ.
-4. Mở bộ vừa tạo và chọn **Thêm từ vựng**.
+2. Chọn ngôn ngữ **Tiếng Anh** hoặc **Tiếng Trung Quốc**.
+3. Nhập tên bộ từ, biểu tượng và mô tả.
+4. Bấm nút tạo bộ.
+5. Mở bộ vừa tạo và chọn **Thêm từ vựng**.
 
 ### Thêm từ
 
-- Gõ ít nhất hai ký tự để nhận từ tiếng Anh gợi ý.
-- Chọn một từ để WordNest tìm nghĩa tiếng Việt, phiên âm và câu ví dụ.
+- Với bộ tiếng Anh, gõ ít nhất hai ký tự để nhận từ gợi ý.
+- Với bộ tiếng Trung, nhập chữ Hán rồi bấm **Tự tìm nghĩa tiếng Việt**.
+- WordNest tự chọn ngôn ngữ dịch và giọng đọc dựa trên ngôn ngữ của bộ từ.
+- Từ tiếng Anh có thể được tự điền phiên âm và câu ví dụ; từ tiếng Trung vẫn có thể nhập ví dụ thủ công.
 - Có thể sửa lại mọi thông tin trước khi lưu.
 - Nút loa sử dụng giọng đọc có sẵn của trình duyệt, không tải hoặc lưu file âm thanh.
 
@@ -168,4 +171,3 @@ Nên theo dõi mục **Usage/Billing** trong Firebase Console khi số người 
 - `firebase.json`: cấu hình Hosting và Firestore Rules.
 - `.firebaserc`: dự án Firebase mặc định.
 - `package.json`: thư viện và các lệnh phát triển.
-
