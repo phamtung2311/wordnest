@@ -58,18 +58,25 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [authReady, setAuthReady] = useState(false);
+  const [authReady, setAuthReady] = useState(true);
   const [cloudReady, setCloudReady] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'local' | 'loading' | 'saved' | 'error'>('local');
   const [authError, setAuthError] = useState('');
+  const [migrationNotice, setMigrationNotice] = useState('');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const saveTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('wordnest-decks');
+    const migration = new URLSearchParams(window.location.hash.slice(1)).get('migration');
+    const saved = migration ? decodeURIComponent(escape(window.atob(migration))) : localStorage.getItem('wordnest-decks');
     if (saved) {
       const parsed = JSON.parse(saved) as Deck[];
       setDecks(parsed.map((deck) => ({ ...deck, words: deck.words.map((word) => ({ ...word, createdAt: word.createdAt ?? (word.id > 1000000000000 ? word.id : undefined) })) })));
+      if (migration) {
+        localStorage.setItem('wordnest-decks', saved);
+        window.history.replaceState(null, '', window.location.pathname);
+        setMigrationNotice(`Đã chuyển ${parsed.reduce((total, deck) => total + deck.words.length, 0)} từ từ trang cũ. Hãy đăng nhập Google để lưu vào tài khoản.`);
+      }
     }
     setLoaded(true);
   }, []);
@@ -203,6 +210,11 @@ export default function Home() {
 
   async function signInGoogle() {
     setAuthError('');
+    if (window.location.hostname.endsWith('chatgpt.site')) {
+      const payload = window.btoa(unescape(encodeURIComponent(JSON.stringify(decks))));
+      window.location.href = `https://wordnest-english-vocab.web.app/#migration=${encodeURIComponent(payload)}`;
+      return;
+    }
     setSyncStatus('loading');
     try { await signInWithRedirect(auth, googleProvider); }
     catch (error) {
@@ -289,6 +301,7 @@ export default function Home() {
   const filtered = decks.filter((deck) => deck.name.toLowerCase().includes(search.toLowerCase()));
   return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
     <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} />
+    {migrationNotice && <div className="migration-notice" role="status">{migrationNotice}</div>}
     {authError && <div className="auth-error" role="alert">{authError}</div>}
     <section className="learning-overview" aria-label="Việc học hôm nay">
       <div className="mx-auto max-w-6xl px-5 py-6 md:px-8">
