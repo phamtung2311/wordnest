@@ -50,6 +50,7 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [showAddWord, setShowAddWord] = useState(false);
   const [showAddDeck, setShowAddDeck] = useState(false);
+  const [showDeleteDeck, setShowDeleteDeck] = useState(false);
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
@@ -206,13 +207,22 @@ export default function Home() {
     setActiveDeck(deckId);
   }
 
+  function deleteCurrentDeck() {
+    if (!currentDeck) return;
+    setDecks((all) => all.filter((deck) => deck.id !== currentDeck.id));
+    setStudyQueue([]);
+    setActiveDeck(null);
+    setShowDeleteDeck(false);
+    setRevealed(false);
+  }
+
   if (activeDeck && currentDeck) {
     return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
       <audio ref={audioRef} className="hidden" preload="auto" onLoadStart={() => setAudioStatus('loading')} onWaiting={() => setAudioStatus('loading')} onPlaying={() => setAudioStatus('playing')} onEnded={() => setAudioStatus('idle')} onError={() => setAudioStatus('error')} />
       <Header compact onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); }} />
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
         <button onClick={() => { setActiveDeck(null); setStudyQueue([]); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
-        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{currentDeck.description} · {currentDeck.words.length} từ</p></div><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div>
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{currentDeck.description} · {currentDeck.words.length} từ</p></div><div className="flex flex-wrap gap-2"><Button onClick={() => setShowDeleteDeck(true)} variant="outline" className="h-11 rounded-full border-2 border-[#c65342]/30 bg-transparent px-5 font-bold text-[#b84b3c] hover:bg-[#fbe5df]"><Trash2/> Xóa bộ từ</Button><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div></div>
 
         <div className="grid gap-7 lg:grid-cols-[1.2fr_.8fr]">
           <section className="study-panel">
@@ -230,6 +240,7 @@ export default function Home() {
         </div>
       </div>
       {showAddWord && <AddWordModal onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={speak} audioStatus={audioStatus} />}
+      {showDeleteDeck && <Modal title="Xóa bộ từ này?" onClose={() => setShowDeleteDeck(false)}><div className="space-y-5"><div className="rounded-2xl bg-[#fbe5df] p-4 text-sm leading-6 text-[#7d4138]"><b className="block text-base text-[#b84b3c]">{currentDeck.name}</b>Bộ từ này có {currentDeck.words.length} từ. Sau khi xóa, dữ liệu của bộ này không thể khôi phục.</div><div className="grid grid-cols-2 gap-3"><Button type="button" variant="outline" onClick={() => setShowDeleteDeck(false)} className="h-11 rounded-xl border-2 font-bold">Giữ lại</Button><Button type="button" onClick={deleteCurrentDeck} className="h-11 rounded-xl bg-[#c65342] font-bold text-white hover:bg-[#ad4335]"><Trash2/> Xóa vĩnh viễn</Button></div></div></Modal>}
     </main>;
   }
 
