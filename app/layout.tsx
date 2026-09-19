@@ -6,9 +6,13 @@ const nunito = Nunito({ variable: '--font-nunito', subsets: ['latin', 'vietnames
 const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin', 'vietnamese'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://wordnest-english-vocab.social-wave-0222.chatgpt.site'),
+  metadataBase: new URL('https://wordnest-english-vocab.web.app'),
   title: 'WordNest — Học từ vựng tiếng Anh',
   description: 'Tạo bộ từ riêng, học bằng flashcard và ôn lại đúng lúc với phương pháp lặp ngắt quãng.',
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    shortcut: '/favicon.svg',
+  },
   openGraph: {
     title: 'WordNest — Học từ vựng tiếng Anh',
     description: 'Tạo bộ từ riêng, học bằng flashcard và ôn lại đúng lúc.',
