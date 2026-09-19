@@ -92,7 +92,15 @@ export default function Home() {
   useEffect(() => onAuthStateChanged(auth, (nextUser) => {
     setUser(nextUser);
     setAuthReady(true);
-    if (!nextUser) { setCloudReady(false); setSyncStatus('local'); }
+    if (!nextUser) {
+      localStorage.removeItem('wordnest-decks');
+      setDecks([]);
+      setActiveDeck(null);
+      setStudyQueue([]);
+      setRevealed(false);
+      setCloudReady(false);
+      setSyncStatus('local');
+    }
   }), []);
   useEffect(() => {
     void getRedirectResult(auth).catch((error: { code?: string }) => {
@@ -243,7 +251,16 @@ export default function Home() {
   }
 
   async function signOutGoogle() {
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     await signOut(auth);
+    localStorage.removeItem('wordnest-decks');
+    setDecks([]);
+    setActiveDeck(null);
+    setStudyQueue([]);
+    setRevealed(false);
+    setMigrationNotice('');
+    setAuthError('');
+    setCloudReady(false);
     setSyncStatus('local');
   }
   function rateWord(level: Level, retryMinutes = 0) {
