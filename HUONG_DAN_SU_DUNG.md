@@ -57,6 +57,7 @@ Một ngày được tính là học thành công khi đạt **một trong hai �
 - Học lướt qua hết tất cả từ đang đến hạn trong tất cả các bộ từ, kể cả khi tổng thời gian chưa đủ 10 phút.
 
 Kết quả điểm danh được lưu cùng tài khoản Google và dùng để tính số ngày học thành công và chuỗi ngày liên tiếp.
+Sau khi một ngày đã được điểm danh, kết quả đó được giữ nguyên đến hết ngày; thêm từ mới hoặc có từ cũ đến hạn lại không làm mất điểm danh.
 
 ### Quản lý dữ liệu
 

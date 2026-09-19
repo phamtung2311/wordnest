@@ -46,6 +46,18 @@ function completedStudyDay(progress: StudyProgress, key: string) {
   return (progress.dailySeconds[key] ?? 0) >= 600 || progress.completedDays?.[key] === true;
 }
 
+function mergeStudyProgress(first: StudyProgress, second: StudyProgress): StudyProgress {
+  const dailySeconds = { ...first.dailySeconds };
+  for (const [key, seconds] of Object.entries(second.dailySeconds ?? {})) {
+    dailySeconds[key] = Math.max(dailySeconds[key] ?? 0, seconds);
+  }
+  const completedDays: Record<string, boolean> = {};
+  for (const key of new Set([...Object.keys(first.completedDays ?? {}), ...Object.keys(second.completedDays ?? {})])) {
+    if (first.completedDays?.[key] === true || second.completedDays?.[key] === true) completedDays[key] = true;
+  }
+  return { dailySeconds, completedDays };
+}
+
 function calculateStreak(progress: StudyProgress) {
   const cursor = new Date();
   if (!completedStudyDay(progress, dateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
@@ -119,7 +131,7 @@ export default function Home() {
         setMigrationNotice(`Đã chuyển ${cleaned.reduce((total, deck) => total + deck.words.length, 0)} từ từ trang cũ. Hãy đăng nhập Google để lưu vào tài khoản.`);
       }
     }
-    if (savedProgress) setProgress(JSON.parse(savedProgress) as StudyProgress);
+    if (savedProgress) setProgress(mergeStudyProgress(emptyProgress, JSON.parse(savedProgress) as StudyProgress));
     setLoaded(true);
   }, []);
   useEffect(() => onAuthStateChanged(auth, (nextUser) => {
@@ -154,15 +166,16 @@ export default function Home() {
       if (cancelled) return;
       const cloudDecks = snapshot.data()?.decks as Deck[] | undefined;
       const cloudProgress = snapshot.data()?.progress as StudyProgress | undefined;
-      setProgress(cloudProgress ?? emptyProgress);
+      const mergedProgress = mergeStudyProgress(progress, cloudProgress ?? emptyProgress);
+      setProgress(mergedProgress);
       if (cloudDecks?.length) {
         const cleaned = cloudDecks.filter((deck) => !isUntouchedLegacyDeck(deck));
         setDecks(cleaned);
         if (cleaned.length !== cloudDecks.length) {
-          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, progress: cloudProgress ?? emptyProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
         }
       } else {
-        await setDoc(doc(db, 'users', user.uid), { decks, progress: cloudProgress ?? progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+        await setDoc(doc(db, 'users', user.uid), { decks, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
       }
       if (!cancelled) { setCloudReady(true); setSyncStatus('saved'); }
     }).catch(() => { if (!cancelled) setSyncStatus('error'); });
