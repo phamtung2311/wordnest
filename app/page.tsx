@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, Flame, FolderPlus, Languages, LoaderCircle, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, FolderPlus, Languages, LoaderCircle, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type Level = 'new' | 'learning' | 'known';
@@ -28,7 +28,7 @@ const starterDecks: Deck[] = [
   ]},
 ];
 
-function countDue(deck: Deck) { return deck.words.filter((word) => word.nextReview <= Date.now()).length; }
+function countDue(deck: Deck, now = Date.now()) { return deck.words.filter((word) => word.nextReview <= now).length; }
 
 async function fetchJson(url: string, timeoutMs = 3500) {
   const controller = new AbortController();
@@ -94,12 +94,17 @@ export default function Home() {
   const currentDeck = decks.find((deck) => deck.id === activeDeck);
   const studyWords = useMemo(() => currentDeck?.words.filter((word) => word.nextReview <= Date.now()) ?? [], [currentDeck]);
   const currentWord = studyWords[studyIndex % Math.max(studyWords.length, 1)];
-  const totalWords = decks.reduce((sum, deck) => sum + deck.words.length, 0);
-  const dueWords = decks.reduce((sum, deck) => sum + countDue(deck), 0);
-  const knownWords = decks.flatMap((deck) => deck.words).filter((word) => word.level === 'known').length;
-  const newWords = decks.flatMap((deck) => deck.words.map((word) => ({ ...word, deckId: deck.id, deckName: deck.name, deckEmoji: deck.emoji }))).filter((word) => word.level === 'new');
-  const recentWords = [...newWords].sort((a, b) => (b.createdAt ?? b.id) - (a.createdAt ?? a.id)).slice(0, 6);
-  const firstDueDeck = decks.find((deck) => countDue(deck) > 0);
+  const now = Date.now();
+  const allWords = decks.flatMap((deck) => deck.words.map((word) => ({ ...word, deckId: deck.id, deckName: deck.name, deckEmoji: deck.emoji })));
+  const totalWords = allWords.length;
+  const dueList = allWords.filter((word) => word.nextReview <= now);
+  const dueWords = dueList.length;
+  const dueNewWords = dueList.filter((word) => word.level === 'new').length;
+  const dueReviewWords = dueList.filter((word) => word.level !== 'new').length;
+  const knownWords = allWords.filter((word) => word.level === 'known').length;
+  const addedWords = allWords.filter((word) => word.createdAt !== undefined);
+  const recentWords = [...addedWords].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0)).slice(0, 6);
+  const firstDueDeck = decks.find((deck) => countDue(deck, now) > 0);
 
   async function prefetchSpeech(text: string) {
     const cleanText = text.trim().toLowerCase();
@@ -168,7 +173,7 @@ export default function Home() {
     const delay = level === 'new' ? 10 * 60000 : level === 'learning' ? DAY : DAY * 7;
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
     setRevealed(false);
-    setStudyIndex((index) => index + 1);
+    setStudyIndex(0);
   }
   function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
     if (!currentDeck) return;
@@ -197,7 +202,7 @@ export default function Home() {
 
         <div className="grid gap-7 lg:grid-cols-[1.2fr_.8fr]">
           <section className="study-panel">
-            <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ đang chờ bạn` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{Math.min(studyIndex + 1, studyWords.length)}/{studyWords.length}</span></div>
+            <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ đang chờ bạn` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{studyWords.length} còn lại</span></div>
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
               <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
@@ -222,11 +227,11 @@ export default function Home() {
         <div className="overview-grid">
           <div className="study-alert">
             <span className="alert-icon"><BellRing/></span>
-            <div className="min-w-0 flex-1"><p className="alert-label">Cần học hôm nay</p><h2>{dueWords > 0 ? `${dueWords} từ đang chờ bạn` : 'Bạn đã hoàn thành hôm nay!'}</h2><p>{newWords.length > 0 ? `${newWords.length} từ mới · ${Math.max(dueWords - newWords.length, 0)} từ đến hạn ôn` : dueWords > 0 ? 'Các từ đã đến lịch ôn lại' : 'Hãy thêm từ mới hoặc quay lại vào ngày mai.'}</p></div>
+            <div className="min-w-0 flex-1"><p className="alert-label">Cần học hôm nay</p><h2>{dueWords > 0 ? `${dueWords} từ đang chờ bạn` : 'Bạn đã hoàn thành hôm nay!'}</h2><p>{dueWords > 0 ? `${dueNewWords} từ mới · ${dueReviewWords} từ đến hạn ôn` : 'Hãy thêm từ mới hoặc quay lại vào ngày mai.'}</p></div>
             {firstDueDeck && <Button onClick={() => { setActiveDeck(firstDueDeck.id); setStudyIndex(0); }} className="study-now h-11 rounded-full bg-[#f8d467] px-5 font-black text-[#213a34] hover:bg-[#f3c943]">Học ngay <ArrowRight/></Button>}
           </div>
           <div className="recent-panel">
-            <div className="recent-heading"><div><span>Từ mới vừa thêm</span><b>{newWords.length} từ mới</b></div>{recentWords.length > 0 && <button onClick={() => setActiveDeck(recentWords[0].deckId)}>Xem bộ từ <ChevronRight/></button>}</div>
+            <div className="recent-heading"><div><span>Từ bạn vừa thêm</span><b>{addedWords.length} từ đã thêm</b></div>{recentWords.length > 0 && <button onClick={() => setActiveDeck(recentWords[0].deckId)}>Xem bộ từ <ChevronRight/></button>}</div>
             {recentWords.length > 0 ? <div className="recent-words">{recentWords.map((word) => <button key={`${word.deckId}-${word.id}`} onClick={() => { setActiveDeck(word.deckId); setStudyIndex(0); }}><span>{word.deckEmoji}</span><span><b>{word.term}</b><small>{word.meaning}</small></span></button>)}</div> : <div className="recent-empty"><Plus size={18}/> Từ mới bạn thêm sẽ xuất hiện ở đây.</div>}
           </div>
         </div>
@@ -234,7 +239,7 @@ export default function Home() {
     </section>
     <section className="relative overflow-hidden px-5 pb-14 pt-10 md:px-8 md:pt-16"><div className="paper-grain"/><div className="relative mx-auto grid max-w-6xl gap-9 lg:grid-cols-[1.1fr_.9fr] lg:items-center"><div><div className="sticker"><Sparkles size={15}/> Tự học theo cách của bạn</div><h1 className="font-display max-w-3xl text-[clamp(3.2rem,7vw,6.5rem)] font-black leading-[.92] tracking-[-.06em]">Từ mới hôm nay,<br/><span className="text-[#eb6a52]">nhớ lâu ngày mai.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-[#5c7069]">Tự tạo bộ từ vựng tiếng Anh, học từng từ và để WordNest nhắc bạn ôn lại đúng lúc.</p><Button onClick={() => setShowAddDeck(true)} className="mt-7 h-12 rounded-full bg-[#213a34] px-6 text-base font-bold shadow-[4px_4px_0_#eb6a52]"><FolderPlus/> Tạo bộ từ mới</Button></div><div className="hero-note"><div className="tape"/><div className="mb-5 flex items-center justify-between"><span className="text-5xl">🧠</span><span className="rounded-full bg-[#f8d467] px-3 py-1 text-xs font-black uppercase tracking-wider">Mẹo học</span></div><p className="font-display text-3xl font-black leading-tight">Bạn không cần học nhiều.<br/>Bạn cần ôn <em className="text-[#eb6a52]">đúng lúc.</em></p><div className="mt-7 space-y-3 text-sm font-bold"><p className="flex items-center gap-3"><span className="step">1</span> Thêm từ bạn thực sự cần</p><p className="flex items-center gap-3"><span className="step">2</span> Chọn mức độ ghi nhớ</p><p className="flex items-center gap-3"><span className="step">3</span> Ôn lại theo lịch thông minh</p></div></div></div></section>
 
-    <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Từ đã thêm"/><Stat icon={<Clock3/>} value={dueWords} label="Cần ôn hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<Flame/>} value="7" label="Ngày liên tiếp"/></div></section>
+    <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Tổng số từ"/><Stat icon={<Clock3/>} value={dueWords} label="Cần học hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<FolderPlus/>} value={decks.length} label="Bộ từ của bạn"/></div></section>
 
     <section className="mx-auto max-w-6xl px-5 py-16 md:px-8"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Thư viện của bạn</p><h2 className="font-display text-4xl font-black tracking-tight">Các bộ từ vựng</h2></div><div className="search-box"><Search size={18}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm bộ từ..." aria-label="Tìm bộ từ"/></div></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((deck, index) => <button className={`deck-card color-${index % 3}`} onClick={() => {setActiveDeck(deck.id); setStudyIndex(0);}} key={deck.id}><div className="flex items-start justify-between"><span className="deck-icon">{deck.emoji}</span><ChevronRight/></div><h3 className="font-display mt-6 text-2xl font-black text-[#213a34]">{deck.name}</h3><p className="mt-1 text-sm text-[#697a74]">{deck.description}</p><div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold"><span>{deck.words.length} từ</span><span className={countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'}>{countDue(deck) ? `${countDue(deck)} cần ôn` : 'Đã xong ✓'}</span></div></button>)}<button className="new-deck" onClick={() => setShowAddDeck(true)}><span className="grid size-12 place-items-center rounded-full bg-[#213a34] text-white"><Plus/></span><b className="mt-4">Tạo bộ từ mới</b><span className="text-sm text-[#71817b]">20 từ hay 200 từ — tùy bạn</span></button></div></section>
     <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>Dữ liệu được lưu riêng trên thiết bị của bạn.</span><span>Học ít · Nhớ lâu</span></div></footer>
