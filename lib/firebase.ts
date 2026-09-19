@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBa7CUaXKU9vo9_E92CAFLwiwEHW60R0yg',
+  apiKey: 'AIzaSyBa7CUaXKU9vo9_E92CAFLwiwEHW6OR0yg',
   authDomain: 'wordnest-english-vocab.firebaseapp.com',
   projectId: 'wordnest-english-vocab',
   storageBucket: 'wordnest-english-vocab.firebasestorage.app',
