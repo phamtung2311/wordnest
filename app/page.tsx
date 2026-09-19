@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, Cloud, FolderPlus, Languages, LoaderCircle, LogIn, LogOut, Plus, RotateCcw, Search, Sparkles, Trash2, Volume2, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, CalendarCheck, Check, ChevronRight, Clock3, Cloud, Flame, FolderPlus, Languages, LoaderCircle, LogIn, LogOut, Plus, RotateCcw, Search, Timer, Trash2, Volume2, X } from 'lucide-react';
 import { getRedirectResult, onAuthStateChanged, signInWithRedirect, signOut, type User } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { auth, db, googleProvider } from '@/lib/firebase';
 type Level = 'new' | 'learning' | 'known';
 type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
 type Deck = { id: number; name: string; emoji: string; description: string; words: Word[] };
+type StudyProgress = { dailySeconds: Record<string, number> };
 
 const DAY = 86400000;
 const legacyStarterDecks: Deck[] = [
@@ -31,6 +32,25 @@ const legacyStarterDecks: Deck[] = [
   ]},
 ];
 const starterDecks: Deck[] = [];
+const emptyProgress: StudyProgress = { dailySeconds: {} };
+
+function dateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function calculateStreak(dailySeconds: Record<string, number>) {
+  const cursor = new Date();
+  if ((dailySeconds[dateKey(cursor)] ?? 0) < 600) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while ((dailySeconds[dateKey(cursor)] ?? 0) >= 600) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
 
 function isUntouchedLegacyDeck(deck: Deck) {
   const original = legacyStarterDecks.find((item) => item.id === deck.id && item.name === deck.name);
@@ -56,6 +76,7 @@ async function fetchJson(url: string, timeoutMs = 3500) {
 
 export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
+  const [progress, setProgress] = useState<StudyProgress>(emptyProgress);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
   const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
@@ -77,6 +98,7 @@ export default function Home() {
   useEffect(() => {
     const migration = new URLSearchParams(window.location.hash.slice(1)).get('migration');
     const saved = migration ? decodeURIComponent(escape(window.atob(migration))) : localStorage.getItem('wordnest-decks');
+    const savedProgress = localStorage.getItem('wordnest-progress');
     if (saved) {
       const parsed = JSON.parse(saved) as Deck[];
       const cleaned = parsed.filter((deck) => !isUntouchedLegacyDeck(deck));
@@ -87,6 +109,7 @@ export default function Home() {
         setMigrationNotice(`Đã chuyển ${cleaned.reduce((total, deck) => total + deck.words.length, 0)} từ từ trang cũ. Hãy đăng nhập Google để lưu vào tài khoản.`);
       }
     }
+    if (savedProgress) setProgress(JSON.parse(savedProgress) as StudyProgress);
     setLoaded(true);
   }, []);
   useEffect(() => onAuthStateChanged(auth, (nextUser) => {
@@ -94,7 +117,9 @@ export default function Home() {
     setAuthReady(true);
     if (!nextUser) {
       localStorage.removeItem('wordnest-decks');
+      localStorage.removeItem('wordnest-progress');
       setDecks([]);
+      setProgress(emptyProgress);
       setActiveDeck(null);
       setStudyQueue([]);
       setRevealed(false);
@@ -118,14 +143,16 @@ export default function Home() {
     void getDoc(doc(db, 'users', user.uid)).then(async (snapshot) => {
       if (cancelled) return;
       const cloudDecks = snapshot.data()?.decks as Deck[] | undefined;
+      const cloudProgress = snapshot.data()?.progress as StudyProgress | undefined;
+      setProgress(cloudProgress ?? emptyProgress);
       if (cloudDecks?.length) {
         const cleaned = cloudDecks.filter((deck) => !isUntouchedLegacyDeck(deck));
         setDecks(cleaned);
         if (cleaned.length !== cloudDecks.length) {
-          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, progress: cloudProgress ?? emptyProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
         }
       } else {
-        await setDoc(doc(db, 'users', user.uid), { decks, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+        await setDoc(doc(db, 'users', user.uid), { decks, progress: cloudProgress ?? progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
       }
       if (!cancelled) { setCloudReady(true); setSyncStatus('saved'); }
     }).catch(() => { if (!cancelled) setSyncStatus('error'); });
@@ -135,16 +162,17 @@ export default function Home() {
   useEffect(() => {
     if (!loaded) return;
     localStorage.setItem('wordnest-decks', JSON.stringify(decks));
+    localStorage.setItem('wordnest-progress', JSON.stringify(progress));
     if (!user || !cloudReady) return;
     setSyncStatus('loading');
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
-      void setDoc(doc(db, 'users', user.uid), { decks, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
+      void setDoc(doc(db, 'users', user.uid), { decks, progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
         .then(() => setSyncStatus('saved'))
         .catch(() => setSyncStatus('error'));
     }, 500);
     return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
-  }, [decks, loaded, user?.uid, cloudReady]);
+  }, [decks, progress, loaded, user?.uid, cloudReady]);
   useEffect(() => {
     const context = (document as Document & { modelContext?: { registerTool: (tool: unknown, options?: { signal?: AbortSignal }) => void | Promise<void> } }).modelContext;
     if (!context?.registerTool) return;
@@ -181,6 +209,11 @@ export default function Home() {
     return word ? [word] : [];
   });
   const currentWord = studyWords[0];
+  const todaySeconds = progress.dailySeconds[dateKey()] ?? 0;
+  const todayMinutes = Math.floor(todaySeconds / 60);
+  const todayPercent = Math.min(100, Math.round((todaySeconds / 600) * 100));
+  const successfulDays = Object.values(progress.dailySeconds).filter((seconds) => seconds >= 600).length;
+  const currentStreak = calculateStreak(progress.dailySeconds);
   const scheduledRetries = currentDeck?.words.filter((word) => word.level === 'new' && word.nextReview > Date.now()) ?? [];
   const nextRetryMinutes = scheduledRetries.length
     ? Math.max(1, Math.ceil((Math.min(...scheduledRetries.map((word) => word.nextReview)) - Date.now()) / 60000))
@@ -201,6 +234,21 @@ export default function Home() {
     if (!currentWord || !studyWords.length) return;
     setAudioStatus('idle');
   }, [currentWord?.id, studyQueue]);
+
+  useEffect(() => {
+    if (!user || !currentWord) return;
+    const interval = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      const today = dateKey();
+      setProgress((current) => ({
+        dailySeconds: {
+          ...current.dailySeconds,
+          [today]: (current.dailySeconds[today] ?? 0) + 10,
+        },
+      }));
+    }, 10000);
+    return () => window.clearInterval(interval);
+  }, [user?.uid, currentWord?.id]);
 
   useEffect(() => {
     setShowRetryOptions(false);
@@ -254,7 +302,9 @@ export default function Home() {
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     await signOut(auth);
     localStorage.removeItem('wordnest-decks');
+    localStorage.removeItem('wordnest-progress');
     setDecks([]);
+    setProgress(emptyProgress);
     setActiveDeck(null);
     setStudyQueue([]);
     setRevealed(false);
@@ -337,7 +387,7 @@ export default function Home() {
     <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} />
     {migrationNotice && <div className="migration-notice" role="status">{migrationNotice}</div>}
     {authError && <div className="auth-error" role="alert">{authError}</div>}
-    <section className="learning-overview" aria-label="Việc học hôm nay">
+    <section id="review" className="learning-overview scroll-mt-20" aria-label="Việc học hôm nay">
       <div className="mx-auto max-w-6xl px-5 py-6 md:px-8">
         <div className="overview-grid">
           <div className="study-alert">
@@ -352,7 +402,19 @@ export default function Home() {
         </div>
       </div>
     </section>
-    <section className="relative overflow-hidden px-5 pb-14 pt-10 md:px-8 md:pt-16"><div className="paper-grain"/><div className="relative mx-auto grid max-w-6xl gap-9 lg:grid-cols-[1.1fr_.9fr] lg:items-center"><div><div className="sticker"><Sparkles size={15}/> Tự học theo cách của bạn</div><h1 className="font-display max-w-3xl text-[clamp(3.2rem,7vw,6.5rem)] font-black leading-[.92] tracking-[-.06em]">Từ mới hôm nay,<br/><span className="text-[#eb6a52]">nhớ lâu ngày mai.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-[#5c7069]">Tự tạo bộ từ vựng tiếng Anh, học từng từ và để WordNest nhắc bạn ôn lại đúng lúc.</p><Button onClick={() => setShowAddDeck(true)} className="mt-7 h-12 rounded-full bg-[#213a34] px-6 text-base font-bold shadow-[4px_4px_0_#eb6a52]"><FolderPlus/> Tạo bộ từ mới</Button></div><div className="hero-note"><div className="tape"/><div className="mb-5 flex items-center justify-between"><span className="text-5xl">🧠</span><span className="rounded-full bg-[#f8d467] px-3 py-1 text-xs font-black uppercase tracking-wider">Mẹo học</span></div><p className="font-display text-3xl font-black leading-tight">Bạn không cần học nhiều.<br/>Bạn cần ôn <em className="text-[#eb6a52]">đúng lúc.</em></p><div className="mt-7 space-y-3 text-sm font-bold"><p className="flex items-center gap-3"><span className="step">1</span> Thêm từ bạn thực sự cần</p><p className="flex items-center gap-3"><span className="step">2</span> Chọn mức độ ghi nhớ</p><p className="flex items-center gap-3"><span className="step">3</span> Ôn lại theo lịch thông minh</p></div></div></div></section>
+    <section id="progress" className="progress-section scroll-mt-20">
+      <div className="mx-auto max-w-6xl px-5 py-12 md:px-8">
+        <div className="progress-heading"><div><p className="eyebrow">Tiến độ học</p><h1 className="font-display text-4xl font-black tracking-tight">Mục tiêu 10 phút mỗi ngày</h1><p>Thời gian được tính khi bạn đang học một thẻ từ và mở trang trên màn hình.</p></div>{decks.length === 0 && <Button onClick={() => setShowAddDeck(true)} className="h-11 rounded-full bg-[#213a34] px-5 font-bold text-white"><FolderPlus/> Tạo bộ từ đầu tiên</Button>}</div>
+        <div className="progress-grid">
+          <article className="today-progress">
+            <div className="progress-icon"><Timer/></div>
+            <div className="min-w-0 flex-1"><div className="progress-label"><b>Hôm nay</b><span>{Math.min(todayMinutes, 10)}/10 phút</span></div><div className="progress-track" aria-label={`Đã hoàn thành ${todayPercent}% mục tiêu hôm nay`}><span style={{ width: `${todayPercent}%` }}/></div><p>{!user ? 'Đăng nhập Google để lưu tiến độ.' : todaySeconds >= 600 ? 'Đã điểm danh hôm nay ✓' : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút để được điểm danh.`}</p></div>
+          </article>
+          <article className="progress-stat"><span><Flame/></span><div><b>{currentStreak}</b><small>Ngày liên tiếp</small></div></article>
+          <article className="progress-stat"><span><CalendarCheck/></span><div><b>{successfulDays}</b><small>Ngày học thành công</small></div></article>
+        </div>
+      </div>
+    </section>
 
     <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Tổng số từ"/><Stat icon={<Clock3/>} value={dueWords} label="Cần học hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<FolderPlus/>} value={decks.length} label="Bộ từ của bạn"/></div></section>
 
