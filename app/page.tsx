@@ -12,7 +12,7 @@ type Word = { id: number; term: string; meaning: string; example: string; phonet
 type Deck = { id: number; name: string; emoji: string; description: string; words: Word[] };
 
 const DAY = 86400000;
-const starterDecks: Deck[] = [
+const legacyStarterDecks: Deck[] = [
   { id: 1, name: 'Du lịch Nhật Bản', emoji: '🗾', description: '20 từ cần dùng cho chuyến đi', words: [
     { id: 11, term: 'destination', meaning: 'điểm đến', example: 'Tokyo is our next destination.', level: 'learning', nextReview: Date.now() },
     { id: 12, term: 'itinerary', meaning: 'lịch trình', example: 'Let’s check the itinerary.', level: 'new', nextReview: Date.now() },
@@ -30,6 +30,14 @@ const starterDecks: Deck[] = [
     { id: 32, term: 'biodiversity', meaning: 'đa dạng sinh học', example: 'The forest has rich biodiversity.', level: 'learning', nextReview: Date.now() },
   ]},
 ];
+const starterDecks: Deck[] = [];
+
+function isUntouchedLegacyDeck(deck: Deck) {
+  const original = legacyStarterDecks.find((item) => item.id === deck.id && item.name === deck.name);
+  return Boolean(original
+    && original.words.length === deck.words.length
+    && original.words.every((word, index) => deck.words[index]?.id === word.id && deck.words[index]?.term === word.term));
+}
 
 function countDue(deck: Deck, now = Date.now()) { return deck.words.filter((word) => word.nextReview <= now).length; }
 
@@ -71,11 +79,12 @@ export default function Home() {
     const saved = migration ? decodeURIComponent(escape(window.atob(migration))) : localStorage.getItem('wordnest-decks');
     if (saved) {
       const parsed = JSON.parse(saved) as Deck[];
-      setDecks(parsed.map((deck) => ({ ...deck, words: deck.words.map((word) => ({ ...word, createdAt: word.createdAt ?? (word.id > 1000000000000 ? word.id : undefined) })) })));
+      const cleaned = parsed.filter((deck) => !isUntouchedLegacyDeck(deck));
+      setDecks(cleaned.map((deck) => ({ ...deck, words: deck.words.map((word) => ({ ...word, createdAt: word.createdAt ?? (word.id > 1000000000000 ? word.id : undefined) })) })));
       if (migration) {
         localStorage.setItem('wordnest-decks', saved);
         window.history.replaceState(null, '', window.location.pathname);
-        setMigrationNotice(`Đã chuyển ${parsed.reduce((total, deck) => total + deck.words.length, 0)} từ từ trang cũ. Hãy đăng nhập Google để lưu vào tài khoản.`);
+        setMigrationNotice(`Đã chuyển ${cleaned.reduce((total, deck) => total + deck.words.length, 0)} từ từ trang cũ. Hãy đăng nhập Google để lưu vào tài khoản.`);
       }
     }
     setLoaded(true);
@@ -102,7 +111,11 @@ export default function Home() {
       if (cancelled) return;
       const cloudDecks = snapshot.data()?.decks as Deck[] | undefined;
       if (cloudDecks?.length) {
-        setDecks(cloudDecks);
+        const cleaned = cloudDecks.filter((deck) => !isUntouchedLegacyDeck(deck));
+        setDecks(cleaned);
+        if (cleaned.length !== cloudDecks.length) {
+          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+        }
       } else {
         await setDoc(doc(db, 'users', user.uid), { decks, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
       }
