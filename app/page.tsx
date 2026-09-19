@@ -11,7 +11,7 @@ type Level = 'new' | 'learning' | 'known';
 type Language = 'en' | 'zh';
 type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
 type Deck = { id: number; name: string; emoji: string; description: string; language?: Language; words: Word[] };
-type StudyProgress = { dailySeconds: Record<string, number> };
+type StudyProgress = { dailySeconds: Record<string, number>; completedDays?: Record<string, boolean> };
 
 const DAY = 86400000;
 const legacyStarterDecks: Deck[] = [
@@ -33,7 +33,7 @@ const legacyStarterDecks: Deck[] = [
   ]},
 ];
 const starterDecks: Deck[] = [];
-const emptyProgress: StudyProgress = { dailySeconds: {} };
+const emptyProgress: StudyProgress = { dailySeconds: {}, completedDays: {} };
 
 function dateKey(date = new Date()) {
   const year = date.getFullYear();
@@ -42,11 +42,15 @@ function dateKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function calculateStreak(dailySeconds: Record<string, number>) {
+function completedStudyDay(progress: StudyProgress, key: string) {
+  return (progress.dailySeconds[key] ?? 0) >= 600 || progress.completedDays?.[key] === true;
+}
+
+function calculateStreak(progress: StudyProgress) {
   const cursor = new Date();
-  if ((dailySeconds[dateKey(cursor)] ?? 0) < 600) cursor.setDate(cursor.getDate() - 1);
+  if (!completedStudyDay(progress, dateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
   let streak = 0;
-  while ((dailySeconds[dateKey(cursor)] ?? 0) >= 600) {
+  while (completedStudyDay(progress, dateKey(cursor))) {
     streak += 1;
     cursor.setDate(cursor.getDate() - 1);
   }
@@ -221,9 +225,12 @@ export default function Home() {
   const currentWord = studyWords[0];
   const todaySeconds = progress.dailySeconds[dateKey()] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
-  const todayPercent = Math.min(100, Math.round((todaySeconds / 600) * 100));
-  const successfulDays = Object.values(progress.dailySeconds).filter((seconds) => seconds >= 600).length;
-  const currentStreak = calculateStreak(progress.dailySeconds);
+  const completedAllDueToday = progress.completedDays?.[dateKey()] === true;
+  const todayCompleted = completedStudyDay(progress, dateKey());
+  const todayPercent = todayCompleted ? 100 : Math.min(100, Math.round((todaySeconds / 600) * 100));
+  const progressDates = new Set([...Object.keys(progress.dailySeconds), ...Object.keys(progress.completedDays ?? {})]);
+  const successfulDays = [...progressDates].filter((key) => completedStudyDay(progress, key)).length;
+  const currentStreak = calculateStreak(progress);
   const scheduledRetries = currentDeck?.words.filter((word) => word.level === 'new' && word.nextReview > Date.now()) ?? [];
   const nextRetryMinutes = scheduledRetries.length
     ? Math.max(1, Math.ceil((Math.min(...scheduledRetries.map((word) => word.nextReview)) - Date.now()) / 60000))
@@ -327,7 +334,12 @@ export default function Home() {
   function rateWord(level: Level, retryMinutes = 0) {
     if (!currentDeck || !currentWord) return;
     const delay = level === 'new' ? retryMinutes * 60000 : level === 'learning' ? DAY : DAY * 7;
+    const remainingDue = decks.reduce((total, deck) => total + deck.words.filter((word) => !(deck.id === currentDeck.id && word.id === currentWord.id) && word.nextReview <= Date.now()).length, 0);
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
+    if (remainingDue === 0) {
+      const today = dateKey();
+      setProgress((current) => ({ ...current, completedDays: { ...(current.completedDays ?? {}), [today]: true } }));
+    }
     setRevealed(false);
     setShowRetryOptions(false);
     setStudyQueue((queue) => queue.filter((wordId) => wordId !== currentWord.id));
@@ -422,7 +434,7 @@ export default function Home() {
         <div className="progress-grid">
           <article className="today-progress">
             <div className="progress-icon"><Timer/></div>
-            <div className="min-w-0 flex-1"><div className="progress-label"><b>Hôm nay</b><span>{Math.min(todayMinutes, 10)}/10 phút</span></div><div className="progress-track" aria-label={`Đã hoàn thành ${todayPercent}% mục tiêu hôm nay`}><span style={{ width: `${todayPercent}%` }}/></div><p>{!user ? 'Đăng nhập Google để lưu tiến độ.' : todaySeconds >= 600 ? 'Đã điểm danh hôm nay ✓' : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút để được điểm danh.`}</p></div>
+            <div className="min-w-0 flex-1"><div className="progress-label"><b>Hôm nay</b><span>{todayCompleted ? 'Đã điểm danh ✓' : `${Math.min(todayMinutes, 10)}/10 phút`}</span></div><div className="progress-track" aria-label={`Đã hoàn thành ${todayPercent}% mục tiêu hôm nay`}><span style={{ width: `${todayPercent}%` }}/></div><p>{!user ? 'Đăng nhập Google để lưu tiến độ.' : completedAllDueToday ? 'Đã học hết các từ cần học hôm nay ✓' : todaySeconds >= 600 ? 'Đã học đủ 10 phút hôm nay ✓' : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}</p></div>
           </article>
           <article className="progress-stat"><span><Flame/></span><div><b>{currentStreak}</b><small>Ngày liên tiếp</small></div></article>
           <article className="progress-stat"><span><CalendarCheck/></span><div><b>{successfulDays}</b><small>Ngày học thành công</small></div></article>

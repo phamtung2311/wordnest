@@ -48,6 +48,15 @@ Các dịch vụ gợi ý/dịch miễn phí đôi lúc có thể chậm hoặc 
    - **Đã thuộc:** ôn lại sau 7 ngày.
 4. Nếu từ đến hạn nằm trong nhiều bộ, học xong một bộ sẽ có nút chuyển sang bộ tiếp theo.
 
+### Điểm danh và chuỗi học
+
+Một ngày được tính là học thành công khi đạt **một trong hai điều kiện**:
+
+- Học từ vựng đủ 10 phút; hoặc
+- Học lướt qua hết tất cả từ đang đến hạn trong tất cả các bộ từ, kể cả khi tổng thời gian chưa đủ 10 phút.
+
+Kết quả điểm danh được lưu cùng tài khoản Google và dùng để tính số ngày học thành công và chuỗi ngày liên tiếp.
+
 ### Quản lý dữ liệu
 
 - Có thể xóa từng từ hoặc xóa cả bộ từ.
