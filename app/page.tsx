@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, FolderPlus, Languages, LoaderCircle, Plus, RotateCcw, Search, Settings, Sparkles, Trash2, Volume2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -46,7 +46,7 @@ async function fetchJson(url: string, timeoutMs = 3500) {
 export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
-  const [studyIndex, setStudyIndex] = useState(0);
+  const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [showAddWord, setShowAddWord] = useState(false);
   const [showAddDeck, setShowAddDeck] = useState(false);
@@ -84,6 +84,7 @@ export default function Home() {
         const stamp = Date.now();
         const additions: Word[] = value.words.map((word, index) => ({ id: stamp + index, term: word.term!.trim(), meaning: word.meaning!.trim(), example: word.example?.trim() ?? '', level: 'new', nextReview: stamp, createdAt: stamp + index }));
         setDecks((all) => all.map((deck) => deck.id === target.id ? { ...deck, words: [...deck.words, ...additions] } : deck));
+        setStudyQueue([...target.words.filter((word) => word.nextReview <= stamp).map((word) => word.id), ...additions.map((word) => word.id)]);
         setActiveDeck(target.id);
         return { deck: target.name, added: additions.length };
       },
@@ -92,8 +93,11 @@ export default function Home() {
   }, [decks]);
 
   const currentDeck = decks.find((deck) => deck.id === activeDeck);
-  const studyWords = useMemo(() => currentDeck?.words.filter((word) => word.nextReview <= Date.now()) ?? [], [currentDeck]);
-  const currentWord = studyWords[studyIndex % Math.max(studyWords.length, 1)];
+  const studyWords = studyQueue.flatMap((wordId) => {
+    const word = currentDeck?.words.find((item) => item.id === wordId);
+    return word ? [word] : [];
+  });
+  const currentWord = studyWords[0];
   const now = Date.now();
   const allWords = decks.flatMap((deck) => deck.words.map((word) => ({ ...word, deckId: deck.id, deckName: deck.name, deckEmoji: deck.emoji })));
   const totalWords = allWords.length;
@@ -131,10 +135,10 @@ export default function Home() {
     setAudioStatus('idle');
     void prefetchSpeech(currentWord.term);
     for (let offset = 1; offset <= 2; offset += 1) {
-      const upcoming = studyWords[(studyIndex + offset) % studyWords.length];
+      const upcoming = studyWords[offset % studyWords.length];
       if (upcoming) void prefetchSpeech(upcoming.term);
     }
-  }, [currentWord?.id, studyIndex, studyWords]);
+  }, [currentWord?.id, studyQueue]);
 
   useEffect(() => () => {
     audioCacheRef.current.forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
@@ -170,10 +174,12 @@ export default function Home() {
   }
   function rateWord(level: Level) {
     if (!currentDeck || !currentWord) return;
-    const delay = level === 'new' ? 10 * 60000 : level === 'learning' ? DAY : DAY * 7;
+    const delay = level === 'new' ? 0 : level === 'learning' ? DAY : DAY * 7;
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
     setRevealed(false);
-    setStudyIndex(0);
+    setStudyQueue((queue) => level === 'new'
+      ? [...queue.filter((wordId) => wordId !== currentWord.id), currentWord.id]
+      : queue.filter((wordId) => wordId !== currentWord.id));
   }
   function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
     if (!currentDeck) return;
@@ -183,21 +189,29 @@ export default function Home() {
     const createdAt = Date.now();
     const word: Word = { id: createdAt, term, meaning, example: value.example.trim(), phonetic: value.phonetic, level: 'new', nextReview: createdAt, createdAt };
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: [...deck.words, word] } : deck));
+    setStudyQueue((queue) => [...queue, word.id]);
     setShowAddWord(false);
   }
   function addDeck(form: FormData) {
     const name = String(form.get('name') || '').trim();
     if (!name) return;
     const deck: Deck = { id: Date.now(), name, emoji: String(form.get('emoji') || '📚'), description: String(form.get('description') || 'Bộ từ vựng của riêng bạn'), words: [] };
-    setDecks((all) => [...all, deck]); setShowAddDeck(false); setActiveDeck(deck.id);
+    setDecks((all) => [...all, deck]); setShowAddDeck(false); setStudyQueue([]); setActiveDeck(deck.id);
+  }
+
+  function openDeck(deckId: number) {
+    const deck = decks.find((item) => item.id === deckId);
+    setStudyQueue(deck?.words.filter((word) => word.nextReview <= Date.now()).map((word) => word.id) ?? []);
+    setRevealed(false);
+    setActiveDeck(deckId);
   }
 
   if (activeDeck && currentDeck) {
     return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
       <audio ref={audioRef} className="hidden" preload="auto" onLoadStart={() => setAudioStatus('loading')} onWaiting={() => setAudioStatus('loading')} onPlaying={() => setAudioStatus('playing')} onEnded={() => setAudioStatus('idle')} onError={() => setAudioStatus('error')} />
-      <Header compact onHome={() => { setActiveDeck(null); setRevealed(false); }} />
+      <Header compact onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); }} />
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
-        <button onClick={() => setActiveDeck(null)} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
+        <button onClick={() => { setActiveDeck(null); setStudyQueue([]); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{currentDeck.description} · {currentDeck.words.length} từ</p></div><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div>
 
         <div className="grid gap-7 lg:grid-cols-[1.2fr_.8fr]">
@@ -208,11 +222,11 @@ export default function Home() {
               <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ tiếng Anh</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
-              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><button onClick={() => rateWord('new')} className="rate again"><RotateCcw/> Chưa nhớ<small>10 phút</small></button><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
+              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><button onClick={() => rateWord('new')} className="rate again"><RotateCcw/> Chưa nhớ<small>Học lại</small></button><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
             </div> : <div className="empty-state"><div className="text-6xl">🎉</div><h2 className="font-display mt-4 text-3xl font-black">Xong bài hôm nay!</h2><p>Hãy quay lại khi đến lịch ôn tiếp theo.</p></div>}
           </section>
 
-          <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-sm font-bold text-[#71817b]">{currentDeck.words.length} từ</span></div><div className="space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className="text-sm text-[#71817b]">{word.meaning}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button aria-label={`Xóa ${word.term}`} onClick={() => setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck))} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
+          <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-sm font-bold text-[#71817b]">{currentDeck.words.length} từ</span></div><div className="space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className="text-sm text-[#71817b]">{word.meaning}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button aria-label={`Xóa ${word.term}`} onClick={() => { setStudyQueue((queue) => queue.filter((wordId) => wordId !== word.id)); setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck)); }} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
         </div>
       </div>
       {showAddWord && <AddWordModal onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={speak} audioStatus={audioStatus} />}
@@ -228,11 +242,11 @@ export default function Home() {
           <div className="study-alert">
             <span className="alert-icon"><BellRing/></span>
             <div className="min-w-0 flex-1"><p className="alert-label">Cần học hôm nay</p><h2>{dueWords > 0 ? `${dueWords} từ đang chờ bạn` : 'Bạn đã hoàn thành hôm nay!'}</h2><p>{dueWords > 0 ? `${dueNewWords} từ mới · ${dueReviewWords} từ đến hạn ôn` : 'Hãy thêm từ mới hoặc quay lại vào ngày mai.'}</p></div>
-            {firstDueDeck && <Button onClick={() => { setActiveDeck(firstDueDeck.id); setStudyIndex(0); }} className="study-now h-11 rounded-full bg-[#f8d467] px-5 font-black text-[#213a34] hover:bg-[#f3c943]">Học ngay <ArrowRight/></Button>}
+            {firstDueDeck && <Button onClick={() => openDeck(firstDueDeck.id)} className="study-now h-11 rounded-full bg-[#f8d467] px-5 font-black text-[#213a34] hover:bg-[#f3c943]">Học ngay <ArrowRight/></Button>}
           </div>
           <div className="recent-panel">
-            <div className="recent-heading"><div><span>Từ bạn vừa thêm</span><b>{addedWords.length} từ đã thêm</b></div>{recentWords.length > 0 && <button onClick={() => setActiveDeck(recentWords[0].deckId)}>Xem bộ từ <ChevronRight/></button>}</div>
-            {recentWords.length > 0 ? <div className="recent-words">{recentWords.map((word) => <button key={`${word.deckId}-${word.id}`} onClick={() => { setActiveDeck(word.deckId); setStudyIndex(0); }}><span>{word.deckEmoji}</span><span><b>{word.term}</b><small>{word.meaning}</small></span></button>)}</div> : <div className="recent-empty"><Plus size={18}/> Từ mới bạn thêm sẽ xuất hiện ở đây.</div>}
+            <div className="recent-heading"><div><span>Từ bạn vừa thêm</span><b>{addedWords.length} từ đã thêm</b></div>{recentWords.length > 0 && <button onClick={() => openDeck(recentWords[0].deckId)}>Xem bộ từ <ChevronRight/></button>}</div>
+            {recentWords.length > 0 ? <div className="recent-words">{recentWords.map((word) => <button key={`${word.deckId}-${word.id}`} onClick={() => openDeck(word.deckId)}><span>{word.deckEmoji}</span><span><b>{word.term}</b><small>{word.meaning}</small></span></button>)}</div> : <div className="recent-empty"><Plus size={18}/> Từ mới bạn thêm sẽ xuất hiện ở đây.</div>}
           </div>
         </div>
       </div>
@@ -241,7 +255,7 @@ export default function Home() {
 
     <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Tổng số từ"/><Stat icon={<Clock3/>} value={dueWords} label="Cần học hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<FolderPlus/>} value={decks.length} label="Bộ từ của bạn"/></div></section>
 
-    <section className="mx-auto max-w-6xl px-5 py-16 md:px-8"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Thư viện của bạn</p><h2 className="font-display text-4xl font-black tracking-tight">Các bộ từ vựng</h2></div><div className="search-box"><Search size={18}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm bộ từ..." aria-label="Tìm bộ từ"/></div></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((deck, index) => <button className={`deck-card color-${index % 3}`} onClick={() => {setActiveDeck(deck.id); setStudyIndex(0);}} key={deck.id}><div className="flex items-start justify-between"><span className="deck-icon">{deck.emoji}</span><ChevronRight/></div><h3 className="font-display mt-6 text-2xl font-black text-[#213a34]">{deck.name}</h3><p className="mt-1 text-sm text-[#697a74]">{deck.description}</p><div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold"><span>{deck.words.length} từ</span><span className={countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'}>{countDue(deck) ? `${countDue(deck)} cần ôn` : 'Đã xong ✓'}</span></div></button>)}<button className="new-deck" onClick={() => setShowAddDeck(true)}><span className="grid size-12 place-items-center rounded-full bg-[#213a34] text-white"><Plus/></span><b className="mt-4">Tạo bộ từ mới</b><span className="text-sm text-[#71817b]">20 từ hay 200 từ — tùy bạn</span></button></div></section>
+    <section className="mx-auto max-w-6xl px-5 py-16 md:px-8"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Thư viện của bạn</p><h2 className="font-display text-4xl font-black tracking-tight">Các bộ từ vựng</h2></div><div className="search-box"><Search size={18}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm bộ từ..." aria-label="Tìm bộ từ"/></div></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((deck, index) => <button className={`deck-card color-${index % 3}`} onClick={() => openDeck(deck.id)} key={deck.id}><div className="flex items-start justify-between"><span className="deck-icon">{deck.emoji}</span><ChevronRight/></div><h3 className="font-display mt-6 text-2xl font-black text-[#213a34]">{deck.name}</h3><p className="mt-1 text-sm text-[#697a74]">{deck.description}</p><div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold"><span>{deck.words.length} từ</span><span className={countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'}>{countDue(deck) ? `${countDue(deck)} cần ôn` : 'Đã xong ✓'}</span></div></button>)}<button className="new-deck" onClick={() => setShowAddDeck(true)}><span className="grid size-12 place-items-center rounded-full bg-[#213a34] text-white"><Plus/></span><b className="mt-4">Tạo bộ từ mới</b><span className="text-sm text-[#71817b]">20 từ hay 200 từ — tùy bạn</span></button></div></section>
     <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>Dữ liệu được lưu riêng trên thiết bị của bạn.</span><span>Học ít · Nhớ lâu</span></div></footer>
     {showAddDeck && <Modal title="Tạo bộ từ mới" onClose={() => setShowAddDeck(false)}><form action={addDeck} className="space-y-4"><Field name="name" label="Tên bộ từ" placeholder="20 từ cho chuyến đi Đà Lạt" autoFocus/><Field name="emoji" label="Biểu tượng" placeholder="📚"/><Field name="description" label="Mô tả ngắn" placeholder="Những từ mình cần học tuần này"/><Button type="submit" className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Tạo bộ từ</Button></form></Modal>}
   </main>;
