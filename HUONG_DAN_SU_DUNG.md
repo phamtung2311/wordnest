@@ -48,6 +48,7 @@ Các dịch vụ gợi ý/dịch miễn phí đôi lúc có thể chậm hoặc 
    - **Đã thuộc:** ôn lại sau 7 ngày.
 4. Nếu từ đến hạn nằm trong nhiều bộ, học xong một bộ sẽ có nút chuyển sang bộ tiếp theo.
 5. Có thể bấm **Ôn lại** cạnh bất kỳ từ nào để hủy lịch chờ hiện tại và đưa từ đó lên học ngay.
+6. Trong lúc đang học, nghĩa tiếng Việt ở danh sách bên phải được ẩn để không làm lộ đáp án. Nghĩa chỉ hiện trên thẻ sau khi bấm **Xem nghĩa**.
 
 ### Điểm danh và chuỗi học
 
