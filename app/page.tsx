@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, Check, ChevronRight, Clock3, Cloud, FolderPlus, Languages, LoaderCircle, LogIn, LogOut, Plus, RotateCcw, Search, Sparkles, Trash2, Volume2, X } from 'lucide-react';
-import { onAuthStateChanged, signInWithPopup, signOut, type User } from 'firebase/auth';
+import { getRedirectResult, onAuthStateChanged, signInWithRedirect, signOut, type User } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { auth, db, googleProvider } from '@/lib/firebase';
@@ -61,6 +61,7 @@ export default function Home() {
   const [authReady, setAuthReady] = useState(false);
   const [cloudReady, setCloudReady] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'local' | 'loading' | 'saved' | 'error'>('local');
+  const [authError, setAuthError] = useState('');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const saveTimerRef = useRef<number | null>(null);
 
@@ -77,6 +78,14 @@ export default function Home() {
     setAuthReady(true);
     if (!nextUser) { setCloudReady(false); setSyncStatus('local'); }
   }), []);
+  useEffect(() => {
+    void getRedirectResult(auth).catch((error: { code?: string }) => {
+      setAuthError(error?.code === 'auth/unauthorized-domain'
+        ? 'Tên miền này chưa được Firebase cho phép đăng nhập.'
+        : 'Đăng nhập Google chưa thành công. Vui lòng thử lại.');
+      setSyncStatus('error');
+    });
+  }, []);
 
   useEffect(() => {
     if (!loaded || !user) return;
@@ -193,9 +202,15 @@ export default function Home() {
   }
 
   async function signInGoogle() {
+    setAuthError('');
     setSyncStatus('loading');
-    try { await signInWithPopup(auth, googleProvider); }
-    catch { setSyncStatus('error'); }
+    try { await signInWithRedirect(auth, googleProvider); }
+    catch (error) {
+      setAuthError((error as { code?: string })?.code === 'auth/unauthorized-domain'
+        ? 'Tên miền này chưa được Firebase cho phép đăng nhập.'
+        : 'Không thể mở trang đăng nhập Google. Vui lòng thử lại.');
+      setSyncStatus('error');
+    }
   }
 
   async function signOutGoogle() {
@@ -274,6 +289,7 @@ export default function Home() {
   const filtered = decks.filter((deck) => deck.name.toLowerCase().includes(search.toLowerCase()));
   return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
     <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} />
+    {authError && <div className="auth-error" role="alert">{authError}</div>}
     <section className="learning-overview" aria-label="Việc học hôm nay">
       <div className="mx-auto max-w-6xl px-5 py-6 md:px-8">
         <div className="overview-grid">
