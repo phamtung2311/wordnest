@@ -103,6 +103,7 @@ export default function Home() {
   const [migrationNotice, setMigrationNotice] = useState('');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const saveTimerRef = useRef<number | null>(null);
+  const studyAreaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const migration = new URLSearchParams(window.location.hash.slice(1)).get('migration');
@@ -258,6 +259,7 @@ export default function Home() {
       if (document.visibilityState !== 'visible') return;
       const today = dateKey();
       setProgress((current) => ({
+        ...current,
         dailySeconds: {
           ...current.dailySeconds,
           [today]: (current.dailySeconds[today] ?? 0) + 10,
@@ -266,6 +268,14 @@ export default function Home() {
     }, 10000);
     return () => window.clearInterval(interval);
   }, [user?.uid, currentWord?.id]);
+
+  useEffect(() => {
+    if (activeDeck === null) return;
+    const frame = window.requestAnimationFrame(() => {
+      studyAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeDeck]);
 
   useEffect(() => {
     setShowRetryOptions(false);
@@ -399,7 +409,7 @@ export default function Home() {
         <button onClick={() => { setActiveDeck(null); setStudyQueue([]); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{languageBadge(currentLanguage)} · {currentDeck.description} · {currentDeck.words.length} từ</p></div><div className="flex flex-wrap gap-2"><Button onClick={() => setShowDeleteDeck(true)} variant="outline" className="h-11 rounded-full border-2 border-[#c65342]/30 bg-transparent px-5 font-bold text-[#b84b3c] hover:bg-[#fbe5df]"><Trash2/> Xóa bộ từ</Button><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div></div>
 
-        <div className="grid gap-7 lg:grid-cols-[1.2fr_.8fr]">
+        <div ref={studyAreaRef} className="study-area grid scroll-mt-5 gap-7 lg:grid-cols-[1.2fr_.8fr]">
           <section className="study-panel">
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ trong bộ này${dueInOtherDecks ? ` · ${dueInOtherDecks} từ ở bộ khác` : ''}` : otherDueDeck ? `Bộ này đã xong · còn ${dueInOtherDecks} từ ở bộ khác` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{studyWords.length} còn lại</span></div>
             {currentWord ? <div className="flashcard">
