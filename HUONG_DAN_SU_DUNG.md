@@ -47,6 +47,7 @@ Các dịch vụ gợi ý/dịch miễn phí đôi lúc có thể chậm hoặc 
    - **Hơi nhớ:** ôn lại sau 1 ngày.
    - **Đã thuộc:** ôn lại sau 7 ngày.
 4. Nếu từ đến hạn nằm trong nhiều bộ, học xong một bộ sẽ có nút chuyển sang bộ tiếp theo.
+5. Có thể bấm **Ôn lại** cạnh bất kỳ từ nào để hủy lịch chờ hiện tại và đưa từ đó lên học ngay.
 
 ### Điểm danh và chuỗi học
 
