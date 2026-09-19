@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBa7CUaXKU9vo9_E92CAFLwiwEHW6OR0yg',
-  authDomain: 'wordnest-english-vocab.firebaseapp.com',
+  authDomain: 'wordnest-english-vocab.web.app',
   projectId: 'wordnest-english-vocab',
   storageBucket: 'wordnest-english-vocab.firebasestorage.app',
   messagingSenderId: '605822510451',
