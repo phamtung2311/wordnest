@@ -129,6 +129,7 @@ export default function Home() {
   const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [showAddWord, setShowAddWord] = useState(false);
+  const [prefillWord, setPrefillWord] = useState('');
   const [showAddDeck, setShowAddDeck] = useState(false);
   const [showDeleteDeck, setShowDeleteDeck] = useState(false);
   const [showRetryOptions, setShowRetryOptions] = useState(false);
@@ -611,7 +612,7 @@ export default function Home() {
                 <div className="translation-exercise">
                   <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
                   {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
-                  {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence}”</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: {translationExercise.source}{translationExercise.license ? ` · ${translationExercise.license}` : ''}</small></>}
+                  {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence.split(/(\s+)/).map((piece, index) => { const selected = piece.replace(/^\P{L}+|\P{L}+$/gu, ''); return selected ? <button type="button" key={`${piece}-${index}`} className="sentence-word" title={`Nhấp đúp để thêm “${selected}”`} onDoubleClick={() => { setPrefillWord(selected); setShowAddWord(true); }}>{piece}</button> : piece; })}”</p><p className="sentence-hint">Nhấp đúp vào một từ để thêm vào bộ từ.</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: {translationExercise.source}{translationExercise.license ? ` · ${translationExercise.license}` : ''}</small></>}
                   {exerciseStatus === 'empty' && <p className="exercise-note">Chưa tìm thấy câu phù hợp có bản dịch tiếng Việt cho từ này.</p>}
                   {exerciseStatus === 'error' && <p className="exercise-note">Không tải được câu luyện dịch. Hãy kiểm tra kết nối rồi thử thẻ khác.</p>}
                 </div>
@@ -625,7 +626,7 @@ export default function Home() {
           <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-right text-sm font-bold text-[#71817b]"><small className="answer-hidden-label">Lịch ôn tiếp theo</small>{currentDeck.words.length} từ</span></div><div className="word-scroll space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className={`review-countdown ${word.nextReview <= now ? 'due' : ''}`}>{reviewCountdown(word.nextReview, now)}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button type="button" aria-label={`Ôn lại ${word.term} ngay`} title="Hủy lịch chờ và ôn từ này ngay" onClick={() => reviewWordNow(word.id)} className="review-now-button"><RotateCcw size={14}/><span>Ôn lại</span></button><button aria-label={`Xóa ${word.term}`} onClick={() => { setStudyQueue((queue) => queue.filter((wordId) => wordId !== word.id)); setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck)); }} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
         </div>
       </div>
-      {showAddWord && <AddWordModal language={currentLanguage} onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={(text) => speak(text, currentLanguage)} audioStatus={audioStatus} />}
+      {showAddWord && <AddWordModal key={prefillWord || 'new-word'} initialTerm={prefillWord} language={currentLanguage} onClose={() => { setShowAddWord(false); setPrefillWord(''); }} onSave={addWord} onSpeak={(text) => speak(text, currentLanguage)} audioStatus={audioStatus} />}
       {showTease && <div className="tease-toast" role="status"><span aria-hidden="true">😤</span><span>Vãi lìn học bao lần rồi còn chưa nhớ nữa!</span></div>}
       {showDeleteDeck && <Modal title="Xóa bộ từ này?" onClose={() => setShowDeleteDeck(false)}><div className="space-y-5"><div className="rounded-2xl bg-[#fbe5df] p-4 text-sm leading-6 text-[#7d4138]"><b className="block text-base text-[#b84b3c]">{currentDeck.name}</b>Bộ từ này có {currentDeck.words.length} từ. Sau khi xóa, dữ liệu của bộ này không thể khôi phục.</div><div className="grid grid-cols-2 gap-3"><Button type="button" variant="outline" onClick={() => setShowDeleteDeck(false)} className="h-11 rounded-xl border-2 font-bold">Giữ lại</Button><Button type="button" onClick={deleteCurrentDeck} className="h-11 rounded-xl bg-[#c65342] font-bold text-white hover:bg-[#ad4335]"><Trash2/> Xóa vĩnh viễn</Button></div></div></Modal>}
     </main>;
@@ -692,8 +693,8 @@ function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | n
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
 
-function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { language: Language; onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string; partOfSpeech?: string }) => string | null; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
-  const [term, setTerm] = useState('');
+function AddWordModal({ initialTerm = '', language, onClose, onSave, onSpeak, audioStatus }: { initialTerm?: string; language: Language; onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string; partOfSpeech?: string }) => string | null; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
+  const [term, setTerm] = useState(initialTerm);
   const [meaning, setMeaning] = useState('');
   const [example, setExample] = useState('');
   const [phonetic, setPhonetic] = useState('');
@@ -743,6 +744,10 @@ function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { lan
     setEnriching(false);
     setNote(translated ? 'Đã tự điền thông tin. Bạn có thể sửa lại trước khi lưu.' : 'Chưa dịch được tự động. Bạn hãy nhập nghĩa thủ công.');
   }
+
+  useEffect(() => {
+    if (initialTerm.trim()) void chooseWord(initialTerm);
+  }, []);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
