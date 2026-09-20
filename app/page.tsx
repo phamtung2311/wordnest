@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BellRing, BookOpen, Brain, CalendarCheck, Check, ChevronRight, Clock3, Cloud, Flame, FolderPlus, Languages, LoaderCircle, LogIn, LogOut, Plus, RotateCcw, Search, Timer, Trash2, Volume2, X } from 'lucide-react';
 import { getRedirectResult, onAuthStateChanged, signInWithRedirect, signOut, type User } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, deleteField, doc, getDoc, getDocs, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { auth, db, googleProvider } from '@/lib/firebase';
 
@@ -121,6 +121,53 @@ async function fetchJson(url: string, timeoutMs = 3500) {
   }
 }
 
+function deckDetails(deck: Deck) {
+  const { words: _words, ...details } = deck;
+  return details;
+}
+
+async function commitDeckOperations(operations: Array<(batch: ReturnType<typeof writeBatch>) => void>) {
+  for (let index = 0; index < operations.length; index += 400) {
+    const batch = writeBatch(db);
+    operations.slice(index, index + 400).forEach((apply) => apply(batch));
+    await batch.commit();
+  }
+}
+
+async function saveDeckChanges(userId: string, previous: Deck[], next: Deck[]) {
+  const before = new Map(previous.map((deck) => [deck.id, deck]));
+  const after = new Map(next.map((deck) => [deck.id, deck]));
+  const operations: Array<(batch: ReturnType<typeof writeBatch>) => void> = [];
+  for (const [deckId, oldDeck] of before) {
+    if (after.has(deckId)) continue;
+    operations.push((batch) => batch.delete(doc(db, 'users', userId, 'decks', String(deckId))));
+    oldDeck.words.forEach((word) => operations.push((batch) => batch.delete(doc(db, 'users', userId, 'decks', String(deckId), 'words', String(word.id)))));
+  }
+  for (const [deckId, deck] of after) {
+    const oldDeck = before.get(deckId);
+    if (!oldDeck || JSON.stringify(deckDetails(oldDeck)) !== JSON.stringify(deckDetails(deck))) {
+      operations.push((batch) => batch.set(doc(db, 'users', userId, 'decks', String(deckId)), deckDetails(deck)));
+    }
+    const oldWords = new Map((oldDeck?.words ?? []).map((word) => [word.id, word]));
+    const nextWords = new Map(deck.words.map((word) => [word.id, word]));
+    for (const [wordId] of oldWords) if (!nextWords.has(wordId)) operations.push((batch) => batch.delete(doc(db, 'users', userId, 'decks', String(deckId), 'words', String(wordId))));
+    for (const [wordId, word] of nextWords) {
+      if (!oldWords.has(wordId) || JSON.stringify(oldWords.get(wordId)) !== JSON.stringify(word)) {
+        operations.push((batch) => batch.set(doc(db, 'users', userId, 'decks', String(deckId), 'words', String(wordId)), word));
+      }
+    }
+  }
+  if (operations.length) await commitDeckOperations(operations);
+}
+
+async function loadStoredDecks(userId: string) {
+  const deckSnapshots = await getDocs(collection(db, 'users', userId, 'decks'));
+  return Promise.all(deckSnapshots.docs.map(async (snapshot) => {
+    const wordSnapshots = await getDocs(collection(db, 'users', userId, 'decks', snapshot.id, 'words'));
+    return { ...(snapshot.data() as Omit<Deck, 'words'>), words: wordSnapshots.docs.map((word) => word.data() as Word) } as Deck;
+  }));
+}
+
 export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [progress, setProgress] = useState<StudyProgress>(emptyProgress);
@@ -151,6 +198,8 @@ export default function Home() {
   const [translationAnswer, setTranslationAnswer] = useState('');
   const [showTranslationAnswer, setShowTranslationAnswer] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
+  const deckSaveTimerRef = useRef<number | null>(null);
+  const syncedDecksRef = useRef<Deck[] | null>(null);
   const studyAreaRef = useRef<HTMLDivElement | null>(null);
   const autoSpeakEnabledRef = useRef(false);
   const autoSpeakTimerRef = useRef<number | null>(null);
@@ -206,20 +255,25 @@ export default function Home() {
     if (!loaded || !user) return;
     let cancelled = false;
     setSyncStatus('loading');
-    void getDoc(doc(db, 'users', user.uid)).then(async (snapshot) => {
+    void Promise.all([getDoc(doc(db, 'users', user.uid)), loadStoredDecks(user.uid)]).then(async ([snapshot, storedDecks]) => {
       if (cancelled) return;
       const cloudDecks = snapshot.data()?.decks as Deck[] | undefined;
       const cloudProgress = snapshot.data()?.progress as StudyProgress | undefined;
       const mergedProgress = mergeStudyProgress(progress, cloudProgress ?? emptyProgress);
       setProgress(mergedProgress);
-      if (cloudDecks?.length) {
+      if (storedDecks.length) {
+        setDecks(storedDecks);
+        syncedDecksRef.current = storedDecks;
+      } else if (cloudDecks?.length) {
         const cleaned = cloudDecks.filter((deck) => !isUntouchedLegacyDeck(deck));
         setDecks(cleaned);
-        if (cleaned.length !== cloudDecks.length) {
-          await setDoc(doc(db, 'users', user.uid), { decks: cleaned, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
-        }
+        await saveDeckChanges(user.uid, [], cleaned);
+        await setDoc(doc(db, 'users', user.uid), { decks: deleteField(), storageVersion: 2, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() }, { merge: true });
+        syncedDecksRef.current = cleaned;
+        if (!cancelled) setMigrationNotice(`Đã tối ưu ${cleaned.reduce((total, deck) => total + deck.words.length, 0)} từ sang cách lưu mới.`);
       } else {
-        await setDoc(doc(db, 'users', user.uid), { decks, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() });
+        syncedDecksRef.current = [];
+        await setDoc(doc(db, 'users', user.uid), { storageVersion: 2, progress: mergedProgress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() }, { merge: true });
       }
       if (!cancelled) { setCloudReady(true); setSyncStatus('saved'); }
     }).catch(() => { if (!cancelled) setSyncStatus('error'); });
@@ -233,12 +287,25 @@ export default function Home() {
     if (!user || !cloudReady) return;
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
-      void setDoc(doc(db, 'users', user.uid), { decks, progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
+      void setDoc(doc(db, 'users', user.uid), { progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() }, { merge: true })
         .then(() => setSyncStatus('saved'))
         .catch(() => setSyncStatus('error'));
     }, 500);
     return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
   }, [decks, progress, loaded, user?.uid, cloudReady]);
+
+  useEffect(() => {
+    if (!loaded || !user || !cloudReady || !syncedDecksRef.current) return;
+    if (deckSaveTimerRef.current) window.clearTimeout(deckSaveTimerRef.current);
+    const previous = syncedDecksRef.current;
+    deckSaveTimerRef.current = window.setTimeout(() => {
+      void saveDeckChanges(user.uid, previous, decks).then(() => {
+        syncedDecksRef.current = decks;
+        setSyncStatus('saved');
+      }).catch(() => setSyncStatus('error'));
+    }, 500);
+    return () => { if (deckSaveTimerRef.current) window.clearTimeout(deckSaveTimerRef.current); };
+  }, [decks, loaded, user?.uid, cloudReady]);
   useEffect(() => {
     const context = (document as Document & { modelContext?: { registerTool: (tool: unknown, options?: { signal?: AbortSignal }) => void | Promise<void> } }).modelContext;
     if (!context?.registerTool) return;
