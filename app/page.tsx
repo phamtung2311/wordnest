@@ -12,6 +12,7 @@ type Language = 'en' | 'zh';
 type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
 type Deck = { id: number; name: string; emoji: string; description: string; language?: Language; words: Word[] };
 type StudyProgress = { dailySeconds: Record<string, number>; completedDays?: Record<string, boolean> };
+type TranslationExercise = { id: number; sentence: string; translation: string; license: string };
 
 const DAY = 86400000;
 const legacyStarterDecks: Deck[] = [
@@ -81,6 +82,7 @@ function normalizeTerm(term: string) { return term.trim().toLocaleLowerCase('en-
 function deckLanguage(deck: Deck): Language { return deck.language === 'zh' ? 'zh' : 'en'; }
 function languageName(language: Language) { return language === 'zh' ? 'Tiếng Trung' : 'Tiếng Anh'; }
 function languageBadge(language: Language) { return language === 'zh' ? '🇨🇳 Tiếng Trung' : '🇬🇧 Tiếng Anh'; }
+function escapeRegExp(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 async function fetchJson(url: string, timeoutMs = 3500) {
   const controller = new AbortController();
@@ -115,6 +117,10 @@ export default function Home() {
   const [authError, setAuthError] = useState('');
   const [migrationNotice, setMigrationNotice] = useState('');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
+  const [translationExercise, setTranslationExercise] = useState<TranslationExercise | null>(null);
+  const [exerciseStatus, setExerciseStatus] = useState<'idle' | 'loading' | 'ready' | 'empty' | 'error'>('idle');
+  const [translationAnswer, setTranslationAnswer] = useState('');
+  const [showTranslationAnswer, setShowTranslationAnswer] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
   const studyAreaRef = useRef<HTMLDivElement | null>(null);
   const autoSpeakEnabledRef = useRef(false);
@@ -306,6 +312,44 @@ export default function Home() {
     setShowRetryOptions(false);
   }, [currentWord?.id]);
 
+  async function loadTranslationExercise(word: Word, previousId?: number) {
+    if (currentLanguage !== 'en') return;
+    setExerciseStatus('loading');
+    setTranslationExercise(null);
+    setTranslationAnswer('');
+    setShowTranslationAnswer(false);
+    try {
+      const params = new URLSearchParams({
+        lang: 'eng', q: word.term.trim(), word_count: '4-18', 'trans:lang': 'vie',
+        showtrans: 'matching', limit: '30', sort: 'relevance',
+      });
+      const response = await fetch(`https://api.tatoeba.org/v1/sentences?${params.toString()}`);
+      if (!response.ok) throw new Error('Không tải được câu ví dụ.');
+      const payload = await response.json() as { data?: { id: number; text: string; license?: string; translations?: { text: string; lang: string }[] }[] };
+      const exactTerm = new RegExp(`(^|[^\\p{L}])${escapeRegExp(word.term.trim())}($|[^\\p{L}])`, 'iu');
+      const choices = (payload.data ?? []).flatMap((item) => {
+        const translation = item.translations?.find((entry) => entry.lang === 'vie')?.text;
+        return translation && exactTerm.test(item.text) ? [{ id: item.id, sentence: item.text, translation, license: item.license ?? 'Tatoeba' }] : [];
+      });
+      const alternatives = choices.filter((item) => item.id !== previousId);
+      const selected = (alternatives.length ? alternatives : choices)[Math.floor(Math.random() * (alternatives.length ? alternatives.length : choices.length))];
+      if (!selected) { setExerciseStatus('empty'); return; }
+      setTranslationExercise(selected);
+      setExerciseStatus('ready');
+    } catch {
+      setExerciseStatus('error');
+    }
+  }
+
+  useEffect(() => {
+    if (!currentWord || currentLanguage !== 'en') {
+      setTranslationExercise(null);
+      setExerciseStatus('idle');
+      return;
+    }
+    void loadTranslationExercise(currentWord);
+  }, [currentWord?.id, currentLanguage]);
+
   useEffect(() => {
     if (!currentDeck || !scheduledRetries.length) return;
     const nextReview = Math.min(...scheduledRetries.map((word) => word.nextReview));
@@ -481,7 +525,15 @@ export default function Home() {
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ trong bộ này${dueInOtherDecks ? ` · ${dueInOtherDecks} từ ở bộ khác` : ''}` : otherDueDeck ? `Bộ này đã xong · còn ${dueInOtherDecks} từ ở bộ khác` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{studyWords.length} còn lại</span></div>
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term, currentLanguage)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
-              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}{revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
+              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}
+                {currentLanguage === 'en' && <div className="translation-exercise">
+                  <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
+                  {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
+                  {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence}”</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: Tatoeba · {translationExercise.license}</small></>}
+                  {exerciseStatus === 'empty' && <p className="exercise-note">Chưa tìm thấy câu phù hợp có bản dịch tiếng Việt cho từ này.</p>}
+                  {exerciseStatus === 'error' && <p className="exercise-note">Không tải được câu luyện dịch. Hãy kiểm tra kết nối rồi thử thẻ khác.</p>}
+                </div>}
+                {revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
               {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><div className="retry-choice"><button onClick={chooseAgain} className="rate again"><RotateCcw/> Chưa nhớ<small>Chọn thời gian</small></button>{showRetryOptions && <div className="retry-options" role="menu" aria-label="Chọn thời gian học lại">{[1, 5, 10, 30].map((minutes) => <button key={minutes} type="button" role="menuitem" onClick={() => rateWord('new', minutes)}><Clock3 size={15}/>{minutes} phút</button>)}</div>}</div><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
