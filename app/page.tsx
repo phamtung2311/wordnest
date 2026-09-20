@@ -264,6 +264,10 @@ export default function Home() {
       if (storedDecks.length) {
         setDecks(storedDecks);
         syncedDecksRef.current = storedDecks;
+        if (cloudDecks?.length) {
+          await setDoc(doc(db, 'users', user.uid), { decks: deleteField(), storageVersion: 2, progress: mergedProgress, updatedAt: serverTimestamp() }, { merge: true });
+          if (!cancelled) setMigrationNotice(`Đã dọn bản sao dữ liệu cũ. ${storedDecks.reduce((total, deck) => total + deck.words.length, 0)} từ đang được lưu riêng.`);
+        }
       } else if (cloudDecks?.length) {
         const cleaned = cloudDecks.filter((deck) => !isUntouchedLegacyDeck(deck));
         setDecks(cleaned);
