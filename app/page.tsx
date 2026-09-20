@@ -116,6 +116,8 @@ export default function Home() {
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const saveTimerRef = useRef<number | null>(null);
   const studyAreaRef = useRef<HTMLDivElement | null>(null);
+  const autoSpeakEnabledRef = useRef(false);
+  const autoSpeakTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const migration = new URLSearchParams(window.location.hash.slice(1)).get('migration');
@@ -262,9 +264,13 @@ export default function Home() {
   const firstDueDeck = decks.find((deck) => countDue(deck, now) > 0);
 
   useEffect(() => {
-    if (!currentWord || !studyWords.length) return;
     setAudioStatus('idle');
-  }, [currentWord?.id, studyQueue]);
+    if (!currentWord || !autoSpeakEnabledRef.current) return;
+    autoSpeakTimerRef.current = window.setTimeout(() => speak(currentWord.term, currentLanguage), 250);
+    return () => {
+      if (autoSpeakTimerRef.current !== null) window.clearTimeout(autoSpeakTimerRef.current);
+    };
+  }, [activeDeck, currentWord?.id]);
 
   useEffect(() => {
     if (!user || !currentWord) return;
@@ -307,6 +313,10 @@ export default function Home() {
   function speak(text: string, language: Language = 'en') {
     const cleanText = text.trim();
     if (!cleanText) return;
+    if (autoSpeakTimerRef.current !== null) {
+      window.clearTimeout(autoSpeakTimerRef.current);
+      autoSpeakTimerRef.current = null;
+    }
     if (!('speechSynthesis' in window)) { setAudioStatus('error'); return; }
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(cleanText);
@@ -320,6 +330,31 @@ export default function Home() {
     utterance.onend = () => setAudioStatus('idle');
     utterance.onerror = () => setAudioStatus('error');
     speechSynthesis.speak(utterance);
+  }
+
+  function playAnswerSound(result: 'again' | 'known') {
+    try {
+      const context = new AudioContext();
+      const notes = result === 'known' ? [523, 659, 784] : [392, 330];
+      const duration = result === 'known' ? 0.12 : 0.16;
+      void context.resume().then(() => {
+        notes.forEach((frequency, index) => {
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          const start = context.currentTime + index * duration;
+          oscillator.type = 'sine';
+          oscillator.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(0.07, start + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start(start);
+          oscillator.stop(start + duration);
+        });
+        window.setTimeout(() => void context.close(), 700);
+      }).catch(() => void context.close());
+    } catch { /* Audio is optional when the browser does not support it. */ }
   }
 
   async function signInGoogle() {
@@ -356,6 +391,8 @@ export default function Home() {
   }
   function rateWord(level: Level, retryMinutes = 0) {
     if (!currentDeck || !currentWord) return;
+    if (level === 'new') playAnswerSound('again');
+    if (level === 'known') playAnswerSound('known');
     const delay = level === 'new' ? retryMinutes * 60000 : level === 'learning' ? DAY : DAY * 7;
     const remainingDue = decks.reduce((total, deck) => total + deck.words.filter((word) => !(deck.id === currentDeck.id && word.id === currentWord.id) && word.nextReview <= Date.now()).length, 0);
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
@@ -375,6 +412,7 @@ export default function Home() {
     if (currentDeck.words.some((word) => normalizeTerm(word.term) === normalizeTerm(term))) return `Từ “${term}” đã có trong bộ từ này.`;
     const createdAt = Date.now();
     const word: Word = { id: createdAt, term, meaning, example: value.example.trim(), phonetic: value.phonetic, level: 'new', nextReview: createdAt, createdAt };
+    autoSpeakEnabledRef.current = true;
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: [...deck.words, word] } : deck));
     setStudyQueue((queue) => [...queue, word.id]);
     setShowAddWord(false);
@@ -390,6 +428,7 @@ export default function Home() {
 
   function openDeck(deckId: number) {
     const deck = decks.find((item) => item.id === deckId);
+    autoSpeakEnabledRef.current = true;
     setStudyQueue(deck?.words.filter((word) => word.nextReview <= Date.now()).map((word) => word.id) ?? []);
     setRevealed(false);
     setActiveDeck(deckId);
@@ -406,6 +445,7 @@ export default function Home() {
 
   function reviewWordNow(wordId: number) {
     if (!currentDeck) return;
+    autoSpeakEnabledRef.current = true;
     const reviewStartedAt = Date.now();
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id
       ? { ...deck, words: deck.words.map((word) => word.id === wordId ? { ...word, nextReview: reviewStartedAt } : word) }

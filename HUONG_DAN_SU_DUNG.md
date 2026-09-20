@@ -49,6 +49,7 @@ Các dịch vụ gợi ý/dịch miễn phí đôi lúc có thể chậm hoặc 
 4. Nếu từ đến hạn nằm trong nhiều bộ, học xong một bộ sẽ có nút chuyển sang bộ tiếp theo.
 5. Có thể bấm **Ôn lại** cạnh bất kỳ từ nào để hủy lịch chờ hiện tại và đưa từ đó lên học ngay.
 6. Trong lúc đang học, nghĩa tiếng Việt ở danh sách bên phải được ẩn để không làm lộ đáp án. Nghĩa chỉ hiện trên thẻ sau khi bấm **Xem nghĩa**.
+7. Sau khi bắt đầu học, mỗi thẻ mới tự phát âm bằng giọng của trình duyệt; vẫn có thể bấm nút loa để nghe lại. Chọn **Chưa nhớ** hoặc **Đã thuộc** sẽ phát âm báo ngắn khác nhau. Trình duyệt có thể chặn tự phát âm trước thao tác đầu tiên của người dùng.
 
 ### Điểm danh và chuỗi học
 
