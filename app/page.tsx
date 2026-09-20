@@ -313,25 +313,25 @@ export default function Home() {
   }, [currentWord?.id]);
 
   async function loadTranslationExercise(word: Word, previousId?: number) {
-    if (currentLanguage !== 'en') return;
+    const isChinese = currentLanguage === 'zh';
     setExerciseStatus('loading');
     setTranslationExercise(null);
     setTranslationAnswer('');
     setShowTranslationAnswer(false);
     try {
       const params = new URLSearchParams({
-        lang: 'eng', q: word.term.trim(), word_count: '4-18', limit: '30', sort: 'relevance',
+        lang: isChinese ? 'cmn' : 'eng', q: word.term.trim(), word_count: isChinese ? '2-45' : '4-18', limit: '30', sort: 'relevance',
       });
       const payload = await fetchJson(`https://api.tatoeba.org/v1/sentences?${params.toString()}`, 6000) as { data?: { id: number; text: string; license?: string }[] } | null;
       const exactTerm = new RegExp(`(^|[^\\p{L}])${escapeRegExp(word.term.trim())}($|[^\\p{L}])`, 'iu');
-      const tatoebaChoices = (payload?.data ?? []).filter((item) => exactTerm.test(item.text));
-      const dictionaryPayload = tatoebaChoices.length ? null : await fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.term.trim())}`, 4500) as { meanings?: { definitions?: { example?: string }[] }[] }[] | null;
+      const tatoebaChoices = (payload?.data ?? []).filter((item) => isChinese ? item.text.includes(word.term.trim()) : exactTerm.test(item.text));
+      const dictionaryPayload = isChinese || tatoebaChoices.length ? null : await fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.term.trim())}`, 4500) as { meanings?: { definitions?: { example?: string }[] }[] }[] | null;
       const dictionaryChoices = (dictionaryPayload ?? []).flatMap((entry) => entry.meanings?.flatMap((meaning) => meaning.definitions ?? []).flatMap((definition, index) => definition.example && exactTerm.test(definition.example) ? [{ id: -(index + 1), text: definition.example }] : []) ?? []);
       const choices = tatoebaChoices.length ? tatoebaChoices : dictionaryChoices;
       const alternatives = choices.filter((item) => item.id !== previousId);
       const selected = (alternatives.length ? alternatives : choices)[Math.floor(Math.random() * (alternatives.length ? alternatives.length : choices.length))];
       if (!selected) { setExerciseStatus('empty'); return; }
-      const translationPayload = await fetchJson(`https://api.mymemory.translated.net/get?${new URLSearchParams({ q: selected.text, langpair: 'en|vi', mt: '1' }).toString()}`, 7000) as { responseData?: { translatedText?: string } } | null;
+      const translationPayload = await fetchJson(`https://api.mymemory.translated.net/get?${new URLSearchParams({ q: selected.text, langpair: isChinese ? 'zh-CN|vi' : 'en|vi', mt: '1' }).toString()}`, 7000) as { responseData?: { translatedText?: string } } | null;
       const translation = translationPayload?.responseData?.translatedText?.trim();
       if (!translation || /^MYMEMORY WARNING/i.test(translation)) throw new Error('Không dịch được câu ví dụ.');
       setTranslationExercise({ id: selected.id, sentence: selected.text, translation, source: tatoebaChoices.length ? 'Tatoeba' : 'Free Dictionary API', license: 'license' in selected ? selected.license : undefined });
@@ -342,7 +342,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!currentWord || currentLanguage !== 'en') {
+    if (!currentWord) {
       setTranslationExercise(null);
       setExerciseStatus('idle');
       return;
@@ -526,13 +526,13 @@ export default function Home() {
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term, currentLanguage)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
               <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}
-                {currentLanguage === 'en' && <div className="translation-exercise">
+                <div className="translation-exercise">
                   <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
                   {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
                   {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence}”</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: {translationExercise.source}{translationExercise.license ? ` · ${translationExercise.license}` : ''}</small></>}
                   {exerciseStatus === 'empty' && <p className="exercise-note">Chưa tìm thấy câu phù hợp có bản dịch tiếng Việt cho từ này.</p>}
                   {exerciseStatus === 'error' && <p className="exercise-note">Không tải được câu luyện dịch. Hãy kiểm tra kết nối rồi thử thẻ khác.</p>}
-                </div>}
+                </div>
                 {revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
