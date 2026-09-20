@@ -280,6 +280,9 @@ export default function Home() {
     return word ? [word] : [];
   });
   const currentWord = studyWords[0];
+  const currentWordFallback = currentWord && currentLanguage === 'en' ? fallbackWordMetadata(currentWord.term) : undefined;
+  const currentWordPhonetic = currentWord?.phonetic || currentWordFallback?.phonetic;
+  const currentWordPartOfSpeech = currentWord?.partOfSpeech || currentWordFallback?.partOfSpeech;
   const todaySeconds = progress.dailySeconds[dateKey()] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
   const completedAllDueToday = progress.completedDays?.[dateKey()] === true;
@@ -608,7 +611,7 @@ export default function Home() {
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ trong bộ này${dueInOtherDecks ? ` · ${dueInOtherDecks} từ ở bộ khác` : ''}` : otherDueDeck ? `Bộ này đã xong · còn ${dueInOtherDecks} từ ở bộ khác` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{studyWords.length} còn lại</span></div>
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term, currentLanguage)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
-              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{(currentWord.phonetic || currentWord.partOfSpeech) && <div className="word-metadata">{currentWord.partOfSpeech && <span className="word-type-badge">{partOfSpeechLabel(currentWord.partOfSpeech)}</span>}{currentWord.phonetic && <span className="word-phonetic">/{currentWord.phonetic.replaceAll('/', '')}/</span>}</div>}
+              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{(currentWordPhonetic || currentWordPartOfSpeech) && <div className="word-metadata">{currentWordPartOfSpeech && <span className="word-type-badge">{partOfSpeechLabel(currentWordPartOfSpeech)}</span>}{currentWordPhonetic && <span className="word-phonetic">/{currentWordPhonetic.replaceAll('/', '')}/</span>}</div>}
                 <div className="translation-exercise">
                   <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
                   {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
