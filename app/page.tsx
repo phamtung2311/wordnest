@@ -108,6 +108,8 @@ export default function Home() {
   const [showAddDeck, setShowAddDeck] = useState(false);
   const [showDeleteDeck, setShowDeleteDeck] = useState(false);
   const [showRetryOptions, setShowRetryOptions] = useState(false);
+  const [showLearningOptions, setShowLearningOptions] = useState(false);
+  const [showKnownOptions, setShowKnownOptions] = useState(false);
   const [showTease, setShowTease] = useState(false);
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
@@ -312,6 +314,8 @@ export default function Home() {
 
   useEffect(() => {
     setShowRetryOptions(false);
+    setShowLearningOptions(false);
+    setShowKnownOptions(false);
   }, [currentWord?.id]);
 
   async function loadTranslationExercise(word: Word, previousId?: number) {
@@ -416,6 +420,20 @@ export default function Home() {
       teaseTimerRef.current = window.setTimeout(() => setShowTease(false), 3200);
     }
     setShowRetryOptions((visible) => !visible);
+    setShowLearningOptions(false);
+    setShowKnownOptions(false);
+  }
+
+  function chooseLearning() {
+    setShowLearningOptions((visible) => !visible);
+    setShowRetryOptions(false);
+    setShowKnownOptions(false);
+  }
+
+  function chooseKnown() {
+    setShowKnownOptions((visible) => !visible);
+    setShowRetryOptions(false);
+    setShowLearningOptions(false);
   }
 
   async function signInGoogle() {
@@ -451,10 +469,10 @@ export default function Home() {
     setCloudReady(false);
     setSyncStatus('local');
   }
-  function rateWord(level: Level, retryMinutes = 0) {
+  function rateWord(level: Level, delayOverride?: number) {
     if (!currentDeck || !currentWord) return;
     if (level === 'known') playAnswerSound('known');
-    const delay = level === 'new' ? retryMinutes * 60000 : level === 'learning' ? DAY : DAY * 7;
+    const delay = delayOverride ?? (level === 'new' ? 0 : level === 'learning' ? DAY : DAY * 7);
     const remainingDue = decks.reduce((total, deck) => total + deck.words.filter((word) => !(deck.id === currentDeck.id && word.id === currentWord.id) && word.nextReview <= Date.now()).length, 0);
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: deck.words.map((word) => word.id === currentWord.id ? { ...word, level, nextReview: Date.now() + delay } : word) } : deck));
     if (remainingDue === 0) {
@@ -463,6 +481,8 @@ export default function Home() {
     }
     setRevealed(false);
     setShowRetryOptions(false);
+    setShowLearningOptions(false);
+    setShowKnownOptions(false);
     setStudyQueue((queue) => queue.filter((wordId) => wordId !== currentWord.id));
   }
   function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
@@ -540,7 +560,7 @@ export default function Home() {
                 {revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
-              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><div className="retry-choice"><button onClick={chooseAgain} className="rate again"><RotateCcw/> Chưa nhớ<small>Chọn thời gian</small></button>{showRetryOptions && <div className="retry-options" role="menu" aria-label="Chọn thời gian học lại">{[1, 5, 10, 30].map((minutes) => <button key={minutes} type="button" role="menuitem" onClick={() => rateWord('new', minutes)}><Clock3 size={15}/>{minutes} phút</button>)}</div>}</div><button onClick={() => rateWord('learning')} className="rate learning"><Brain/> Hơi nhớ<small>1 ngày</small></button><button onClick={() => rateWord('known')} className="rate known"><Check/> Đã thuộc<small>7 ngày</small></button></div></div>}
+              {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><div className="retry-choice"><button onClick={chooseAgain} className="rate again"><RotateCcw/> Chưa nhớ<small>Chọn thời gian</small></button>{showRetryOptions && <div className="retry-options" role="menu" aria-label="Chọn thời gian học lại">{[1, 5, 10, 30].map((minutes) => <button key={minutes} type="button" role="menuitem" onClick={() => rateWord('new', minutes * 60000)}><Clock3 size={15}/>{minutes} phút</button>)}</div>}</div><div className="retry-choice"><button onClick={chooseLearning} className="rate learning"><Brain/> Hơi nhớ<small>Chọn thời gian</small></button>{showLearningOptions && <div className="retry-options learning-options" role="menu" aria-label="Chọn thời gian ôn lại">{[{ label: '3 giờ', delay: 3 * 60 * 60 * 1000 }, { label: '6 giờ', delay: 6 * 60 * 60 * 1000 }, { label: '12 giờ', delay: 12 * 60 * 60 * 1000 }, { label: '1 ngày', delay: DAY }, { label: '3 ngày', delay: DAY * 3 }].map((option) => <button key={option.label} type="button" role="menuitem" onClick={() => rateWord('learning', option.delay)}><Clock3 size={15}/>{option.label}</button>)}</div>}</div><div className="retry-choice"><button onClick={chooseKnown} className="rate known"><Check/> Đã thuộc<small>Chọn thời gian</small></button>{showKnownOptions && <div className="retry-options known-options" role="menu" aria-label="Chọn thời gian ôn lại">{[{ label: '7 ngày', delay: DAY * 7 }, { label: '14 ngày', delay: DAY * 14 }].map((option) => <button key={option.label} type="button" role="menuitem" onClick={() => rateWord('known', option.delay)}><CalendarCheck size={15}/>{option.label}</button>)}</div>}</div></div></div>}
             </div> : <div className="empty-state"><div className="text-6xl">{scheduledRetries.length ? '⏳' : '🎉'}</div><h2 className="font-display mt-4 text-3xl font-black">{scheduledRetries.length ? 'Đã xong lượt hiện tại!' : otherDueDeck ? 'Xong bộ này!' : 'Xong bài hôm nay!'}</h2><p>{scheduledRetries.length ? `${scheduledRetries.length} từ sẽ quay lại sau khoảng ${nextRetryMinutes} phút.` : otherDueDeck ? `Bạn còn ${dueInOtherDecks} từ đến hạn trong các bộ khác.` : 'Hãy quay lại khi đến lịch ôn tiếp theo.'}</p>{!scheduledRetries.length && otherDueDeck && <Button onClick={() => openDeck(otherDueDeck.id)} className="mt-5 h-11 rounded-full bg-[#213a34] px-6 font-bold text-white">Học tiếp {countDue(otherDueDeck)} từ · {otherDueDeck.name} <ArrowRight/></Button>}</div>}
           </section>
 
