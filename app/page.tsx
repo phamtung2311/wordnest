@@ -83,6 +83,17 @@ function deckLanguage(deck: Deck): Language { return deck.language === 'zh' ? 'z
 function languageName(language: Language) { return language === 'zh' ? 'Tiếng Trung' : 'Tiếng Anh'; }
 function languageBadge(language: Language) { return language === 'zh' ? '🇨🇳 Tiếng Trung' : '🇬🇧 Tiếng Anh'; }
 function escapeRegExp(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function reviewCountdown(nextReview: number, now: number) {
+  const remaining = nextReview - now;
+  if (remaining <= 0) return 'Ôn ngay';
+  const totalMinutes = Math.ceil(remaining / 60000);
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  if (days) return `Còn ${days} ngày${hours ? ` ${hours} giờ` : ''}`;
+  if (hours) return `Còn ${hours} giờ${minutes ? ` ${minutes} phút` : ''}`;
+  return `Còn ${Math.max(1, minutes)} phút`;
+}
 
 async function fetchJson(url: string, timeoutMs = 3500) {
   const controller = new AbortController();
@@ -120,6 +131,7 @@ export default function Home() {
   const [authError, setAuthError] = useState('');
   const [migrationNotice, setMigrationNotice] = useState('');
   const [audioStatus, setAudioStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
+  const [clockNow, setClockNow] = useState(() => Date.now());
   const [translationExercise, setTranslationExercise] = useState<TranslationExercise | null>(null);
   const [exerciseStatus, setExerciseStatus] = useState<'idle' | 'loading' | 'ready' | 'empty' | 'error'>('idle');
   const [translationAnswer, setTranslationAnswer] = useState('');
@@ -267,7 +279,7 @@ export default function Home() {
   const nextRetryMinutes = scheduledRetries.length
     ? Math.max(1, Math.ceil((Math.min(...scheduledRetries.map((word) => word.nextReview)) - Date.now()) / 60000))
     : 0;
-  const now = Date.now();
+  const now = clockNow;
   const allWords = decks.flatMap((deck) => deck.words.map((word) => ({ ...word, deckId: deck.id, deckName: deck.name, deckEmoji: deck.emoji })));
   const totalWords = allWords.length;
   const dueList = allWords.filter((word) => word.nextReview <= now);
@@ -310,6 +322,13 @@ export default function Home() {
       studyAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
     return () => window.cancelAnimationFrame(frame);
+  }, [activeDeck]);
+
+  useEffect(() => {
+    if (activeDeck === null) return;
+    setClockNow(Date.now());
+    const interval = window.setInterval(() => setClockNow(Date.now()), 30000);
+    return () => window.clearInterval(interval);
   }, [activeDeck]);
 
   useEffect(() => {
@@ -564,7 +583,7 @@ export default function Home() {
             </div> : <div className="empty-state"><div className="text-6xl">{scheduledRetries.length ? '⏳' : '🎉'}</div><h2 className="font-display mt-4 text-3xl font-black">{scheduledRetries.length ? 'Đã xong lượt hiện tại!' : otherDueDeck ? 'Xong bộ này!' : 'Xong bài hôm nay!'}</h2><p>{scheduledRetries.length ? `${scheduledRetries.length} từ sẽ quay lại sau khoảng ${nextRetryMinutes} phút.` : otherDueDeck ? `Bạn còn ${dueInOtherDecks} từ đến hạn trong các bộ khác.` : 'Hãy quay lại khi đến lịch ôn tiếp theo.'}</p>{!scheduledRetries.length && otherDueDeck && <Button onClick={() => openDeck(otherDueDeck.id)} className="mt-5 h-11 rounded-full bg-[#213a34] px-6 font-bold text-white">Học tiếp {countDue(otherDueDeck)} từ · {otherDueDeck.name} <ArrowRight/></Button>}</div>}
           </section>
 
-          <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-right text-sm font-bold text-[#71817b]">{currentWord && <small className="answer-hidden-label">Đang ẩn đáp án</small>}{currentDeck.words.length} từ</span></div><div className="word-scroll space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b>{currentWord ? <span className="hidden-answer" aria-label="Nghĩa đang được ẩn">••••••</span> : <span className="text-sm text-[#71817b]">{word.meaning}</span>}</div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button type="button" aria-label={`Ôn lại ${word.term} ngay`} title="Hủy lịch chờ và ôn từ này ngay" onClick={() => reviewWordNow(word.id)} className="review-now-button"><RotateCcw size={14}/><span>Ôn lại</span></button><button aria-label={`Xóa ${word.term}`} onClick={() => { setStudyQueue((queue) => queue.filter((wordId) => wordId !== word.id)); setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck)); }} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
+          <aside className="word-list"><div className="mb-5 flex items-center justify-between"><h2 className="font-display text-2xl font-black">Tất cả từ</h2><span className="text-right text-sm font-bold text-[#71817b]"><small className="answer-hidden-label">Lịch ôn tiếp theo</small>{currentDeck.words.length} từ</span></div><div className="word-scroll space-y-2">{currentDeck.words.length ? currentDeck.words.map((word) => <div className="word-row" key={word.id}><span className={`level-dot ${word.level}`}/><div className="min-w-0 flex-1"><b className="block truncate">{word.term}</b><span className={`review-countdown ${word.nextReview <= now ? 'due' : ''}`}>{reviewCountdown(word.nextReview, now)}</span></div><span className="level-label">{word.level === 'known' ? 'Đã thuộc' : word.level === 'learning' ? 'Đang học' : 'Từ mới'}</span><button type="button" aria-label={`Ôn lại ${word.term} ngay`} title="Hủy lịch chờ và ôn từ này ngay" onClick={() => reviewWordNow(word.id)} className="review-now-button"><RotateCcw size={14}/><span>Ôn lại</span></button><button aria-label={`Xóa ${word.term}`} onClick={() => { setStudyQueue((queue) => queue.filter((wordId) => wordId !== word.id)); setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {...deck, words: deck.words.filter((item) => item.id !== word.id)} : deck)); }} className="delete-button"><Trash2 size={16}/></button></div>) : <div className="rounded-2xl bg-[#f5f0e6] p-8 text-center text-sm text-[#71817b]">Chưa có từ nào. Hãy thêm từ đầu tiên!</div>}</div></aside>
         </div>
       </div>
       {showAddWord && <AddWordModal language={currentLanguage} onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={(text) => speak(text, currentLanguage)} audioStatus={audioStatus} />}
