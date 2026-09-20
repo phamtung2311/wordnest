@@ -95,6 +95,12 @@ function fallbackWordMetadata(term: string) {
   };
   return fallback[normalizeTerm(term)];
 }
+function studyHint(term: string) {
+  const hints: Record<string, { definition: string; bridge: string }> = {
+    maintain: { definition: 'keep something in good condition, or continue doing it', bridge: 'keep / take care of' }, reduce: { definition: 'make something smaller or less', bridge: 'make less' }, daily: { definition: 'happening every day', bridge: 'every day' }, habit: { definition: 'something you do regularly', bridge: 'routine' }, notify: { definition: 'tell someone about something', bridge: 'let someone know' }, renovation: { definition: 'the work of making a place better or newer', bridge: 'make new again' }, onboarding: { definition: 'helping a new person start in a job or group', bridge: 'getting started' },
+  };
+  return hints[normalizeTerm(term)];
+}
 function escapeRegExp(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function reviewCountdown(nextReview: number, now: number) {
   const remaining = nextReview - now;
@@ -175,6 +181,7 @@ export default function Home() {
   const [page, setPage] = useState<'home' | 'library' | 'about'>('home');
   const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0);
   const [showAddWord, setShowAddWord] = useState(false);
   const [prefillWord, setPrefillWord] = useState('');
   const [showAddDeck, setShowAddDeck] = useState(false);
@@ -354,6 +361,7 @@ export default function Home() {
   const currentWordFallback = currentWord && currentLanguage === 'en' ? fallbackWordMetadata(currentWord.term) : undefined;
   const currentWordPhonetic = currentWord?.phonetic || currentWordFallback?.phonetic;
   const currentWordPartOfSpeech = currentWord?.partOfSpeech || currentWordFallback?.partOfSpeech;
+  const currentStudyHint = currentWord ? studyHint(currentWord.term) : undefined;
   const todaySeconds = progress.dailySeconds[dateKey()] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
   const completedAllDueToday = progress.completedDays?.[dateKey()] === true;
@@ -422,6 +430,7 @@ export default function Home() {
     setShowRetryOptions(false);
     setShowLearningOptions(false);
     setShowKnownOptions(false);
+    setHintLevel(0);
   }, [currentWord?.id]);
 
   useEffect(() => {
@@ -690,7 +699,7 @@ export default function Home() {
                   {exerciseStatus === 'empty' && <p className="exercise-note">Chưa tìm thấy câu phù hợp có bản dịch tiếng Việt cho từ này.</p>}
                   {exerciseStatus === 'error' && <p className="exercise-note">Không tải được câu luyện dịch. Hãy kiểm tra kết nối rồi thử thẻ khác.</p>}
                 </div>
-                {revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <Button onClick={() => setRevealed(true)} variant="outline" className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button>}</div>
+                {revealed ? <div className="mt-7 animate-in fade-in"><p className="text-2xl font-extrabold text-[#eb6a52]">{currentWord.meaning}</p>{currentWord.example && <p className="mt-3 rounded-xl bg-[#f5f0e6] px-5 py-3 text-[#5b6d66]">“{currentWord.example}”</p>}</div> : <div className="mt-7"><Button type="button" onClick={() => setHintLevel((level) => Math.min(3, level + 1))} variant="outline" className="h-10 rounded-full border-2 border-[#9bc9b7] bg-[#edf5f1] px-5 font-bold text-[#34745b]">💡 {hintLevel ? 'Gợi ý tiếp' : 'Gợi ý'}</Button>{hintLevel > 0 && <div className="study-hint"><b>Gợi ý {hintLevel}/3</b>{hintLevel === 1 && <p>{currentWordPartOfSpeech ? partOfSpeechLabel(currentWordPartOfSpeech) : 'Từ vựng'} · {currentWord.term.replace(/\s/g, '').length} chữ cái</p>}{hintLevel === 2 && <p>{currentStudyHint ? `Nghĩ bằng tiếng Anh: ${currentStudyHint.definition}` : currentWord.example ? `Nhìn lại ngữ cảnh: “${currentWord.example}”` : 'Hãy thử nhớ xem từ này thường dùng trong tình huống nào.'}</p>}{hintLevel >= 3 && <p>{currentStudyHint ? `Từ bắc cầu dễ nhớ: ${currentStudyHint.bridge}` : 'Đừng vội xem nghĩa — thử đọc to từ này và nhớ lại câu ví dụ.'}</p>}</div>}<Button onClick={() => setRevealed(true)} variant="outline" className="mt-3 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold">Xem nghĩa</Button></div>}</div>
               {audioStatus === 'loading' && <p className="sound-status" role="status"><LoaderCircle className="animate-spin" size={14}/> Đang chuẩn bị phát âm…</p>}
               {audioStatus === 'error' && <p className="sound-status error" role="status">Chưa tải được âm thanh. Hãy bấm thử lại.</p>}
               {revealed && <div className="border-t-2 border-dashed border-[#213a34]/10 pt-5"><p className="mb-3 text-center text-xs font-extrabold uppercase tracking-widest text-[#71817b]">Bạn nhớ từ này thế nào?</p><div className="grid grid-cols-3 gap-2"><div className="retry-choice"><button onClick={chooseAgain} className="rate again"><RotateCcw/> Chưa nhớ<small>Chọn thời gian</small></button>{showRetryOptions && <div className="retry-options" role="menu" aria-label="Chọn thời gian học lại">{[1, 5, 10, 30].map((minutes) => <button key={minutes} type="button" role="menuitem" onClick={() => rateWord('new', minutes * 60000)}><Clock3 size={15}/>{minutes} phút</button>)}</div>}</div><div className="retry-choice"><button onClick={chooseLearning} className="rate learning"><Brain/> Hơi nhớ<small>Chọn thời gian</small></button>{showLearningOptions && <div className="retry-options learning-options" role="menu" aria-label="Chọn thời gian ôn lại">{[{ label: '3 giờ', delay: 3 * 60 * 60 * 1000 }, { label: '6 giờ', delay: 6 * 60 * 60 * 1000 }, { label: '12 giờ', delay: 12 * 60 * 60 * 1000 }, { label: '1 ngày', delay: DAY }, { label: '3 ngày', delay: DAY * 3 }].map((option) => <button key={option.label} type="button" role="menuitem" onClick={() => rateWord('learning', option.delay)}><Clock3 size={15}/>{option.label}</button>)}</div>}</div><div className="retry-choice"><button onClick={chooseKnown} className="rate known"><Check/> Đã thuộc<small>Chọn thời gian</small></button>{showKnownOptions && <div className="retry-options known-options" role="menu" aria-label="Chọn thời gian ôn lại">{[{ label: '7 ngày', delay: DAY * 7 }, { label: '14 ngày', delay: DAY * 14 }].map((option) => <button key={option.label} type="button" role="menuitem" onClick={() => rateWord('known', option.delay)}><CalendarCheck size={15}/>{option.label}</button>)}</div>}</div></div></div>}
