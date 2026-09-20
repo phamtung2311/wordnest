@@ -101,6 +101,7 @@ export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [progress, setProgress] = useState<StudyProgress>(emptyProgress);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
+  const [page, setPage] = useState<'home' | 'library'>('home');
   const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [showAddWord, setShowAddWord] = useState(false);
@@ -157,6 +158,7 @@ export default function Home() {
       setDecks([]);
       setProgress(emptyProgress);
       setActiveDeck(null);
+      setPage('home');
       setStudyQueue([]);
       setRevealed(false);
       setCloudReady(false);
@@ -441,6 +443,7 @@ export default function Home() {
     setDecks([]);
     setProgress(emptyProgress);
     setActiveDeck(null);
+    setPage('home');
     setStudyQueue([]);
     setRevealed(false);
     setMigrationNotice('');
@@ -489,6 +492,7 @@ export default function Home() {
     autoSpeakEnabledRef.current = true;
     setStudyQueue(deck?.words.filter((word) => word.nextReview <= Date.now()).map((word) => word.id) ?? []);
     setRevealed(false);
+    setPage('library');
     setActiveDeck(deckId);
   }
 
@@ -515,9 +519,9 @@ export default function Home() {
 
   if (activeDeck && currentDeck) {
     return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-      <Header compact user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); }} />
+      <Header compact user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} onHome={() => { setActiveDeck(null); setStudyQueue([]); setRevealed(false); setPage('library'); }} />
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
-        <button onClick={() => { setActiveDeck(null); setStudyQueue([]); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
+        <button onClick={() => { setActiveDeck(null); setStudyQueue([]); setPage('library'); }} className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"><ArrowLeft size={17}/> Tất cả bộ từ</button>
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="mb-3 text-5xl">{currentDeck.emoji}</div><p className="eyebrow">Bộ từ của bạn</p><h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">{currentDeck.name}</h1><p className="mt-2 text-[#667871]">{languageBadge(currentLanguage)} · {currentDeck.description} · {currentDeck.words.length} từ</p></div><div className="flex flex-wrap gap-2"><Button onClick={() => setShowDeleteDeck(true)} variant="outline" className="h-11 rounded-full border-2 border-[#c65342]/30 bg-transparent px-5 font-bold text-[#b84b3c] hover:bg-[#fbe5df]"><Trash2/> Xóa bộ từ</Button><Button onClick={() => setShowAddWord(true)} className="h-11 rounded-full bg-[#eb6a52] px-5 font-bold text-white hover:bg-[#d85a45]"><Plus/> Thêm từ vựng</Button></div></div>
 
         <div ref={studyAreaRef} className="study-area grid scroll-mt-5 gap-7 lg:grid-cols-[1.2fr_.8fr]">
@@ -551,9 +555,10 @@ export default function Home() {
 
   const filtered = decks.filter((deck) => deck.name.toLowerCase().includes(search.toLowerCase()));
   return <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-    <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} />
+    <Header user={user} authReady={authReady} syncStatus={syncStatus} onSignIn={signInGoogle} onSignOut={signOutGoogle} onHome={() => setPage('home')} onLibrary={() => setPage('library')} />
     {migrationNotice && <div className="migration-notice" role="status">{migrationNotice}</div>}
     {authError && <div className="auth-error" role="alert">{authError}</div>}
+    {page === 'home' && <>
     <section id="review" className="learning-overview scroll-mt-20" aria-label="Việc học hôm nay">
       <div className="mx-auto max-w-6xl px-5 py-6 md:px-8">
         <div className="overview-grid">
@@ -563,7 +568,7 @@ export default function Home() {
             {firstDueDeck && <Button onClick={() => openDeck(firstDueDeck.id)} className="study-now h-11 rounded-full bg-[#f8d467] px-5 font-black text-[#213a34] hover:bg-[#f3c943]">Học ngay <ArrowRight/></Button>}
           </div>
           <div className="recent-panel">
-            <div className="recent-heading"><div><span>Từ bạn vừa thêm</span><b>{addedWords.length} từ đã thêm</b></div>{recentWords.length > 0 && <button onClick={() => document.getElementById('decks')?.scrollIntoView({ behavior: 'smooth' })}>Xem tất cả bộ từ <ChevronRight/></button>}</div>
+            <div className="recent-heading"><div><span>Từ bạn vừa thêm</span><b>{addedWords.length} từ đã thêm</b></div>{recentWords.length > 0 && <button onClick={() => setPage('library')}>Xem tất cả bộ từ <ChevronRight/></button>}</div>
             {recentWords.length > 0 ? <div className="recent-words">{recentWords.map((word) => <button key={`${word.deckId}-${word.id}`} onClick={() => openDeck(word.deckId)}><span>{word.deckEmoji}</span><span><b>{word.term}</b><small>{word.meaning}</small></span></button>)}</div> : <div className="recent-empty"><Plus size={18}/> Từ mới bạn thêm sẽ xuất hiện ở đây.</div>}
           </div>
         </div>
@@ -584,7 +589,9 @@ export default function Home() {
     </section>
 
     <section className="bg-[#213a34] px-5 py-12 text-white md:px-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4"><Stat icon={<BookOpen/>} value={totalWords} label="Tổng số từ"/><Stat icon={<Clock3/>} value={dueWords} label="Cần học hôm nay"/><Stat icon={<Check/>} value={knownWords} label="Từ đã thuộc"/><Stat icon={<FolderPlus/>} value={decks.length} label="Bộ từ của bạn"/></div></section>
+    </>}
 
+    {page === 'library' && <>
     <section id="decks" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-16 md:px-8"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Thư viện của bạn</p><h2 className="font-display text-4xl font-black tracking-tight">Các bộ từ vựng</h2></div><div className="search-box"><Search size={18}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm bộ từ..." aria-label="Tìm bộ từ"/></div></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((deck, index) => <button className={`deck-card color-${index % 3}`} onClick={() => openDeck(deck.id)} key={deck.id}><div className="flex items-start justify-between"><span className="deck-icon">{deck.emoji}</span><span className="deck-language">{languageBadge(deckLanguage(deck))}</span></div><h3 className="font-display mt-6 text-2xl font-black text-[#213a34]">{deck.name}</h3><p className="mt-1 text-sm text-[#697a74]">{deck.description}</p><div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold"><span>{deck.words.length} từ</span><span className={countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'}>{countDue(deck) ? `${countDue(deck)} cần ôn` : 'Đã xong ✓'}</span></div></button>)}<button className="new-deck" onClick={() => setShowAddDeck(true)}><span className="grid size-12 place-items-center rounded-full bg-[#213a34] text-white"><Plus/></span><b className="mt-4">Tạo bộ từ mới</b><span className="text-sm text-[#71817b]">Tiếng Anh hoặc tiếng Trung</span></button></div></section>
     <section id="about" className="about-section scroll-mt-20 px-5 py-16 md:px-8" aria-label="Giới thiệu WordNest">
       <div className="about-card mx-auto max-w-6xl">
@@ -593,12 +600,13 @@ export default function Home() {
         <aside className="donate-card"><div><span className="donate-badge">☕ Ủng hộ WordNest</span><h3 className="font-display">Một ly cà phê tiếp sức</h3><p>Không bắt buộc đâu — nếu bạn muốn góp một chút để mình tiếp tục cải thiện ứng dụng, mình thật sự biết ơn.</p></div><div className="donate-qr-frame"><img src="/donate-qr.jpg" alt="Mã QR ủng hộ WordNest qua Techcombank" className="donate-qr"/></div><small>Techcombank · PHAM VAN TUNG</small></aside>
       </div>
     </section>
+    </>}
     <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>{user ? 'Dữ liệu đang được đồng bộ theo tài khoản Google.' : 'Đăng nhập Google để đồng bộ dữ liệu giữa các thiết bị.'}</span><span>Học ít · Nhớ lâu</span></div></footer>
     {showAddDeck && <Modal title="Tạo bộ từ mới" onClose={() => setShowAddDeck(false)}><form action={addDeck} className="space-y-4"><label className="block text-sm font-extrabold">Ngôn ngữ<select name="language" defaultValue="en" className="form-select"><option value="en">🇬🇧 Tiếng Anh</option><option value="zh">🇨🇳 Tiếng Trung Quốc</option></select></label><Field name="name" label="Tên bộ từ" placeholder="Ví dụ: Giao tiếp hằng ngày" autoFocus/><Field name="emoji" label="Biểu tượng (không bắt buộc)" placeholder="📚 hoặc 🇨🇳"/><Field name="description" label="Mô tả ngắn" placeholder="Những từ mình cần học tuần này"/><Button type="submit" className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Tạo bộ từ</Button></form></Modal>}
   </main>;
 }
 
-function Header({ compact, onHome, user, authReady, syncStatus, onSignIn, onSignOut }: { compact?: boolean; onHome?: () => void; user: User | null; authReady: boolean; syncStatus: 'local' | 'loading' | 'saved' | 'error'; onSignIn: () => void; onSignOut: () => void }) { return <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8"><div className="mx-auto flex max-w-6xl items-center justify-between gap-3"><button onClick={onHome} className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#213a34] text-[#f8d467] shadow-[3px_3px_0_#eb6a52]"><BookOpen size={21}/></span><span className="font-display text-xl font-black">Word<span className="text-[#eb6a52]">Nest</span></span></button>{!compact && <nav className="hidden items-center gap-7 text-sm font-extrabold lg:flex"><a href="#decks">Bộ từ</a><a href="#review">Lịch ôn</a><a href="#progress">Tiến độ</a><a href="#about">Giới thiệu</a></nav>}<div className="account-area">{user ? <><span className={`sync-state ${syncStatus}`}><Cloud size={14}/>{syncStatus === 'loading' ? 'Đang lưu' : syncStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ'}</span><span className="account-name">{user.photoURL && <img src={user.photoURL} alt=""/>}<b>{user.displayName || user.email}</b></span><button onClick={onSignOut} className="account-button" aria-label="Đăng xuất Google"><LogOut size={17}/><span>Đăng xuất</span></button></> : <button onClick={onSignIn} disabled={!authReady} className="google-button"><LogIn size={18}/>{authReady ? 'Đăng nhập Google' : 'Đang tải…'}</button>}</div></div></header> }
+function Header({ compact, onHome, onLibrary, user, authReady, syncStatus, onSignIn, onSignOut }: { compact?: boolean; onHome?: () => void; onLibrary?: () => void; user: User | null; authReady: boolean; syncStatus: 'local' | 'loading' | 'saved' | 'error'; onSignIn: () => void; onSignOut: () => void }) { return <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8"><div className="mx-auto flex max-w-6xl items-center justify-between gap-3"><button onClick={onHome} className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#213a34] text-[#f8d467] shadow-[3px_3px_0_#eb6a52]"><BookOpen size={21}/></span><span className="font-display text-xl font-black">Word<span className="text-[#eb6a52]">Nest</span></span></button>{!compact && <nav className="hidden items-center gap-7 text-sm font-extrabold lg:flex"><button type="button" onClick={onHome}>Trang chủ</button><button type="button" onClick={onLibrary}>Bộ từ</button></nav>}<div className="account-area">{user ? <><span className={`sync-state ${syncStatus}`}><Cloud size={14}/>{syncStatus === 'loading' ? 'Đang lưu' : syncStatus === 'error' ? 'Lỗi đồng bộ' : 'Đã đồng bộ'}</span><span className="account-name">{user.photoURL && <img src={user.photoURL} alt=""/>}<b>{user.displayName || user.email}</b></span><button onClick={onSignOut} className="account-button" aria-label="Đăng xuất Google"><LogOut size={17}/><span>Đăng xuất</span></button></> : <button onClick={onSignIn} disabled={!authReady} className="google-button"><LogIn size={18}/>{authReady ? 'Đăng nhập Google' : 'Đang tải…'}</button>}</div></div></header> }
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | number; label: string }) { return <div className="flex items-center gap-3"><span className="stat-icon">{icon}</span><div><b className="font-display block text-3xl font-black text-[#f8d467]">{value}</b><span className="text-xs font-bold text-white/55 sm:text-sm">{label}</span></div></div> }
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
