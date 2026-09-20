@@ -9,7 +9,7 @@ import { auth, db, googleProvider } from '@/lib/firebase';
 
 type Level = 'new' | 'learning' | 'known';
 type Language = 'en' | 'zh';
-type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
+type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; partOfSpeech?: string; level: Level; nextReview: number; createdAt?: number };
 type Deck = { id: number; name: string; emoji: string; description: string; language?: Language; words: Word[] };
 type StudyProgress = { dailySeconds: Record<string, number>; completedDays?: Record<string, boolean> };
 type TranslationExercise = { id: number; sentence: string; translation: string; source: string; license?: string };
@@ -82,6 +82,13 @@ function normalizeTerm(term: string) { return term.trim().toLocaleLowerCase('en-
 function deckLanguage(deck: Deck): Language { return deck.language === 'zh' ? 'zh' : 'en'; }
 function languageName(language: Language) { return language === 'zh' ? 'Tiếng Trung' : 'Tiếng Anh'; }
 function languageBadge(language: Language) { return language === 'zh' ? '🇨🇳 Tiếng Trung' : '🇬🇧 Tiếng Anh'; }
+function partOfSpeechLabel(value: string) {
+  const labels: Record<string, string> = {
+    noun: 'Danh từ', verb: 'Động từ', adjective: 'Tính từ', adverb: 'Trạng từ', pronoun: 'Đại từ', preposition: 'Giới từ', conjunction: 'Liên từ', interjection: 'Thán từ', determiner: 'Từ hạn định', article: 'Mạo từ', exclamation: 'Thán từ',
+  };
+  const normalized = value.trim().toLowerCase();
+  return labels[normalized] ? `${labels[normalized]} · ${normalized}` : value;
+}
 function escapeRegExp(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function reviewCountdown(nextReview: number, now: number) {
   const remaining = nextReview - now;
@@ -336,6 +343,26 @@ export default function Home() {
     setShowKnownOptions(false);
   }, [currentWord?.id]);
 
+  useEffect(() => {
+    if (!currentDeck || !currentWord || currentLanguage !== 'en' || (currentWord.phonetic && currentWord.partOfSpeech)) return;
+    let cancelled = false;
+    void fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(currentWord.term.trim())}`, 4500).then((payload) => {
+      const entry = Array.isArray(payload) ? payload[0] : null;
+      const phonetic = entry?.phonetic ?? entry?.phonetics?.find((item: { text?: string }) => item.text)?.text ?? '';
+      const partOfSpeech = entry?.meanings?.[0]?.partOfSpeech ?? '';
+      if (cancelled || (!phonetic && !partOfSpeech)) return;
+      setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {
+        ...deck,
+        words: deck.words.map((word) => word.id === currentWord.id ? {
+          ...word,
+          phonetic: word.phonetic || phonetic,
+          partOfSpeech: word.partOfSpeech || partOfSpeech,
+        } : word),
+      } : deck));
+    });
+    return () => { cancelled = true; };
+  }, [currentDeck?.id, currentLanguage, currentWord?.id]);
+
   async function loadTranslationExercise(word: Word, previousId?: number) {
     const isChinese = currentLanguage === 'zh';
     setExerciseStatus('loading');
@@ -503,14 +530,14 @@ export default function Home() {
     setShowKnownOptions(false);
     setStudyQueue((queue) => queue.filter((wordId) => wordId !== currentWord.id));
   }
-  function addWord(value: { term: string; meaning: string; example: string; phonetic?: string }) {
+  function addWord(value: { term: string; meaning: string; example: string; phonetic?: string; partOfSpeech?: string }) {
     if (!currentDeck) return 'Không tìm thấy bộ từ hiện tại.';
     const term = value.term.trim();
     const meaning = value.meaning.trim();
     if (!term || !meaning) return `Vui lòng nhập từ ${languageName(currentLanguage).toLowerCase()} và nghĩa tiếng Việt.`;
     if (currentDeck.words.some((word) => normalizeTerm(word.term) === normalizeTerm(term))) return `Từ “${term}” đã có trong bộ từ này.`;
     const createdAt = Date.now();
-    const word: Word = { id: createdAt, term, meaning, example: value.example.trim(), phonetic: value.phonetic, level: 'new', nextReview: createdAt, createdAt };
+    const word: Word = { id: createdAt, term, meaning, example: value.example.trim(), phonetic: value.phonetic, partOfSpeech: value.partOfSpeech, level: 'new', nextReview: createdAt, createdAt };
     autoSpeakEnabledRef.current = true;
     setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? { ...deck, words: [...deck.words, word] } : deck));
     setStudyQueue((queue) => [...queue, word.id]);
@@ -567,7 +594,7 @@ export default function Home() {
             <div className="mb-5 flex items-center justify-between"><div><p className="text-sm font-extrabold uppercase tracking-wider text-[#eb6a52]">Ôn tập hôm nay</p><p className="mt-1 text-sm text-[#71817b]">{studyWords.length ? `${studyWords.length} từ trong bộ này${dueInOtherDecks ? ` · ${dueInOtherDecks} từ ở bộ khác` : ''}` : otherDueDeck ? `Bộ này đã xong · còn ${dueInOtherDecks} từ ở bộ khác` : 'Bạn đã hoàn thành!'}</p></div><span className="rounded-full bg-[#f8d467] px-3 py-1 text-sm font-black">{studyWords.length} còn lại</span></div>
             {currentWord ? <div className="flashcard">
               <button onClick={() => speak(currentWord.term, currentLanguage)} className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`} aria-label={audioStatus === 'loading' ? 'Đang tải phát âm' : 'Nghe phát âm'} disabled={audioStatus === 'loading'}>{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={21}/> : <Volume2 size={21}/>}</button>
-              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{currentWord.phonetic && <span className="mt-2 font-semibold text-[#71817b]">/{currentWord.phonetic.replaceAll('/', '')}/</span>}
+              <div className="flex min-h-[285px] flex-col items-center justify-center text-center"><span className="mb-3 text-xs font-black uppercase tracking-[.18em] text-[#8a9691]">Từ {languageName(currentLanguage).toLowerCase()}</span><h2 className="font-display text-5xl font-black tracking-tight sm:text-6xl">{currentWord.term}</h2>{(currentWord.phonetic || currentWord.partOfSpeech) && <div className="word-metadata">{currentWord.partOfSpeech && <span className="word-type-badge">{partOfSpeechLabel(currentWord.partOfSpeech)}</span>}{currentWord.phonetic && <span className="word-phonetic">/{currentWord.phonetic.replaceAll('/', '')}/</span>}</div>}
                 <div className="translation-exercise">
                   <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
                   {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
@@ -652,11 +679,12 @@ function Stat({ icon, value, label }: { icon: React.ReactNode; value: string | n
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="modal-backdrop" onMouseDown={onClose}><div className="modal" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"><div className="mb-6 flex items-center justify-between"><h2 className="font-display text-2xl font-black">{title}</h2><button onClick={onClose} className="grid size-9 place-items-center rounded-full bg-[#f5f0e6]" aria-label="Đóng"><X size={19}/></button></div>{children}</div></div> }
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) { return <label className="block text-sm font-extrabold">{label}<input {...props} className="mt-2 h-11 w-full rounded-xl border-2 border-[#213a34]/12 bg-[#faf8f2] px-3 font-medium outline-none transition focus:border-[#eb6a52]"/></label> }
 
-function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { language: Language; onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string }) => string | null; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
+function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { language: Language; onClose: () => void; onSave: (word: { term: string; meaning: string; example: string; phonetic?: string; partOfSpeech?: string }) => string | null; onSpeak: (text: string) => void; audioStatus: 'idle' | 'loading' | 'playing' | 'error' }) {
   const [term, setTerm] = useState('');
   const [meaning, setMeaning] = useState('');
   const [example, setExample] = useState('');
   const [phonetic, setPhonetic] = useState('');
+  const [partOfSpeech, setPartOfSpeech] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [enriching, setEnriching] = useState(false);
@@ -688,6 +716,7 @@ function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { lan
     const translationRequest = fetchJson(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLanguage}&tl=vi&dt=t&q=${encodeURIComponent(cleanWord)}`, 3500);
     const [dictionary, translation] = await Promise.all([dictionaryRequest, translationRequest]);
     const entry = Array.isArray(dictionary) ? dictionary[0] : null;
+    const firstMeaning = entry?.meanings?.[0];
     const firstDefinition = entry?.meanings?.flatMap((item: { definitions?: { example?: string }[] }) => item.definitions ?? []).find((item: { example?: string }) => item.example);
     let translated = Array.isArray(translation?.[0]) ? translation[0].map((part: unknown[]) => part?.[0] ?? '').join('').trim() : '';
     if (!translated || translated.toLowerCase() === cleanWord.toLowerCase()) {
@@ -696,6 +725,7 @@ function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { lan
     }
     if (translated && translated.toLowerCase() !== cleanWord.toLowerCase()) setMeaning(translated);
     setPhonetic(entry?.phonetic ?? entry?.phonetics?.find((item: { text?: string }) => item.text)?.text ?? '');
+    setPartOfSpeech(firstMeaning?.partOfSpeech ?? '');
     setExample(firstDefinition?.example ?? '');
     setEnriching(false);
     setNote(translated ? 'Đã tự điền thông tin. Bạn có thể sửa lại trước khi lưu.' : 'Chưa dịch được tự động. Bạn hãy nhập nghĩa thủ công.');
@@ -704,16 +734,16 @@ function AddWordModal({ language, onClose, onSave, onSpeak, audioStatus }: { lan
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!term.trim() || !meaning.trim()) { setNote(`Vui lòng nhập từ ${languageName(language).toLowerCase()} và nghĩa tiếng Việt.`); return; }
-    const error = onSave({ term, meaning, example, phonetic });
+    const error = onSave({ term, meaning, example, phonetic, partOfSpeech });
     if (error) setNote(error);
   }
 
   return <Modal title="Thêm từ mới" onClose={onClose}>
     <form onSubmit={submit} className="space-y-4">
-      <div className="relative"><label className="block text-sm font-extrabold">Từ {languageName(language).toLowerCase()}</label><div className="word-input-wrap"><input value={term} onChange={(event) => { setTerm(event.target.value); setMeaning(''); setPhonetic(''); setExample(''); setNote(language === 'zh' ? 'Bấm “Tự tìm nghĩa” để dịch sang tiếng Việt.' : 'Chọn một từ gợi ý hoặc bấm “Tự tìm nghĩa”.'); }} placeholder={language === 'zh' ? 'Ví dụ: 你好' : 'Ví dụ: accommodation'} autoFocus autoComplete="off"/><button type="button" onClick={() => onSpeak(term)} disabled={!term.trim() || audioStatus === 'loading'} aria-label="Nghe phát âm">{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={18}/> : <Volume2 size={18}/>}</button></div>{(loadingSuggestions || suggestions.length > 0) && <div className="suggestions" role="listbox">{loadingSuggestions ? <div className="suggestion-loading"><LoaderCircle className="animate-spin" size={17}/> Đang tìm từ…</div> : suggestions.map((word) => <button type="button" role="option" key={word} onClick={() => chooseWord(word)}><Search size={15}/><b>{word}</b><span>Chọn</span></button>)}</div>}{audioStatus === 'playing' && <p className="audio-message success"><Volume2 size={14}/> Đang phát âm thanh…</p>}{audioStatus === 'error' && <p className="audio-message error">Không thể phát âm thanh trong trình duyệt này.</p>}</div>
+      <div className="relative"><label className="block text-sm font-extrabold">Từ {languageName(language).toLowerCase()}</label><div className="word-input-wrap"><input value={term} onChange={(event) => { setTerm(event.target.value); setMeaning(''); setPhonetic(''); setPartOfSpeech(''); setExample(''); setNote(language === 'zh' ? 'Bấm “Tự tìm nghĩa” để dịch sang tiếng Việt.' : 'Chọn một từ gợi ý hoặc bấm “Tự tìm nghĩa”.'); }} placeholder={language === 'zh' ? 'Ví dụ: 你好' : 'Ví dụ: accommodation'} autoFocus autoComplete="off"/><button type="button" onClick={() => onSpeak(term)} disabled={!term.trim() || audioStatus === 'loading'} aria-label="Nghe phát âm">{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={18}/> : <Volume2 size={18}/>}</button></div>{(loadingSuggestions || suggestions.length > 0) && <div className="suggestions" role="listbox">{loadingSuggestions ? <div className="suggestion-loading"><LoaderCircle className="animate-spin" size={17}/> Đang tìm từ…</div> : suggestions.map((word) => <button type="button" role="option" key={word} onClick={() => chooseWord(word)}><Search size={15}/><b>{word}</b><span>Chọn</span></button>)}</div>}{audioStatus === 'playing' && <p className="audio-message success"><Volume2 size={14}/> Đang phát âm thanh…</p>}{audioStatus === 'error' && <p className="audio-message error">Không thể phát âm thanh trong trình duyệt này.</p>}</div>
       <Button type="button" variant="outline" disabled={!term.trim() || enriching} onClick={() => chooseWord(term)} className="h-10 w-full rounded-xl border-2 font-bold"><Languages size={17}/>{enriching ? 'Đang tìm nghĩa…' : 'Tự tìm nghĩa tiếng Việt'}</Button>
       <div className="helper-note">{enriching ? <LoaderCircle className="animate-spin" size={16}/> : <Languages size={16}/>}<span>{note}</span></div>
-      {phonetic && <div className="phonetic-preview"><span>Phiên âm</span><b>/{phonetic.replaceAll('/', '')}/</b><button type="button" onClick={() => onSpeak(term)}><Volume2 size={16}/> Nghe thử</button></div>}
+      {(phonetic || partOfSpeech) && <div className="phonetic-preview">{partOfSpeech && <><span>Từ loại</span><b>{partOfSpeechLabel(partOfSpeech)}</b></>}{phonetic && <><span>Phiên âm</span><b>/{phonetic.replaceAll('/', '')}/</b><button type="button" onClick={() => onSpeak(term)}><Volume2 size={16}/> Nghe thử</button></>}</div>}
       <Field value={meaning} onChange={(event) => setMeaning(event.target.value)} name="meaning" label="Nghĩa tiếng Việt" placeholder="Nghĩa gợi ý sẽ hiện ở đây"/>
       <Field value={example} onChange={(event) => setExample(event.target.value)} name="example" label="Câu ví dụ (không bắt buộc)" placeholder="Câu ví dụ sẽ được tự điền nếu có"/>
       <Button type="submit" disabled={enriching} className="h-11 w-full rounded-xl bg-[#213a34] font-bold">Lưu vào bộ từ</Button>
