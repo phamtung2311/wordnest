@@ -217,9 +217,9 @@ export default function Home() {
     localStorage.setItem('wordnest-decks', JSON.stringify(decks));
     localStorage.setItem('wordnest-progress', JSON.stringify(progress));
     if (!user || !cloudReady) return;
-    setSyncStatus('loading');
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
+      setSyncStatus('loading');
       void setDoc(doc(db, 'users', user.uid), { decks, progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
         .then(() => setSyncStatus('saved'))
         .catch(() => setSyncStatus('error'));
