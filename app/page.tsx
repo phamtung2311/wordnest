@@ -293,10 +293,10 @@ export default function Home() {
         ...current,
         dailySeconds: {
           ...current.dailySeconds,
-          [today]: (current.dailySeconds[today] ?? 0) + 10,
+          [today]: (current.dailySeconds[today] ?? 0) + 1,
         },
       }));
-    }, 10000);
+    }, 1000);
     return () => window.clearInterval(interval);
   }, [user?.uid, currentWord?.id]);
 
@@ -575,7 +575,7 @@ export default function Home() {
         <div className="progress-grid">
           <article className="today-progress">
             <div className="progress-icon"><Timer/></div>
-            <div className="min-w-0 flex-1"><div className="progress-label"><b>Hôm nay</b><span>{todayCompleted ? 'Đã điểm danh ✓' : `${Math.min(todayMinutes, 10)}/10 phút`}</span></div><div className="progress-track" aria-label={`Đã hoàn thành ${todayPercent}% mục tiêu hôm nay`}><span style={{ width: `${todayPercent}%` }}/></div><p>{!user ? 'Đăng nhập Google để lưu tiến độ.' : completedAllDueToday ? 'Đã học hết các từ cần học hôm nay ✓' : todaySeconds >= 600 ? 'Đã học đủ 10 phút hôm nay ✓' : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}</p></div>
+            <div className="min-w-0 flex-1"><div className="progress-label"><b>Hôm nay</b><span>{todayCompleted ? 'Đã điểm danh ✓' : `${Math.min(todayMinutes, 10)}/10 phút`}</span></div><div className="progress-track" aria-label={`Đã hoàn thành ${todayPercent}% mục tiêu hôm nay`}><span style={{ width: `${todayPercent}%` }}/></div><p className="today-time">⏱ Đã học <b>{todayMinutes} phút {todaySeconds % 60} giây</b> hôm nay</p><p>{!user ? 'Đăng nhập Google để lưu tiến độ.' : completedAllDueToday ? 'Đã học hết các từ cần học hôm nay ✓' : todaySeconds >= 600 ? 'Đã học đủ 10 phút hôm nay ✓' : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}</p></div>
           </article>
           <article className="progress-stat"><span><Flame/></span><div><b>{currentStreak}</b><small>Ngày liên tiếp</small></div></article>
           <article className="progress-stat"><span><CalendarCheck/></span><div><b>{successfulDays}</b><small>Ngày học thành công</small></div></article>
@@ -590,7 +590,7 @@ export default function Home() {
       <div className="about-card mx-auto max-w-6xl">
         <div className="creator-photo-wrap"><img src="/tung-pham.jpg" alt="Tùng, người làm WordNest" className="creator-photo"/></div>
         <div className="about-copy"><p className="eyebrow">Một lời chào nhỏ</p><h2 className="font-display text-4xl font-black tracking-tight">WordNest được làm bởi Tùng</h2><p>Mình tạo WordNest để việc học từ vựng bớt áp lực hơn: thêm từ nhanh, ôn đúng lúc và mỗi ngày tiến một chút.</p><p>Nếu ứng dụng giúp bạn học đều hơn, vậy là mình đã vui rồi. Cảm ơn bạn đã dành thời gian đồng hành cùng WordNest.</p></div>
-        <aside className="donate-card"><div><span className="donate-badge">☕ Ủng hộ WordNest</span><h3 className="font-display">Một ly cà phê tiếp sức</h3><p>Không bắt buộc đâu — nếu bạn muốn góp một chút để mình tiếp tục cải thiện ứng dụng, mình thật sự biết ơn.</p></div><img src="/donate-qr.jpg" alt="Mã QR ủng hộ WordNest qua Techcombank" className="donate-qr"/><small>Techcombank · PHAM VAN TUNG</small></aside>
+        <aside className="donate-card"><div><span className="donate-badge">☕ Ủng hộ WordNest</span><h3 className="font-display">Một ly cà phê tiếp sức</h3><p>Không bắt buộc đâu — nếu bạn muốn góp một chút để mình tiếp tục cải thiện ứng dụng, mình thật sự biết ơn.</p></div><div className="donate-qr-frame"><img src="/donate-qr.jpg" alt="Mã QR ủng hộ WordNest qua Techcombank" className="donate-qr"/></div><small>Techcombank · PHAM VAN TUNG</small></aside>
       </div>
     </section>
     <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row"><b className="font-display text-[#213a34]">WordNest</b><span>{user ? 'Dữ liệu đang được đồng bộ theo tài khoản Google.' : 'Đăng nhập Google để đồng bộ dữ liệu giữa các thiết bị.'}</span><span>Học ít · Nhớ lâu</span></div></footer>
