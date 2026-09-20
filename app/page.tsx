@@ -105,6 +105,7 @@ export default function Home() {
   const [showAddDeck, setShowAddDeck] = useState(false);
   const [showDeleteDeck, setShowDeleteDeck] = useState(false);
   const [showRetryOptions, setShowRetryOptions] = useState(false);
+  const [showTease, setShowTease] = useState(false);
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -118,6 +119,11 @@ export default function Home() {
   const studyAreaRef = useRef<HTMLDivElement | null>(null);
   const autoSpeakEnabledRef = useRef(false);
   const autoSpeakTimerRef = useRef<number | null>(null);
+  const teaseTimerRef = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (teaseTimerRef.current !== null) window.clearTimeout(teaseTimerRef.current);
+  }, []);
 
   useEffect(() => {
     const migration = new URLSearchParams(window.location.hash.slice(1)).get('migration');
@@ -391,7 +397,12 @@ export default function Home() {
   }
   function rateWord(level: Level, retryMinutes = 0) {
     if (!currentDeck || !currentWord) return;
-    if (level === 'new') playAnswerSound('again');
+    if (level === 'new') {
+      playAnswerSound('again');
+      setShowTease(true);
+      if (teaseTimerRef.current !== null) window.clearTimeout(teaseTimerRef.current);
+      teaseTimerRef.current = window.setTimeout(() => setShowTease(false), 3200);
+    }
     if (level === 'known') playAnswerSound('known');
     const delay = level === 'new' ? retryMinutes * 60000 : level === 'learning' ? DAY : DAY * 7;
     const remainingDue = decks.reduce((total, deck) => total + deck.words.filter((word) => !(deck.id === currentDeck.id && word.id === currentWord.id) && word.nextReview <= Date.now()).length, 0);
@@ -478,6 +489,7 @@ export default function Home() {
         </div>
       </div>
       {showAddWord && <AddWordModal language={currentLanguage} onClose={() => setShowAddWord(false)} onSave={addWord} onSpeak={(text) => speak(text, currentLanguage)} audioStatus={audioStatus} />}
+      {showTease && <div className="tease-toast" role="status"><span aria-hidden="true">😤</span><span>Vãi lìn học bao lần rồi còn chưa nhớ nữa!</span></div>}
       {showDeleteDeck && <Modal title="Xóa bộ từ này?" onClose={() => setShowDeleteDeck(false)}><div className="space-y-5"><div className="rounded-2xl bg-[#fbe5df] p-4 text-sm leading-6 text-[#7d4138]"><b className="block text-base text-[#b84b3c]">{currentDeck.name}</b>Bộ từ này có {currentDeck.words.length} từ. Sau khi xóa, dữ liệu của bộ này không thể khôi phục.</div><div className="grid grid-cols-2 gap-3"><Button type="button" variant="outline" onClick={() => setShowDeleteDeck(false)} className="h-11 rounded-xl border-2 font-bold">Giữ lại</Button><Button type="button" onClick={deleteCurrentDeck} className="h-11 rounded-xl bg-[#c65342] font-bold text-white hover:bg-[#ad4335]"><Trash2/> Xóa vĩnh viễn</Button></div></div></Modal>}
     </main>;
   }
