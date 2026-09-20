@@ -219,7 +219,6 @@ export default function Home() {
     if (!user || !cloudReady) return;
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
-      setSyncStatus('loading');
       void setDoc(doc(db, 'users', user.uid), { decks, progress, email: user.email, displayName: user.displayName, updatedAt: serverTimestamp() })
         .then(() => setSyncStatus('saved'))
         .catch(() => setSyncStatus('error'));
