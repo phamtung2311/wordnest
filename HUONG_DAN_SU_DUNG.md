@@ -50,7 +50,7 @@ Các dịch vụ gợi ý/dịch miễn phí đôi lúc có thể chậm hoặc 
 5. Có thể bấm **Ôn lại** cạnh bất kỳ từ nào để hủy lịch chờ hiện tại và đưa từ đó lên học ngay.
 6. Trong lúc đang học, nghĩa tiếng Việt ở danh sách bên phải được ẩn để không làm lộ đáp án. Nghĩa chỉ hiện trên thẻ sau khi bấm **Xem nghĩa**.
 7. Sau khi bắt đầu học, mỗi thẻ mới tự phát âm bằng giọng của trình duyệt; vẫn có thể bấm nút loa để nghe lại. Chọn **Chưa nhớ** hoặc **Đã thuộc** sẽ phát âm báo ngắn khác nhau. Trình duyệt có thể chặn tự phát âm trước thao tác đầu tiên của người dùng.
-8. Khi chọn thời gian ở mục **Chưa nhớ**, WordNest hiện một câu trêu vui trong vài giây; câu này không cản thao tác học tiếp.
+8. Ngay khi bấm **Chưa nhớ**, WordNest phát âm báo và hiện một câu trêu vui trong vài giây; sau đó bạn chọn thời gian học lại như bình thường.
 
 ### Điểm danh và chuỗi học
 
