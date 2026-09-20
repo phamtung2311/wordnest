@@ -703,11 +703,13 @@ function AddWordModal({ initialTerm = '', language, onClose, onSave, onSpeak, au
   const [phonetic, setPhonetic] = useState('');
   const [partOfSpeech, setPartOfSpeech] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionsLocked, setSuggestionsLocked] = useState(Boolean(initialTerm));
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [enriching, setEnriching] = useState(false);
   const [note, setNote] = useState(language === 'zh' ? 'Nhập từ tiếng Trung rồi bấm “Tự tìm nghĩa”.' : 'Gõ ít nhất 2 chữ để xem từ gợi ý.');
 
   useEffect(() => {
+    if (suggestionsLocked) { setSuggestions([]); setLoadingSuggestions(false); return; }
     if (language === 'zh') { setSuggestions([]); setLoadingSuggestions(false); return; }
     const query = term.trim().toLowerCase();
     if (query.length < 2) { setSuggestions([]); setLoadingSuggestions(false); return; }
@@ -722,12 +724,12 @@ function AddWordModal({ initialTerm = '', language, onClose, onSave, onSpeak, au
       finally { if (!controller.signal.aborted) setLoadingSuggestions(false); }
     }, 280);
     return () => { window.clearTimeout(timer); controller.abort(); };
-  }, [term, language]);
+  }, [term, language, suggestionsLocked]);
 
   async function chooseWord(word: string) {
     const cleanWord = word.trim();
     if (!cleanWord) { setNote(`Vui lòng nhập từ ${languageName(language).toLowerCase()}.`); return; }
-    setTerm(cleanWord); setSuggestions([]); setEnriching(true); setNote(language === 'zh' ? 'Đang dịch nghĩa tiếng Việt…' : 'Đang tìm nghĩa, phiên âm và ví dụ…');
+    setTerm(cleanWord); setSuggestionsLocked(true); setSuggestions([]); setEnriching(true); setNote(language === 'zh' ? 'Đang dịch nghĩa tiếng Việt…' : 'Đang tìm nghĩa, phiên âm và ví dụ…');
     const sourceLanguage = language === 'zh' ? 'zh-CN' : 'en';
     const dictionaryRequest = language === 'en' ? fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord)}`, 2500) : Promise.resolve(null);
     const translationRequest = fetchJson(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLanguage}&tl=vi&dt=t&q=${encodeURIComponent(cleanWord)}`, 3500);
@@ -761,7 +763,7 @@ function AddWordModal({ initialTerm = '', language, onClose, onSave, onSpeak, au
 
   return <Modal title="Thêm từ mới" onClose={onClose}>
     <form onSubmit={submit} className="space-y-4">
-      <div className="relative"><label className="block text-sm font-extrabold">Từ {languageName(language).toLowerCase()}</label><div className="word-input-wrap"><input value={term} onChange={(event) => { setTerm(event.target.value); setMeaning(''); setPhonetic(''); setPartOfSpeech(''); setExample(''); setNote(language === 'zh' ? 'Bấm “Tự tìm nghĩa” để dịch sang tiếng Việt.' : 'Chọn một từ gợi ý hoặc bấm “Tự tìm nghĩa”.'); }} placeholder={language === 'zh' ? 'Ví dụ: 你好' : 'Ví dụ: accommodation'} autoFocus autoComplete="off"/><button type="button" onClick={() => onSpeak(term)} disabled={!term.trim() || audioStatus === 'loading'} aria-label="Nghe phát âm">{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={18}/> : <Volume2 size={18}/>}</button></div>{(loadingSuggestions || suggestions.length > 0) && <div className="suggestions" role="listbox">{loadingSuggestions ? <div className="suggestion-loading"><LoaderCircle className="animate-spin" size={17}/> Đang tìm từ…</div> : suggestions.map((word) => <button type="button" role="option" key={word} onClick={() => chooseWord(word)}><Search size={15}/><b>{word}</b><span>Chọn</span></button>)}</div>}{audioStatus === 'playing' && <p className="audio-message success"><Volume2 size={14}/> Đang phát âm thanh…</p>}{audioStatus === 'error' && <p className="audio-message error">Không thể phát âm thanh trong trình duyệt này.</p>}</div>
+      <div className="relative"><label className="block text-sm font-extrabold">Từ {languageName(language).toLowerCase()}</label><div className="word-input-wrap"><input value={term} onChange={(event) => { setTerm(event.target.value); setSuggestionsLocked(false); setMeaning(''); setPhonetic(''); setPartOfSpeech(''); setExample(''); setNote(language === 'zh' ? 'Bấm “Tự tìm nghĩa” để dịch sang tiếng Việt.' : 'Chọn một từ gợi ý hoặc bấm “Tự tìm nghĩa”.'); }} placeholder={language === 'zh' ? 'Ví dụ: 你好' : 'Ví dụ: accommodation'} autoFocus autoComplete="off"/><button type="button" onClick={() => onSpeak(term)} disabled={!term.trim() || audioStatus === 'loading'} aria-label="Nghe phát âm">{audioStatus === 'loading' ? <LoaderCircle className="animate-spin" size={18}/> : <Volume2 size={18}/>}</button></div>{(loadingSuggestions || suggestions.length > 0) && <div className="suggestions" role="listbox">{loadingSuggestions ? <div className="suggestion-loading"><LoaderCircle className="animate-spin" size={17}/> Đang tìm từ…</div> : suggestions.map((word) => <button type="button" role="option" key={word} onClick={() => chooseWord(word)}><Search size={15}/><b>{word}</b><span>Chọn</span></button>)}</div>}{audioStatus === 'playing' && <p className="audio-message success"><Volume2 size={14}/> Đang phát âm thanh…</p>}{audioStatus === 'error' && <p className="audio-message error">Không thể phát âm thanh trong trình duyệt này.</p>}</div>
       <Button type="button" variant="outline" disabled={!term.trim() || enriching} onClick={() => chooseWord(term)} className="h-10 w-full rounded-xl border-2 font-bold"><Languages size={17}/>{enriching ? 'Đang tìm nghĩa…' : 'Tự tìm nghĩa tiếng Việt'}</Button>
       <div className="helper-note">{enriching ? <LoaderCircle className="animate-spin" size={16}/> : <Languages size={16}/>}<span>{note}</span></div>
       {(phonetic || partOfSpeech) && <div className="phonetic-preview">{partOfSpeech && <><span>Từ loại</span><b>{partOfSpeechLabel(partOfSpeech)}</b></>}{phonetic && <><span>Phiên âm</span><b>/{phonetic.replaceAll('/', '')}/</b><button type="button" onClick={() => onSpeak(term)}><Volume2 size={16}/> Nghe thử</button></>}</div>}
