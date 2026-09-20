@@ -89,6 +89,12 @@ function partOfSpeechLabel(value: string) {
   const normalized = value.trim().toLowerCase();
   return labels[normalized] ? `${labels[normalized]} · ${normalized}` : value;
 }
+function fallbackWordMetadata(term: string) {
+  const fallback: Record<string, { phonetic: string; partOfSpeech: string }> = {
+    daily: { phonetic: 'ˈdeɪli', partOfSpeech: 'adjective' }, reduce: { phonetic: 'rɪˈdjuːs', partOfSpeech: 'verb' }, onboarding: { phonetic: 'ˈɒnbɔːrdɪŋ', partOfSpeech: 'noun' }, habit: { phonetic: 'ˈhæbɪt', partOfSpeech: 'noun' }, maintain: { phonetic: 'meɪnˈteɪn', partOfSpeech: 'verb' }, notify: { phonetic: 'ˈnəʊtɪfaɪ', partOfSpeech: 'verb' }, renovation: { phonetic: 'ˌrenəˈveɪʃn', partOfSpeech: 'noun' }, modify: { phonetic: 'ˈmɒdɪfaɪ', partOfSpeech: 'verb' }, vary: { phonetic: 'ˈveri', partOfSpeech: 'verb' }, alter: { phonetic: 'ˈɔːltər', partOfSpeech: 'verb' }, invite: { phonetic: 'ɪnˈvaɪt', partOfSpeech: 'verb' }, merge: { phonetic: 'mɜːrdʒ', partOfSpeech: 'verb' }, reflect: { phonetic: 'rɪˈflekt', partOfSpeech: 'verb' },
+  };
+  return fallback[normalizeTerm(term)];
+}
 function escapeRegExp(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function reviewCountdown(nextReview: number, now: number) {
   const remaining = nextReview - now;
@@ -346,6 +352,13 @@ export default function Home() {
   useEffect(() => {
     if (!currentDeck || !currentWord || currentLanguage !== 'en' || (currentWord.phonetic && currentWord.partOfSpeech)) return;
     let cancelled = false;
+    const fallback = fallbackWordMetadata(currentWord.term);
+    if (fallback) {
+      setDecks((all) => all.map((deck) => deck.id === currentDeck.id ? {
+        ...deck,
+        words: deck.words.map((word) => word.id === currentWord.id ? { ...word, phonetic: word.phonetic || fallback.phonetic, partOfSpeech: word.partOfSpeech || fallback.partOfSpeech } : word),
+      } : deck));
+    }
     void fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(currentWord.term.trim())}`, 4500).then((payload) => {
       const entry = Array.isArray(payload) ? payload[0] : null;
       const phonetic = entry?.phonetic ?? entry?.phonetics?.find((item: { text?: string }) => item.text)?.text ?? '';
