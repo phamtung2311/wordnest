@@ -12,7 +12,7 @@ type Language = 'en' | 'zh';
 type Word = { id: number; term: string; meaning: string; example: string; phonetic?: string; level: Level; nextReview: number; createdAt?: number };
 type Deck = { id: number; name: string; emoji: string; description: string; language?: Language; words: Word[] };
 type StudyProgress = { dailySeconds: Record<string, number>; completedDays?: Record<string, boolean> };
-type TranslationExercise = { id: number; sentence: string; translation: string; license: string };
+type TranslationExercise = { id: number; sentence: string; translation: string; source: string; license?: string };
 
 const DAY = 86400000;
 const legacyStarterDecks: Deck[] = [
@@ -320,21 +320,21 @@ export default function Home() {
     setShowTranslationAnswer(false);
     try {
       const params = new URLSearchParams({
-        lang: 'eng', q: word.term.trim(), word_count: '4-18', 'trans:lang': 'vie',
-        showtrans: 'matching', limit: '30', sort: 'relevance',
+        lang: 'eng', q: word.term.trim(), word_count: '4-18', limit: '30', sort: 'relevance',
       });
-      const response = await fetch(`https://api.tatoeba.org/v1/sentences?${params.toString()}`);
-      if (!response.ok) throw new Error('Không tải được câu ví dụ.');
-      const payload = await response.json() as { data?: { id: number; text: string; license?: string; translations?: { text: string; lang: string }[] }[] };
+      const payload = await fetchJson(`https://api.tatoeba.org/v1/sentences?${params.toString()}`, 6000) as { data?: { id: number; text: string; license?: string }[] } | null;
       const exactTerm = new RegExp(`(^|[^\\p{L}])${escapeRegExp(word.term.trim())}($|[^\\p{L}])`, 'iu');
-      const choices = (payload.data ?? []).flatMap((item) => {
-        const translation = item.translations?.find((entry) => entry.lang === 'vie')?.text;
-        return translation && exactTerm.test(item.text) ? [{ id: item.id, sentence: item.text, translation, license: item.license ?? 'Tatoeba' }] : [];
-      });
+      const tatoebaChoices = (payload?.data ?? []).filter((item) => exactTerm.test(item.text));
+      const dictionaryPayload = tatoebaChoices.length ? null : await fetchJson(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.term.trim())}`, 4500) as { meanings?: { definitions?: { example?: string }[] }[] }[] | null;
+      const dictionaryChoices = (dictionaryPayload ?? []).flatMap((entry) => entry.meanings?.flatMap((meaning) => meaning.definitions ?? []).flatMap((definition, index) => definition.example && exactTerm.test(definition.example) ? [{ id: -(index + 1), text: definition.example }] : []) ?? []);
+      const choices = tatoebaChoices.length ? tatoebaChoices : dictionaryChoices;
       const alternatives = choices.filter((item) => item.id !== previousId);
       const selected = (alternatives.length ? alternatives : choices)[Math.floor(Math.random() * (alternatives.length ? alternatives.length : choices.length))];
       if (!selected) { setExerciseStatus('empty'); return; }
-      setTranslationExercise(selected);
+      const translationPayload = await fetchJson(`https://api.mymemory.translated.net/get?${new URLSearchParams({ q: selected.text, langpair: 'en|vi', mt: '1' }).toString()}`, 7000) as { responseData?: { translatedText?: string } } | null;
+      const translation = translationPayload?.responseData?.translatedText?.trim();
+      if (!translation || /^MYMEMORY WARNING/i.test(translation)) throw new Error('Không dịch được câu ví dụ.');
+      setTranslationExercise({ id: selected.id, sentence: selected.text, translation, source: tatoebaChoices.length ? 'Tatoeba' : 'Free Dictionary API', license: 'license' in selected ? selected.license : undefined });
       setExerciseStatus('ready');
     } catch {
       setExerciseStatus('error');
@@ -529,7 +529,7 @@ export default function Home() {
                 {currentLanguage === 'en' && <div className="translation-exercise">
                   <div className="exercise-heading"><span>✍️ Luyện dịch câu</span>{translationExercise && <button type="button" onClick={() => void loadTranslationExercise(currentWord, translationExercise.id)} disabled={exerciseStatus === 'loading'}><RotateCcw size={14}/> Câu khác</button>}</div>
                   {exerciseStatus === 'loading' && <p className="exercise-note"><LoaderCircle className="animate-spin" size={15}/> Đang tìm một câu có từ này…</p>}
-                  {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence}”</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: Tatoeba · {translationExercise.license}</small></>}
+                  {exerciseStatus === 'ready' && translationExercise && <><p className="exercise-sentence">“{translationExercise.sentence}”</p><textarea value={translationAnswer} onChange={(event) => setTranslationAnswer(event.target.value)} placeholder="Viết bản dịch tiếng Việt của bạn ở đây…" aria-label="Bản dịch tiếng Việt của bạn"/><div className="exercise-actions"><button type="button" onClick={() => setShowTranslationAnswer((shown) => !shown)}>{showTranslationAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</button><button type="button" onClick={() => speak(translationExercise.sentence)}><Volume2 size={15}/> Nghe câu</button></div>{showTranslationAnswer && <p className="exercise-answer"><b>Đáp án tham khảo:</b> {translationExercise.translation}</p>}<small>Nguồn câu: {translationExercise.source}{translationExercise.license ? ` · ${translationExercise.license}` : ''}</small></>}
                   {exerciseStatus === 'empty' && <p className="exercise-note">Chưa tìm thấy câu phù hợp có bản dịch tiếng Việt cho từ này.</p>}
                   {exerciseStatus === 'error' && <p className="exercise-note">Không tải được câu luyện dịch. Hãy kiểm tra kết nối rồi thử thẻ khác.</p>}
                 </div>}
