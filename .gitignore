@@ -37,3 +37,6 @@ next-env.d.ts
 /.firebase/
 /outputs/
 /work/
+
+# raw materials
+_raw_materials/

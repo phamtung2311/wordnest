@@ -3804,6 +3804,13 @@ function Header({
             >
               Luyện Reading TOEIC
             </button>
+            <button
+              type="button"
+              onClick={() => router.push('/listening-test')}
+              className="rounded-full bg-[#e9f2ed] px-4 py-1.5 hover:bg-[#d5e5db] font-black text-[#213a34]"
+            >
+              Luyện Listening TOEIC
+            </button>
           </nav>
         )}
         <div className="account-area">
