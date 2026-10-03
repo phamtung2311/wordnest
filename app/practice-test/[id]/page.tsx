@@ -186,14 +186,32 @@ export default function PracticeTestPlayPage() {
 
           {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming') && (
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-xl mx-auto pb-20">
-              {questions.map((q) => (
-                <div key={q} className="flex items-center justify-between bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
-                  <span className="font-bold text-[#213a34] w-8">{q}.</span>
-                  <div className="flex gap-2">
-                    {options.map((opt) => renderBubble(q, opt))}
+              {questions.map((q) => {
+                const userAns = answers[q];
+                const isReviewing = appState === 'reviewing';
+                const correctAns = results?.key?.[String(q)];
+                const isCorrect = userAns === correctAns;
+                const isUnanswered = !userAns;
+                const isWrong = userAns && !isCorrect;
+
+                let rowClass = "bg-white";
+                if (isReviewing && isUnanswered) {
+                  rowClass = "bg-gray-200 border-gray-300 opacity-80";
+                }
+
+                return (
+                  <div key={q} className={`flex items-center justify-between px-4 py-2 rounded-xl shadow-sm border border-gray-100 ${rowClass}`}>
+                    <div className="flex items-center w-10 relative">
+                      {isReviewing && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 absolute -left-4" />}
+                      {isReviewing && isWrong && <XCircle className="w-4 h-4 text-red-500 absolute -left-4" />}
+                      <span className="font-bold text-[#213a34]">{q}.</span>
+                    </div>
+                    <div className="flex gap-2">
+                      {options.map((opt) => renderBubble(q, opt))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
