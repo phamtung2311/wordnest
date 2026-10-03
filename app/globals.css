@@ -2137,6 +2137,15 @@ a {
 .life-content[data-life-view='goals'] .life-grid > aside {
   display: none;
 }
+.life-content[data-life-view='notes'] #life-today,
+.life-content[data-life-view='notes'] .life-stats,
+.life-content[data-life-view='notes']
+  .life-grid
+  > div
+  > article:not(#life-notes),
+.life-content[data-life-view='notes'] .life-grid > aside {
+  display: none;
+}
 .life-content[data-life-view='history'] #life-today,
 .life-content[data-life-view='history'] .life-stats,
 .life-content[data-life-view='history']
@@ -2149,6 +2158,7 @@ a {
 .life-content[data-life-view='planner'] .life-grid,
 .life-content[data-life-view='habits'] .life-grid,
 .life-content[data-life-view='checkin'] .life-grid,
+.life-content[data-life-view='notes'] .life-grid,
 .life-content[data-life-view='goals'] .life-grid {
   grid-template-columns: minmax(0, 1fr);
 }

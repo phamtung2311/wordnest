@@ -1,6 +1,8 @@
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   ArrowRight,
@@ -98,6 +100,13 @@ type Income = {
 };
 type Budget = { id: string; name: string; limit: number };
 type LifeTask = { id: string; text: string; done: boolean };
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number;
+  updatedAt: number;
+};
 type LifeData = {
   habits: Habit[];
   expenses: Expense[];
@@ -108,6 +117,7 @@ type LifeData = {
   dailyTasks: Record<string, LifeTask[]>;
   weeklyGoals: LifeTask[];
   monthlyGoals: LifeTask[];
+  notes: Note[];
   journal: Record<string, string>;
   energy: Record<string, number>;
 };
@@ -126,7 +136,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'điểm đến',
         example: 'Tokyo is our next destination.',
         level: 'learning',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 12,
@@ -134,7 +144,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'lịch trình',
         example: 'Let’s check the itinerary.',
         level: 'new',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 13,
@@ -142,7 +152,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'sự khởi hành',
         example: 'Departure is at 8 a.m.',
         level: 'known',
-        nextReview: Date.now() + DAY * 3,
+        nextReview: new Date().getTime() + DAY * 3,
       },
       {
         id: 14,
@@ -150,7 +160,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'chỗ ở',
         example: 'The accommodation is near the station.',
         level: 'learning',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 15,
@@ -158,7 +168,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'quà lưu niệm',
         example: 'I bought a small souvenir.',
         level: 'known',
-        nextReview: Date.now() + DAY * 7,
+        nextReview: new Date().getTime() + DAY * 7,
       },
     ],
   },
@@ -174,7 +184,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'hạn chót',
         example: 'The deadline is Friday.',
         level: 'learning',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 22,
@@ -182,7 +192,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'phản hồi',
         example: 'Thank you for your feedback.',
         level: 'new',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 23,
@@ -190,7 +200,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'lịch trình',
         example: 'My schedule is quite full.',
         level: 'known',
-        nextReview: Date.now() + DAY * 4,
+        nextReview: new Date().getTime() + DAY * 4,
       },
     ],
   },
@@ -206,7 +216,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'bền vững',
         example: 'We need sustainable solutions.',
         level: 'new',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
       {
         id: 32,
@@ -214,7 +224,7 @@ const legacyStarterDecks: Deck[] = [
         meaning: 'đa dạng sinh học',
         example: 'The forest has rich biodiversity.',
         level: 'learning',
-        nextReview: Date.now(),
+        nextReview: new Date().getTime(),
       },
     ],
   },
@@ -239,6 +249,7 @@ const defaultLifeData: LifeData = {
   dailyTasks: {},
   weeklyGoals: [],
   monthlyGoals: [],
+  notes: [],
   journal: {},
   energy: {},
 };
@@ -326,7 +337,7 @@ function isUntouchedLegacyDeck(deck: Deck) {
   );
 }
 
-function countDue(deck: Deck, now = Date.now()) {
+function countDue(deck: Deck, now = new Date().getTime()) {
   return deck.words.filter((word) => word.nextReview <= now).length;
 }
 function normalizeTerm(term: string) {
@@ -520,9 +531,21 @@ export default function Home() {
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [progress, setProgress] = useState<StudyProgress>(emptyProgress);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
-  const [page, setPage] = useState<'home' | 'library' | 'life' | 'about'>(
-    'home',
-  );
+  const [page, setPage] = useState<'home' | 'library' | 'life' | 'about'>('home');
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (['home', 'library', 'life', 'about'].includes(hash)) {
+        setPage(hash as any);
+      } else if (!hash) {
+        setPage('home');
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
   const [lifeData, setLifeData] = useState<LifeData>(defaultLifeData);
   const [studyQueue, setStudyQueue] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
@@ -547,7 +570,7 @@ export default function Home() {
   const [audioStatus, setAudioStatus] = useState<
     'idle' | 'loading' | 'playing' | 'error'
   >('idle');
-  const [clockNow, setClockNow] = useState(() => Date.now());
+  const [clockNow, setClockNow] = useState(() => new Date().getTime());
   const [translationExercise, setTranslationExercise] =
     useState<TranslationExercise | null>(null);
   const [exerciseStatus, setExerciseStatus] = useState<
@@ -625,7 +648,7 @@ export default function Home() {
           setDecks([]);
           setProgress(emptyProgress);
           setActiveDeck(null);
-          setPage('home');
+          window.location.hash = 'home';
           setStudyQueue([]);
           setRevealed(false);
           setCloudReady(false);
@@ -857,7 +880,7 @@ export default function Home() {
               throw new Error(
                 `Từ “${value.words[duplicateIndex].term}” đã có trong bộ từ này.`,
               );
-            const stamp = Date.now();
+            const stamp = new Date().getTime();
             const additions: Word[] = value.words.map((word, index) => ({
               id: stamp + index,
               term: word.term!.trim(),
@@ -928,14 +951,14 @@ export default function Home() {
   const currentStreak = calculateStreak(progress);
   const scheduledRetries =
     currentDeck?.words.filter(
-      (word) => word.level === 'new' && word.nextReview > Date.now(),
+      (word) => word.level === 'new' && word.nextReview > new Date().getTime(),
     ) ?? [];
   const nextRetryMinutes = scheduledRetries.length
     ? Math.max(
         1,
         Math.ceil(
           (Math.min(...scheduledRetries.map((word) => word.nextReview)) -
-            Date.now()) /
+            new Date().getTime()) /
             60000,
         ),
       )
@@ -1003,8 +1026,8 @@ export default function Home() {
 
   useEffect(() => {
     if (activeDeck === null) return;
-    setClockNow(Date.now());
-    const interval = window.setInterval(() => setClockNow(Date.now()), 30000);
+    setClockNow(new Date().getTime());
+    const interval = window.setInterval(() => setClockNow(new Date().getTime()), 30000);
     return () => window.clearInterval(interval);
   }, [activeDeck]);
 
@@ -1179,7 +1202,7 @@ export default function Home() {
       () => {
         const dueIds = currentDeck.words
           .filter(
-            (word) => word.level === 'new' && word.nextReview <= Date.now(),
+            (word) => word.level === 'new' && word.nextReview <= new Date().getTime(),
           )
           .map((word) => word.id);
         setStudyQueue((queue) => [
@@ -1187,7 +1210,7 @@ export default function Home() {
           ...dueIds.filter((wordId) => !queue.includes(wordId)),
         ]);
       },
-      Math.max(0, nextReview - Date.now()) + 250,
+      Math.max(0, nextReview - new Date().getTime()) + 250,
     );
     return () => window.clearTimeout(timeout);
   }, [currentDeck?.words, scheduledRetries.length]);
@@ -1305,7 +1328,7 @@ export default function Home() {
     setProgress(emptyProgress);
     setLifeData(defaultLifeData);
     setActiveDeck(null);
-    setPage('home');
+    window.location.hash = 'home';
     setStudyQueue([]);
     setRevealed(false);
     setMigrationNotice('');
@@ -1325,7 +1348,7 @@ export default function Home() {
         deck.words.filter(
           (word) =>
             !(deck.id === currentDeck.id && word.id === currentWord.id) &&
-            word.nextReview <= Date.now(),
+            word.nextReview <= new Date().getTime(),
         ).length,
       0,
     );
@@ -1336,7 +1359,7 @@ export default function Home() {
               ...deck,
               words: deck.words.map((word) =>
                 word.id === currentWord.id
-                  ? { ...word, level, nextReview: Date.now() + delay }
+                  ? { ...word, level, nextReview: new Date().getTime() + delay }
                   : word,
               ),
             }
@@ -1376,7 +1399,7 @@ export default function Home() {
       )
     )
       return `Từ “${term}” đã có trong bộ từ này.`;
-    const createdAt = Date.now();
+    const createdAt = new Date().getTime();
     const word: Word = {
       id: createdAt,
       term,
@@ -1405,7 +1428,7 @@ export default function Home() {
     if (!name) return;
     const language: Language = form.get('language') === 'zh' ? 'zh' : 'en';
     const deck: Deck = {
-      id: Date.now(),
+      id: new Date().getTime(),
       name,
       emoji: String(form.get('emoji') || (language === 'zh' ? '🇨🇳' : '📚')),
       description: String(
@@ -1425,11 +1448,11 @@ export default function Home() {
     autoSpeakEnabledRef.current = true;
     setStudyQueue(
       deck?.words
-        .filter((word) => word.nextReview <= Date.now())
+        .filter((word) => word.nextReview <= new Date().getTime())
         .map((word) => word.id) ?? [],
     );
     setRevealed(false);
-    setPage('library');
+    window.location.hash = 'library';
     setActiveDeck(deckId);
   }
 
@@ -1445,7 +1468,7 @@ export default function Home() {
   function reviewWordNow(wordId: number) {
     if (!currentDeck) return;
     autoSpeakEnabledRef.current = true;
-    const reviewStartedAt = Date.now();
+    const reviewStartedAt = new Date().getTime();
     setDecks((all) =>
       all.map((deck) =>
         deck.id === currentDeck.id
@@ -1482,7 +1505,7 @@ export default function Home() {
             setActiveDeck(null);
             setStudyQueue([]);
             setRevealed(false);
-            setPage('library');
+            window.location.hash = 'library';
           }}
         />
         <div className="mx-auto max-w-6xl px-5 pb-20 pt-9 md:px-8">
@@ -1490,7 +1513,7 @@ export default function Home() {
             onClick={() => {
               setActiveDeck(null);
               setStudyQueue([]);
-              setPage('library');
+              window.location.hash = 'library';
             }}
             className="mb-6 flex items-center gap-2 text-sm font-extrabold text-[#64756f]"
           >
@@ -2005,10 +2028,10 @@ export default function Home() {
         syncStatus={syncStatus}
         onSignIn={signInGoogle}
         onSignOut={signOutGoogle}
-        onHome={() => setPage('home')}
-        onLibrary={() => setPage('library')}
-        onLife={() => setPage('life')}
-        onAbout={() => setPage('about')}
+        onHome={() => window.location.hash = 'home'}
+        onLibrary={() => window.location.hash = 'library'}
+        onLife={() => window.location.hash = 'life'}
+        onAbout={() => window.location.hash = 'about'}
       />
       {migrationNotice && (
         <div className="migration-notice" role="status">
@@ -2062,7 +2085,7 @@ export default function Home() {
                       <b>{addedWords.length} từ đã thêm</b>
                     </div>
                     {recentWords.length > 0 && (
-                      <button onClick={() => setPage('library')}>
+                      <button onClick={() => window.location.hash = 'library'}>
                         Xem tất cả bộ từ <ChevronRight />
                       </button>
                     )}
@@ -2319,6 +2342,7 @@ export default function Home() {
           </section>
         </>
       )}
+
       <footer className="border-t border-[#213a34]/10 px-5 py-7 text-sm text-[#687a73] md:px-8">
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 sm:flex-row">
           <b className="font-display text-[#213a34]">WordNest</b>
@@ -2377,12 +2401,17 @@ function LifeDashboard({
   onChange: React.Dispatch<React.SetStateAction<LifeData>>;
 }) {
   const [lifeView, setLifeView] = useState<
-    'planner' | 'habits' | 'spending' | 'income' | 'goals' | 'history'
+    'planner' | 'habits' | 'spending' | 'income' | 'goals' | 'history' | 'notes'
   >('planner');
   const today = dateKey();
   const currentMonth = today.slice(0, 7);
   const [spendingMonth, setSpendingMonth] = useState(currentMonth);
   const [incomeMonth, setIncomeMonth] = useState(currentMonth);
+
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteTitle, setNoteTitle] = useState('');
+  const [noteContent, setNoteContent] = useState('');
+  const [showNoteForm, setShowNoteForm] = useState(false);
   const monthExpenses = data.expenses.filter((expense) =>
     expense.date.startsWith(spendingMonth),
   );
@@ -2453,7 +2482,7 @@ function LifeDashboard({
     month: 'long',
     year: 'numeric',
   }).format(new Date(`${incomeMonth}-01T12:00:00`));
-  const tomorrow = dateKey(new Date(Date.now() + 86400000));
+  const tomorrow = dateKey(new Date(new Date().getTime() + 86400000));
   const dateLabel = (date: string) =>
     new Intl.DateTimeFormat('vi-VN', {
       weekday: 'long',
@@ -2488,7 +2517,7 @@ function LifeDashboard({
   }).format(habitMonth);
   const plannedTasks = data.dailyTasks[planDate] ?? [];
   const historyDates = Array.from({ length: 7 }, (_, index) =>
-    dateKey(new Date(Date.now() - index * 86400000)),
+    dateKey(new Date(new Date().getTime() - index * 86400000)),
   );
   const planHistory = historyDates.flatMap((date) =>
     (data.dailyTasks[date] ?? [])
@@ -2561,7 +2590,7 @@ function LifeDashboard({
         type="button"
         className="add-task"
         onClick={() =>
-          save([...tasks, { id: String(Date.now()), text: '', done: false }])
+          save([...tasks, { id: String(new Date().getTime()), text: '', done: false }])
         }
       >
         <Plus size={16} /> Thêm việc
@@ -2579,6 +2608,7 @@ function LifeDashboard({
             ['spending', '💳 Chi tiêu'],
             ['income', '💰 Thu nhập'],
             ['goals', '🏁 Mục tiêu'],
+            ['notes', '📝 Ghi chú'],
           ].map(([view, label]) => (
             <button
               type="button"
@@ -2666,7 +2696,7 @@ function LifeDashboard({
                       habits: [
                         ...current.habits,
                         {
-                          id: String(Date.now()),
+                          id: String(new Date().getTime()),
                           name,
                           emoji: newHabitEmoji,
                           doneDates: [],
@@ -2969,6 +2999,124 @@ function LifeDashboard({
                   )}
                 </div>
               </article>
+              <article id="life-notes" className="life-card life-anchor">
+                <div className="section-heading" style={{ marginBottom: '1rem' }}>
+                  <p className="eyebrow">Ghi lại để không quên</p>
+                  <h2>Ghi chú</h2>
+                  <p>
+                    Ghi chép lại những điều quan trọng, ý tưởng hay hoặc đơn giản là những gì bạn muốn lưu giữ.
+                  </p>
+                </div>
+                {!showNoteForm && !editingNoteId ? (
+                  <button
+                    className="add-habit-btn"
+                    style={{ marginBottom: '1rem', background: '#e9f2ed', color: '#213a34', fontWeight: 'bold', padding: '0.75rem 1rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none', cursor: 'pointer' }}
+                    onClick={() => {
+                      setNoteTitle('');
+                      setNoteContent('');
+                      setEditingNoteId(null);
+                      setShowNoteForm(true);
+                    }}
+                  >
+                    + Tạo ghi chú mới
+                  </button>
+                ) : null}
+
+                {showNoteForm || editingNoteId ? (
+                  <div className="note-form" style={{ background: '#fff', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(33, 58, 52, 0.1)', marginBottom: '1rem' }}>
+                    <input
+                      type="text"
+                      placeholder="Tiêu đề ghi chú..."
+                      value={noteTitle}
+                      onChange={(e) => setNoteTitle(e.target.value)}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ccc', marginBottom: '1rem', fontWeight: 'bold', fontSize: '1.1rem' }}
+                    />
+                    <textarea
+                      placeholder="Nội dung..."
+                      value={noteContent}
+                      onChange={(e) => setNoteContent(e.target.value)}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ccc', minHeight: '150px', marginBottom: '1rem', resize: 'vertical' }}
+                    />
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => {
+                          setShowNoteForm(false);
+                          setEditingNoteId(null);
+                        }}
+                        style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', background: '#f0f0f0', color: '#666', cursor: 'pointer', fontWeight: 'bold' }}
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (!noteTitle.trim()) return;
+                          if (editingNoteId) {
+                            onChange((prev) => ({
+                              ...prev,
+                              notes: prev.notes.map(n => n.id === editingNoteId ? { ...n, title: noteTitle, content: noteContent, updatedAt: new Date().getTime() } : n)
+                            }));
+                          } else {
+                            onChange((prev) => ({
+                              ...prev,
+                              notes: [{ id: new Date().getTime().toString(), title: noteTitle, content: noteContent, createdAt: new Date().getTime(), updatedAt: new Date().getTime() }, ...prev.notes]
+                            }));
+                          }
+                          setShowNoteForm(false);
+                          setEditingNoteId(null);
+                        }}
+                        style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', background: '#f8d467', color: '#213a34', cursor: 'pointer', fontWeight: 'bold' }}
+                      >
+                        Lưu ghi chú
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="notes-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                  {data.notes.map((note) => (
+                    <div key={note.id} className="note-item" style={{ background: '#fff', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(33, 58, 52, 0.1)', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#213a34', lineHeight: 1.4 }}>{note.title}</h3>
+                        <div style={{ display: 'flex', gap: '0.25rem' }}>
+                          <button
+                            onClick={() => {
+                              setNoteTitle(note.title);
+                              setNoteContent(note.content);
+                              setEditingNoteId(note.id);
+                              setShowNoteForm(true);
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', opacity: 0.5 }}
+                            title="Sửa"
+                          >
+                            ✎
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Bạn có chắc chắn muốn xóa ghi chú này?')) {
+                                onChange((prev) => ({
+                                  ...prev,
+                                  notes: prev.notes.filter(n => n.id !== note.id)
+                                }));
+                              }
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', opacity: 0.5, color: 'red' }}
+                            title="Xóa"
+                          >
+                            🗑
+                          </button>
+                        </div>
+                      </div>
+                      <p style={{ margin: 0, color: '#65766f', fontSize: '0.95rem', whiteSpace: 'pre-wrap', flex: 1, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{note.content}</p>
+                      <small style={{ marginTop: '1rem', color: '#999', fontSize: '0.8rem', display: 'block' }}>
+                        {new Date(note.updatedAt).toLocaleDateString('vi-VN')} {new Date(note.updatedAt).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'})}
+                      </small>
+                    </div>
+                  ))}
+                  {data.notes.length === 0 && !showNoteForm && (
+                    <p style={{ color: '#999', fontStyle: 'italic', gridColumn: '1 / -1' }}>Chưa có ghi chú nào. Hãy tạo ghi chú đầu tiên nhé!</p>
+                  )}
+                </div>
+              </article>
             </div>
             <aside className="spending-workspace">
               <header className="spending-heading">
@@ -3183,7 +3331,7 @@ function LifeDashboard({
                       if (!name || !limit) return;
                       updateBudgets([
                         ...budgets,
-                        { id: String(Date.now()), name, limit },
+                        { id: String(new Date().getTime()), name, limit },
                       ]);
                     }}
                   >
@@ -3244,7 +3392,7 @@ function LifeDashboard({
                           ...current,
                           expenses: [
                             {
-                              id: Date.now(),
+                              id: new Date().getTime(),
                               amount,
                               category:
                                 budgets.find((budget) => budget.id === budgetId)
@@ -3473,7 +3621,7 @@ function LifeDashboard({
                         ...current,
                         incomes: [
                           {
-                            id: Date.now(),
+                            id: new Date().getTime(),
                             amount,
                             source,
                             note,
@@ -3606,6 +3754,8 @@ function Header({
   onSignIn: () => void;
   onSignOut: () => void;
 }) {
+  const router = useRouter();
+
   return (
     <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
@@ -3646,6 +3796,13 @@ function Header({
               className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed]"
             >
               Giới thiệu
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/practice')}
+              className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed] font-black text-[#213a34]"
+            >
+              Luyện Đề
             </button>
           </nav>
         )}
