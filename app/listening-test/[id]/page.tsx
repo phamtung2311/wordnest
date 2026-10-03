@@ -56,6 +56,17 @@ export default function ListeningTestPlayPage() {
 
     setResults({ totalCorrect, part1, part2, part3, part4, key });
     setAppState('result');
+    
+    try {
+      const historyStr = localStorage.getItem('toeic_listening_history');
+      const history = historyStr ? JSON.parse(historyStr) : [];
+      history.unshift({
+        testId,
+        score: totalCorrect,
+        date: new Date().toISOString(),
+      });
+      localStorage.setItem('toeic_listening_history', JSON.stringify(history.slice(0, 50)));
+    } catch (e) {}
   };
 
   const getUnansweredCount = () => {
@@ -121,7 +132,7 @@ export default function ListeningTestPlayPage() {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-[#213a34]/10 p-6 bg-white shrink-0">
           <div>
-            <h2 className="font-display text-2xl font-black text-[#213a34]">Listening Đề {testId}</h2>
+            <h2 className="font-display text-2xl font-black text-[#213a34]">Listening ETS 2026 Đề {testId}</h2>
             <p className="text-sm text-gray-500 font-bold mt-1">100 câu hỏi (1 - 100)</p>
           </div>
           <button

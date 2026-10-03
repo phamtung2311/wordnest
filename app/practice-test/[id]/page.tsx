@@ -53,6 +53,17 @@ export default function PracticeTestPlayPage() {
 
     setResults({ totalCorrect, part5, part6, part7, key });
     setAppState('result');
+    
+    try {
+      const historyStr = localStorage.getItem('toeic_reading_history');
+      const history = historyStr ? JSON.parse(historyStr) : [];
+      history.unshift({
+        testId,
+        score: totalCorrect,
+        date: new Date().toISOString(),
+      });
+      localStorage.setItem('toeic_reading_history', JSON.stringify(history.slice(0, 50)));
+    } catch (e) {}
   };
 
   const getUnansweredCount = () => {

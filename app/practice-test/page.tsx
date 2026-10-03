@@ -1,10 +1,27 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { ArrowLeft, FileText, History } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+type TestHistory = {
+  testId: string;
+  score: number;
+  date: string;
+};
 
 export default function PracticeTestSelectionPage() {
   const router = useRouter();
+  const [history, setHistory] = useState<TestHistory[]>([]);
+
+  useEffect(() => {
+    try {
+      const historyStr = localStorage.getItem('toeic_reading_history');
+      if (historyStr) {
+        setHistory(JSON.parse(historyStr));
+      }
+    } catch (e) {}
+  }, []);
 
   const tests = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -21,7 +38,7 @@ export default function PracticeTestSelectionPage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10">
+        <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10 mb-8">
           <h1 className="font-display text-4xl font-black text-[#213a34] mb-2 text-center">
             Luyện Đề TOEIC Reading
           </h1>
@@ -39,11 +56,48 @@ export default function PracticeTestSelectionPage() {
                 <div className="bg-white p-4 rounded-full mb-4 shadow-sm group-hover:scale-110 transition-transform">
                   <FileText className="w-8 h-8 text-[#f29f77]" />
                 </div>
-                <span className="font-bold text-[#213a34] text-lg">Đề {testId}</span>
+                <span className="font-bold text-[#213a34] text-center">ETS 2026<br/>Đề {testId}</span>
               </button>
             ))}
           </div>
         </div>
+
+        {history.length > 0 && (
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10">
+            <h2 className="font-display text-2xl font-black text-[#213a34] mb-6 flex items-center">
+              <History className="w-6 h-6 mr-3 text-[#f29f77]" /> Lịch sử làm bài
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b-2 border-gray-100">
+                    <th className="pb-3 text-gray-500 font-bold">Thời gian</th>
+                    <th className="pb-3 text-gray-500 font-bold">Đề thi</th>
+                    <th className="pb-3 text-gray-500 font-bold">Số câu đúng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((h, idx) => (
+                    <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 text-gray-700">
+                        {new Date(h.date).toLocaleString('vi-VN', { 
+                          hour: '2-digit', minute: '2-digit', 
+                          day: '2-digit', month: '2-digit', year: 'numeric' 
+                        })}
+                      </td>
+                      <td className="py-4 font-bold text-[#213a34]">ETS 2026 Đề {h.testId}</td>
+                      <td className="py-4">
+                        <span className="bg-[#e9f2ed] text-[#213a34] font-bold px-3 py-1 rounded-full">
+                          {h.score}/100
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
