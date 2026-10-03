@@ -3799,7 +3799,7 @@ function Header({
             </button>
             <button
               type="button"
-              onClick={() => router.push('/practice')}
+              onClick={() => router.push('/practice-test')}
               className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed] font-black text-[#213a34]"
             >
               Luyện Đề
