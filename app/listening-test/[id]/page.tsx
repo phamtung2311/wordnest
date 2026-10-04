@@ -23,11 +23,23 @@ export default function ListeningTestPlayPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    try {
+      const savedProgress = localStorage.getItem(`toeic_listening_progress_${testId}`);
+      if (savedProgress) {
+        setAnswers(JSON.parse(savedProgress));
+      }
+    } catch (e) {}
+  }, [testId]);
 
   const handleSelect = (q: number, opt: string) => {
     if (appState === 'playing') {
-      setAnswers(prev => ({ ...prev, [q]: opt }));
+      setAnswers(prev => {
+        const newAnswers = { ...prev, [q]: opt };
+        try {
+          localStorage.setItem(`toeic_listening_progress_${testId}`, JSON.stringify(newAnswers));
+        } catch (e) {}
+        return newAnswers;
+      });
     }
   };
 
@@ -56,6 +68,10 @@ export default function ListeningTestPlayPage() {
 
     setResults({ totalCorrect, part1, part2, part3, part4, key });
     setAppState('result');
+    
+    try {
+      localStorage.removeItem(`toeic_listening_progress_${testId}`);
+    } catch (e) {}
     
     try {
       const historyStr = localStorage.getItem('toeic_listening_history');

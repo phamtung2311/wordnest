@@ -22,11 +22,23 @@ export default function PracticeTestPlayPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    try {
+      const savedProgress = localStorage.getItem(`toeic_reading_progress_${testId}`);
+      if (savedProgress) {
+        setAnswers(JSON.parse(savedProgress));
+      }
+    } catch (e) {}
+  }, [testId]);
 
   const handleSelect = (q: number, opt: string) => {
     if (appState === 'playing') {
-      setAnswers(prev => ({ ...prev, [q]: opt }));
+      setAnswers(prev => {
+        const newAnswers = { ...prev, [q]: opt };
+        try {
+          localStorage.setItem(`toeic_reading_progress_${testId}`, JSON.stringify(newAnswers));
+        } catch (e) {}
+        return newAnswers;
+      });
     }
   };
 
@@ -53,6 +65,10 @@ export default function PracticeTestPlayPage() {
 
     setResults({ totalCorrect, part5, part6, part7, key });
     setAppState('result');
+    
+    try {
+      localStorage.removeItem(`toeic_reading_progress_${testId}`);
+    } catch (e) {}
     
     try {
       const historyStr = localStorage.getItem('toeic_reading_history');

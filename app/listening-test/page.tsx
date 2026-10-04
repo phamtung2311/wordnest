@@ -14,12 +14,24 @@ export default function ListeningTestSelectionPage() {
   const router = useRouter();
   const [history, setHistory] = useState<TestHistory[]>([]);
 
+  const [inProgress, setInProgress] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     try {
       const historyStr = localStorage.getItem('toeic_listening_history');
       if (historyStr) {
         setHistory(JSON.parse(historyStr));
       }
+      
+      const progress: Record<string, boolean> = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('toeic_listening_progress_')) {
+          const id = key.replace('toeic_listening_progress_', '');
+          progress[id] = true;
+        }
+      }
+      setInProgress(progress);
     } catch (e) {}
   }, []);
 
@@ -60,8 +72,13 @@ export default function ListeningTestSelectionPage() {
               <button
                 key={test.id}
                 onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
               >
+                {inProgress[test.id] && (
+                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
+                    Đang làm
+                  </span>
+                )}
                 <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
                   <Headphones className="w-6 h-6 text-[#f29f77]" />
                 </div>
@@ -76,8 +93,13 @@ export default function ListeningTestSelectionPage() {
               <button
                 key={test.id}
                 onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
               >
+                {inProgress[test.id] && (
+                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
+                    Đang làm
+                  </span>
+                )}
                 <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
                   <Headphones className="w-6 h-6 text-[#f29f77]" />
                 </div>
@@ -94,8 +116,13 @@ export default function ListeningTestSelectionPage() {
               <button
                 key={test.id}
                 onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
               >
+                {inProgress[test.id] && (
+                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
+                    Đang làm
+                  </span>
+                )}
                 <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
                   <Headphones className="w-6 h-6 text-[#f29f77]" />
                 </div>

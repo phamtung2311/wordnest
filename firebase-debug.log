@@ -1,31 +1,57 @@
-[debug] [2026-10-04T01:51:53.937Z] ----------------------------------------------------------------------
-[debug] [2026-10-04T01:51:53.939Z] Command:       /usr/bin/node-22 /home/tung/web hoc tu vung/node_modules/.bin/firebase deploy --only hosting
-[debug] [2026-10-04T01:51:53.939Z] CLI Version:   15.32.1
-[debug] [2026-10-04T01:51:53.939Z] Platform:      linux
-[debug] [2026-10-04T01:51:53.939Z] Node Version:  v22.23.1
-[debug] [2026-10-04T01:51:53.939Z] Detected Agent: antigravity
-[debug] [2026-10-04T01:51:53.940Z] Time:          Sun Oct 04 2026 08:51:53 GMT+0700 (Giờ Đông Dương)
-[debug] [2026-10-04T01:51:53.940Z] ----------------------------------------------------------------------
+[debug] [2026-10-04T23:48:47.358Z] ----------------------------------------------------------------------
+[debug] [2026-10-04T23:48:47.362Z] Command:       /usr/bin/node-22 /home/tung/web hoc tu vung/node_modules/.bin/firebase deploy --only hosting
+[debug] [2026-10-04T23:48:47.362Z] CLI Version:   15.32.1
+[debug] [2026-10-04T23:48:47.362Z] Platform:      linux
+[debug] [2026-10-04T23:48:47.363Z] Node Version:  v22.23.1
+[debug] [2026-10-04T23:48:47.363Z] Detected Agent: antigravity
+[debug] [2026-10-04T23:48:47.363Z] Time:          Mon Oct 05 2026 06:48:47 GMT+0700 (Giờ Đông Dương)
+[debug] [2026-10-04T23:48:47.363Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2026-10-04T01:51:54.618Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2026-10-04T01:51:54.619Z] > authorizing via signed-in user (phamvantunghn2b@gmail.com)
-[debug] [2026-10-04T01:51:54.619Z] [iam] checking project wordnest-english-vocab for permissions ["firebase.projects.get","firebasehosting.sites.update"]
-[debug] [2026-10-04T01:51:54.633Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:54.633Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:54.634Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions [none]
-[debug] [2026-10-04T01:51:54.634Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions  x-goog-user-project=wordnest-english-vocab
-[debug] [2026-10-04T01:51:54.634Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2026-10-04T01:51:56.069Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions 200
-[debug] [2026-10-04T01:51:56.069Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2026-10-04T01:51:56.070Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:56.070Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:56.070Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab [none]
-[debug] [2026-10-04T01:51:56.547Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab 200
-[debug] [2026-10-04T01:51:56.547Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab {"projectId":"wordnest-english-vocab","projectNumber":"605822510451","displayName":"WordNest English Vocab","name":"projects/wordnest-english-vocab","resources":{"hostingSite":"wordnest-english-vocab"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_fbd05e7a-2219-4dc9-b3af-aa43c7038590"}
+[debug] [2026-10-04T23:48:47.380Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-10-04T23:48:48.368Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-04T23:48:48.368Z] > authorizing via signed-in user (phamvantunghn2b@gmail.com)
+[debug] [2026-10-04T23:48:48.368Z] [iam] checking project wordnest-english-vocab for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-10-04T23:48:48.369Z] Checked if tokens are valid: false, expires at: 1791085772635
+[debug] [2026-10-04T23:48:48.369Z] Checked if tokens are valid: false, expires at: 1791085772635
+[debug] [2026-10-04T23:48:48.369Z] > refreshing access token with scopes: []
+[debug] [2026-10-04T23:48:48.370Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-04T23:48:48.370Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-04T23:48:48.650Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-04T23:48:48.650Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-04T23:48:48.654Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions [none]
+[debug] [2026-10-04T23:48:48.654Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions  x-goog-user-project=wordnest-english-vocab
+[debug] [2026-10-04T23:48:48.654Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-04T23:48:48.986Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-10-04T23:48:48.987Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-10-04T23:48:49.980Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions 200
+[debug] [2026-10-04T23:48:49.980Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-04T23:48:49.981Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:49.981Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:49.981Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab [none]
+[debug] [2026-10-04T23:48:50.511Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab 200
+[debug] [2026-10-04T23:48:50.511Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab {"projectId":"wordnest-english-vocab","projectNumber":"605822510451","displayName":"WordNest English Vocab","name":"projects/wordnest-english-vocab","resources":{"hostingSite":"wordnest-english-vocab"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_fbd05e7a-2219-4dc9-b3af-aa43c7038590"}
 [info] 
 [info] === Deploying to 'wordnest-english-vocab'...
 [info] 
 [info] i  deploying hosting 
-[debug] [2026-10-04T01:51:56.552Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:56.552Z] Checked if tokens are valid: true, expires at: 1791079873295
-[debug] [2026-10-04T01:51:56.552Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab [none]
+[debug] [2026-10-04T23:48:50.518Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:50.518Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:50.518Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab [none]
+[debug] [2026-10-04T23:48:51.418Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab 200
+[debug] [2026-10-04T23:48:51.418Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab {"name":"projects/wordnest-english-vocab/sites/wordnest-english-vocab","defaultUrl":"https://wordnest-english-vocab.web.app","appId":"1:605822510451:web:618a9b05a4f6b1d7b49106","type":"DEFAULT_SITE"}
+[debug] [2026-10-04T23:48:51.419Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:51.419Z] Checked if tokens are valid: true, expires at: 1791161327650
+[debug] [2026-10-04T23:48:51.420Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions [none]
+[debug] [2026-10-04T23:48:51.420Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-10-04T23:48:52.637Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions 200
+[debug] [2026-10-04T23:48:52.637Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions {"name":"projects/605822510451/sites/wordnest-english-vocab/versions/ac7689ec7934f089","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[wordnest-english-vocab]: beginning deploy... 
+[info] i  hosting[wordnest-english-vocab]: found 252 files in dist/client 
+[debug] [2026-10-04T23:48:52.669Z] [hosting] uploading with 200 concurrency
+[info] i  hosting: hashing files [25/252] (9%) 
+[info] i  hosting: hashing files [163/252] (64%) 
+[info] i  hosting: hashing files [165/252] (65%) 
+[info] i  hosting: hashing files [210/252] (83%) 
+[info] i  hosting: hashing files [212/252] (84%) 
+[info] i  hosting: hashing files [222/252] (88%) 
+[info] i  hosting: hashing files [226/252] (89%) 
