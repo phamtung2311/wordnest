@@ -54,6 +54,15 @@ export default function ListeningTestPlayPage() {
       localStorage.setItem(`toeic_listening_time_${testId}`, String(time));
     } catch (err) {}
   };
+  
+  const handleClose = () => {
+    if (audioRef.current) {
+      try {
+        localStorage.setItem(`toeic_listening_time_${testId}`, String(audioRef.current.currentTime));
+      } catch (err) {}
+    }
+    router.push('/listening-test');
+  };
 
   const handleSelect = (q: number, opt: string) => {
     if (appState === 'playing') {
@@ -177,7 +186,7 @@ export default function ListeningTestPlayPage() {
             <p className="text-sm text-gray-500 font-bold mt-1">100 câu hỏi (1 - 100)</p>
           </div>
           <button
-            onClick={() => router.push('/listening-test')}
+            onClick={handleClose}
             className="rounded-full bg-white border border-gray-300 px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Đóng
