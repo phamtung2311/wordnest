@@ -10,8 +10,11 @@ export const metadata: Metadata = {
   title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
   description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, học bằng flashcard và ôn lại đúng lúc với phương pháp lặp ngắt quãng.',
   icons: {
-    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
-    shortcut: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    shortcut: '/favicon.ico',
   },
   openGraph: {
     title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
