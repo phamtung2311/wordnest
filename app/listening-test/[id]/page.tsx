@@ -119,7 +119,7 @@ export default function ListeningTestPlayPage() {
       <div className="flex h-full w-[60%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
         {mounted && (
           <iframe 
-            src={testId.toString().includes("-") ? `/tests/listening${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf` : `/tests/listening${testId}.pdf`}
+            src={testId.toString().includes("-") ? `/tests/listening${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf?v=2` : `/tests/listening${testId}.pdf?v=2`}
             className="w-full h-full border-0" 
             title={`Listening Test ${testId} PDF`} 
           />
