@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getLcAnswers } from '@/data/lc_answers';
 import { CheckCircle2, XCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 
@@ -20,6 +20,8 @@ export default function ListeningTestPlayPage() {
   const [mounted, setMounted] = useState(false);
   const [appState, setAppState] = useState<AppState>('playing');
   const [results, setResults] = useState<any>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const lastSavedTime = useRef<number>(0);
 
   useEffect(() => {
     setMounted(true);
@@ -28,8 +30,30 @@ export default function ListeningTestPlayPage() {
       if (savedProgress) {
         setAnswers(JSON.parse(savedProgress));
       }
+      const savedTime = localStorage.getItem(`toeic_listening_time_${testId}`);
+      if (savedTime && audioRef.current) {
+        audioRef.current.currentTime = Number(savedTime);
+      }
     } catch (e) {}
   }, [testId]);
+  
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    const time = e.currentTarget.currentTime;
+    if (Math.abs(time - lastSavedTime.current) > 2) {
+      lastSavedTime.current = time;
+      try {
+        localStorage.setItem(`toeic_listening_time_${testId}`, String(time));
+      } catch (err) {}
+    }
+  };
+  
+  const handlePause = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    const time = e.currentTarget.currentTime;
+    lastSavedTime.current = time;
+    try {
+      localStorage.setItem(`toeic_listening_time_${testId}`, String(time));
+    } catch (err) {}
+  };
 
   const handleSelect = (q: number, opt: string) => {
     if (appState === 'playing') {
@@ -71,6 +95,7 @@ export default function ListeningTestPlayPage() {
     
     try {
       localStorage.removeItem(`toeic_listening_progress_${testId}`);
+      localStorage.removeItem(`toeic_listening_time_${testId}`);
     } catch (e) {}
     
     try {
@@ -162,7 +187,7 @@ export default function ListeningTestPlayPage() {
         {/* Audio Player */}
         <div className="p-4 bg-white border-b border-[#213a34]/10 shrink-0">
           <p className="text-sm font-bold text-gray-600 mb-2">Audio {testId.toString().includes("-") ? `ETS ${testId.toString().split("-")[0]} Đề ${testId.toString().split("-")[1]}` : `ETS 2026 Đề ${testId}`}:</p>
-          <audio controls className="w-full h-10 outline-none">
+          <audio ref={audioRef} controls onTimeUpdate={handleTimeUpdate} onPause={handlePause} className="w-full h-10 outline-none">
             <source src={testId.toString().includes("-") ? `/audio/test${testId.toString().split("-")[1]}_${testId.toString().split("-")[0]}.mp3` : `/audio/test${testId}.mp3`} type="audio/mpeg" />
             Trình duyệt của bạn không hỗ trợ thẻ audio.
           </audio>
