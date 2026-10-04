@@ -23,7 +23,13 @@ export default function PracticeTestSelectionPage() {
     } catch (e) {}
   }, []);
 
-  const tests = Array.from({ length: 10 }, (_, i) => i + 1);
+  const tests2026 = Array.from({ length: 10 }, (_, i) => ({ id: `${i + 1}`, name: `ETS 2026 Đề ${i + 1}` }));
+  const tests2024 = Array.from({ length: 10 }, (_, i) => ({ id: `2024-${i + 1}`, name: `ETS 2024 Đề ${i + 1}` }));
+
+  const getTestName = (testId: string) => {
+    if (testId.startsWith('2024-')) return `ETS 2024 Đề ${testId.replace('2024-', '')}`;
+    return `ETS 2026 Đề ${testId}`;
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f0e6] p-8">
@@ -46,17 +52,34 @@ export default function PracticeTestSelectionPage() {
             Chọn một đề bên dưới để bắt đầu làm bài.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {tests.map((testId) => (
+          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2026</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            {tests2026.map((test) => (
               <button
-                key={testId}
-                onClick={() => router.push(`/practice-test/${testId}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-6 border border-[#213a34]/10 group"
+                key={test.id}
+                onClick={() => router.push(`/practice-test/${test.id}`)}
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
               >
-                <div className="bg-white p-4 rounded-full mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                  <FileText className="w-8 h-8 text-[#f29f77]" />
+                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                  <FileText className="w-6 h-6 text-[#f29f77]" />
                 </div>
-                <span className="font-bold text-[#213a34] text-center">ETS 2026<br/>Đề {testId}</span>
+                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
+              </button>
+            ))}
+          </div>
+
+          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2024</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {tests2024.map((test) => (
+              <button
+                key={test.id}
+                onClick={() => router.push(`/practice-test/${test.id}`)}
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
+              >
+                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                  <FileText className="w-6 h-6 text-[#f29f77]" />
+                </div>
+                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
               </button>
             ))}
           </div>
@@ -85,7 +108,7 @@ export default function PracticeTestSelectionPage() {
                           day: '2-digit', month: '2-digit', year: 'numeric' 
                         })}
                       </td>
-                      <td className="py-4 font-bold text-[#213a34]">ETS 2026 Đề {h.testId}</td>
+                      <td className="py-4 font-bold text-[#213a34]">{getTestName(String(h.testId))}</td>
                       <td className="py-4">
                         <span className="bg-[#e9f2ed] text-[#213a34] font-bold px-3 py-1 rounded-full">
                           {h.score}/100

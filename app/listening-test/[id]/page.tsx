@@ -132,7 +132,7 @@ export default function ListeningTestPlayPage() {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-[#213a34]/10 p-6 bg-white shrink-0">
           <div>
-            <h2 className="font-display text-2xl font-black text-[#213a34]">Listening ETS 2026 Đề {testId}</h2>
+            <h2 className="font-display text-2xl font-black text-[#213a34]">Listening {testId.toString().startsWith("2024-") ? `ETS 2024 Đề ${testId.toString().replace("2024-", "")}` : `ETS 2026 Đề ${testId}`}</h2>
             <p className="text-sm text-gray-500 font-bold mt-1">100 câu hỏi (1 - 100)</p>
           </div>
           <button
@@ -145,7 +145,7 @@ export default function ListeningTestPlayPage() {
         
         {/* Audio Player */}
         <div className="p-4 bg-white border-b border-[#213a34]/10 shrink-0">
-          <p className="text-sm font-bold text-gray-600 mb-2">Audio Đề {testId}:</p>
+          <p className="text-sm font-bold text-gray-600 mb-2">Audio {testId.toString().startsWith("2024-") ? `ETS 2024 Đề ${testId.toString().replace("2024-", "")}` : `ETS 2026 Đề ${testId}`}:</p>
           <audio controls className="w-full h-10 outline-none">
             <source src={`/audio/test${testId}.mp3`} type="audio/mpeg" />
             Trình duyệt của bạn không hỗ trợ thẻ audio.

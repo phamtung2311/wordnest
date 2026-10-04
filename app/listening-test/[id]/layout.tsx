@@ -1,7 +1,7 @@
 export function generateStaticParams() {
-  return Array.from({ length: 10 }, (_, i) => ({
-    id: String(i + 1),
-  }));
+  const ids2026 = Array.from({ length: 10 }, (_, i) => ({ id: String(i + 1) }));
+  const ids2024 = Array.from({ length: 10 }, (_, i) => ({ id: `2024-${i + 1}` }));
+  return [...ids2026, ...ids2024];
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
