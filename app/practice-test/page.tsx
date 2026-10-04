@@ -25,9 +25,11 @@ export default function PracticeTestSelectionPage() {
 
   const tests2026 = Array.from({ length: 10 }, (_, i) => ({ id: `${i + 1}`, name: `ETS 2026 Đề ${i + 1}` }));
   const tests2024 = Array.from({ length: 10 }, (_, i) => ({ id: `2024-${i + 1}`, name: `ETS 2024 Đề ${i + 1}` }));
+  const tests2023 = Array.from({ length: 10 }, (_, i) => ({ id: `2023-${i + 1}`, name: `ETS 2023 Đề ${i + 1}` }));
 
   const getTestName = (testId: string) => {
     if (testId.startsWith('2024-')) return `ETS 2024 Đề ${testId.replace('2024-', '')}`;
+    if (testId.startsWith('2023-')) return `ETS 2023 Đề ${testId.replace('2023-', '')}`;
     return `ETS 2026 Đề ${testId}`;
   };
 
@@ -85,6 +87,23 @@ export default function PracticeTestSelectionPage() {
           </div>
         </div>
 
+        
+          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2023</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            {tests2023.map((test) => (
+              <button
+                key={test.id}
+                onClick={() => router.push(`/practice-test/${test.id}`)}
+                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group"
+              >
+                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                  <FileText className="w-6 h-6 text-[#f29f77]" />
+                </div>
+                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
+              </button>
+            ))}
+          </div>
+        
         {history.length > 0 && (
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10">
             <h2 className="font-display text-2xl font-black text-[#213a34] mb-6 flex items-center">

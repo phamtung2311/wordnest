@@ -116,7 +116,7 @@ export default function PracticeTestPlayPage() {
       <div className="flex h-full w-[60%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
         {mounted && (
           <iframe 
-            src={testId.toString().startsWith("2024-") ? `/tests/reading2024_${testId.toString().replace("2024-", "")}.pdf` : `/tests/test${testId}.pdf`}
+            src={testId.toString().includes("-") ? `/tests/reading${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf` : `/tests/test${testId}.pdf`}
             className="w-full h-full border-0" 
             title={`Test ${testId} PDF`} 
           />
@@ -129,7 +129,7 @@ export default function PracticeTestPlayPage() {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-[#213a34]/10 p-6 bg-white shrink-0">
           <div>
-            <h2 className="font-display text-2xl font-black text-[#213a34]">{testId.toString().startsWith("2024-") ? `ETS 2024 Đề ${testId.toString().replace("2024-", "")}` : `ETS 2026 Đề ${testId}`}</h2>
+            <h2 className="font-display text-2xl font-black text-[#213a34]">{testId.toString().includes("-") ? `ETS ${testId.toString().split("-")[0]} Đề ${testId.toString().split("-")[1]}` : `ETS 2026 Đề ${testId}`}</h2>
             <p className="text-sm text-gray-500 font-bold mt-1">100 câu hỏi (101 - 200)</p>
           </div>
           <button
