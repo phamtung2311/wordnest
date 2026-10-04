@@ -1,0 +1,22 @@
+[debug] [2026-10-04T01:18:08.757Z] ----------------------------------------------------------------------
+[debug] [2026-10-04T01:18:08.759Z] Command:       /usr/bin/node-22 /home/tung/web hoc tu vung/node_modules/.bin/firebase deploy --only hosting
+[debug] [2026-10-04T01:18:08.759Z] CLI Version:   15.32.1
+[debug] [2026-10-04T01:18:08.759Z] Platform:      linux
+[debug] [2026-10-04T01:18:08.759Z] Node Version:  v22.23.1
+[debug] [2026-10-04T01:18:08.760Z] Detected Agent: antigravity
+[debug] [2026-10-04T01:18:08.760Z] Time:          Sun Oct 04 2026 08:18:08 GMT+0700 (Giờ Đông Dương)
+[debug] [2026-10-04T01:18:08.760Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-04T01:18:09.561Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-04T01:18:09.561Z] > authorizing via signed-in user (phamvantunghn2b@gmail.com)
+[debug] [2026-10-04T01:18:09.561Z] [iam] checking project wordnest-english-vocab for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-10-04T01:18:09.575Z] Checked if tokens are valid: true, expires at: 1791079873295
+[debug] [2026-10-04T01:18:09.576Z] Checked if tokens are valid: true, expires at: 1791079873295
+[debug] [2026-10-04T01:18:09.577Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions [none]
+[debug] [2026-10-04T01:18:09.577Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions  x-goog-user-project=wordnest-english-vocab
+[debug] [2026-10-04T01:18:09.577Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-04T01:18:10.953Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions 200
+[debug] [2026-10-04T01:18:10.954Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-04T01:18:10.954Z] Checked if tokens are valid: true, expires at: 1791079873295
+[debug] [2026-10-04T01:18:10.954Z] Checked if tokens are valid: true, expires at: 1791079873295
+[debug] [2026-10-04T01:18:10.955Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab [none]

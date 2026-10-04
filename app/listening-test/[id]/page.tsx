@@ -119,7 +119,7 @@ export default function ListeningTestPlayPage() {
       <div className="flex h-full w-[60%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
         {mounted && (
           <iframe 
-            src={`/tests/listening${testId}.pdf`} 
+            src={testId.toString().startsWith("2024-") ? `/tests/listening2024_${testId.toString().replace("2024-", "")}.pdf` : `/tests/listening${testId}.pdf`}
             className="w-full h-full border-0" 
             title={`Listening Test ${testId} PDF`} 
           />
@@ -147,7 +147,7 @@ export default function ListeningTestPlayPage() {
         <div className="p-4 bg-white border-b border-[#213a34]/10 shrink-0">
           <p className="text-sm font-bold text-gray-600 mb-2">Audio {testId.toString().startsWith("2024-") ? `ETS 2024 Đề ${testId.toString().replace("2024-", "")}` : `ETS 2026 Đề ${testId}`}:</p>
           <audio controls className="w-full h-10 outline-none">
-            <source src={`/audio/test${testId}.mp3`} type="audio/mpeg" />
+            <source src={testId.toString().startsWith("2024-") ? `/audio/test${testId.toString().replace("2024-", "")}_2024.mp3` : `/audio/test${testId}.mp3`} type="audio/mpeg" />
             Trình duyệt của bạn không hỗ trợ thẻ audio.
           </audio>
         </div>

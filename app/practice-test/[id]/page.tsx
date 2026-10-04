@@ -116,7 +116,7 @@ export default function PracticeTestPlayPage() {
       <div className="flex h-full w-[60%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
         {mounted && (
           <iframe 
-            src={`/tests/test${testId}.pdf`} 
+            src={testId.toString().startsWith("2024-") ? `/tests/reading2024_${testId.toString().replace("2024-", "")}.pdf` : `/tests/test${testId}.pdf`}
             className="w-full h-full border-0" 
             title={`Test ${testId} PDF`} 
           />
