@@ -301,8 +301,8 @@ export default function ListeningTestPlayPage() {
                 return (
                   <div key={q} className={`flex items-center justify-between px-4 py-2 rounded-xl shadow-sm border border-gray-100 relative ${rowClass}`}>
                     <div className="flex items-center w-10 relative">
-                      {(isReviewing || (isPartialReviewing && isAnswered)) && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 absolute -left-4" />}
-                      {(isReviewing || (isPartialReviewing && isAnswered)) && isWrong && <XCircle className="w-4 h-4 text-red-500 absolute -left-4" />}
+                      {(isReviewing || (isPartialReviewing && !isUnanswered)) && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 absolute -left-4" />}
+                      {(isReviewing || (isPartialReviewing && !isUnanswered)) && isWrong && <XCircle className="w-4 h-4 text-red-500 absolute -left-4" />}
                       <span className="font-bold text-[#213a34]">{q}.</span>
                     </div>
                     <div className="flex gap-2">
