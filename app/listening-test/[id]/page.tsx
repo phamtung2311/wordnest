@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getLcAnswers } from '@/data/lc_answers';
 import { CheckCircle2, XCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 
-type AppState = 'playing' | 'confirming' | 'result' | 'reviewing';
+type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
 
 export default function ListeningTestPlayPage() {
   const params = useParams();
@@ -20,6 +20,7 @@ export default function ListeningTestPlayPage() {
   const [mounted, setMounted] = useState(false);
   const [appState, setAppState] = useState<AppState>('playing');
   const [results, setResults] = useState<any>(null);
+  const [partialResults, setPartialResults] = useState<{answered: number, correct: number, key: any} | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const lastSavedTime = useRef<number>(0);
 
@@ -76,6 +77,19 @@ export default function ListeningTestPlayPage() {
     }
   };
 
+  
+  const handlePartialCheck = () => {
+    const key = getLcAnswers(testId);
+    let answered = 0;
+    let correct = 0;
+    for (const [qStr, ans] of Object.entries(answers)) {
+      answered++;
+      if (key[qStr] === ans) correct++;
+    }
+    setPartialResults({ answered, correct, key });
+    setAppState('partial_reviewing');
+  };
+
   const handlePreSubmit = () => {
     setAppState('confirming');
   };
@@ -125,9 +139,11 @@ export default function ListeningTestPlayPage() {
 
   const renderBubble = (q: number, opt: string) => {
     const isSelected = answers[q] === opt;
+    const isAnswered = !!answers[q];
     
-    if (appState === 'reviewing') {
-      const isCorrectOption = results?.key[String(q)] === opt;
+    if (appState === 'reviewing' || (appState === 'partial_reviewing' && isAnswered)) {
+      const keyObj = appState === 'reviewing' ? results?.key : partialResults?.key;
+      const isCorrectOption = keyObj?.[String(q)] === opt;
       const isWrongSelected = isSelected && !isCorrectOption;
 
       let bubbleClass = 'bg-white text-gray-400 border-gray-200';
@@ -261,28 +277,32 @@ export default function ListeningTestPlayPage() {
             </div>
           )}
 
-          {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming') && (
+          {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming' || appState === 'partial_reviewing') && (
             <div className="grid grid-cols-1 gap-y-4 max-w-xs mx-auto pb-20">
               {questions.map((q) => {
                 const userAns = answers[q];
                 const isReviewing = appState === 'reviewing';
-                const correctAns = results?.key?.[String(q)];
+                const correctAns = (appState === 'partial_reviewing' ? partialResults?.key : results?.key)?.[String(q)];
                 const isCorrect = userAns === correctAns;
                 const isUnanswered = !userAns;
                 const isWrong = userAns && !isCorrect;
                 
                 const qOptions = (q >= 7 && q <= 31) ? part2Options : options;
 
+                const isPartialReviewing = appState === 'partial_reviewing';
+                
                 let rowClass = "bg-white";
                 if (isReviewing && isUnanswered) {
                   rowClass = "bg-gray-200 border-gray-300 opacity-80";
+                } else if (isPartialReviewing && !isUnanswered) {
+                  rowClass = isCorrect ? "bg-green-50 border-green-100" : "bg-red-50 border-red-100";
                 }
 
                 return (
                   <div key={q} className={`flex items-center justify-between px-4 py-2 rounded-xl shadow-sm border border-gray-100 relative ${rowClass}`}>
                     <div className="flex items-center w-10 relative">
-                      {isReviewing && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 absolute -left-4" />}
-                      {isReviewing && isWrong && <XCircle className="w-4 h-4 text-red-500 absolute -left-4" />}
+                      {(isReviewing || (isPartialReviewing && isAnswered)) && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 absolute -left-4" />}
+                      {(isReviewing || (isPartialReviewing && isAnswered)) && isWrong && <XCircle className="w-4 h-4 text-red-500 absolute -left-4" />}
                       <span className="font-bold text-[#213a34]">{q}.</span>
                     </div>
                     <div className="flex gap-2">
@@ -297,9 +317,23 @@ export default function ListeningTestPlayPage() {
         
         {/* Footer actions */}
         {(appState === 'playing' || appState === 'confirming') && (
-          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-end">
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-end gap-3">
+            <button onClick={handlePartialCheck} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
+              Chấm điểm nhanh
+            </button>
             <button onClick={handlePreSubmit} className="bg-[#f29f77] hover:bg-[#e08b63] text-white font-bold py-3 px-8 rounded-full transition-colors shadow-sm">
               Nộp bài
+            </button>
+          </div>
+        )}
+        
+        {appState === 'partial_reviewing' && (
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center">
+            <div className="font-bold text-[#213a34]">
+              Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span>
+            </div>
+            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
+              Tiếp tục làm bài
             </button>
           </div>
         )}

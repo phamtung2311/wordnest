@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { getAnswers } from '@/data/test_answers';
 import { CheckCircle2, XCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 
-type AppState = 'playing' | 'confirming' | 'result' | 'reviewing';
+type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
 
 export default function PracticeTestPlayPage() {
   const params = useParams();
@@ -19,6 +19,7 @@ export default function PracticeTestPlayPage() {
   const [mounted, setMounted] = useState(false);
   const [appState, setAppState] = useState<AppState>('playing');
   const [results, setResults] = useState<any>(null);
+  const [partialResults, setPartialResults] = useState<{answered: number, correct: number, key: any} | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -40,6 +41,19 @@ export default function PracticeTestPlayPage() {
         return newAnswers;
       });
     }
+  };
+
+  
+  const handlePartialCheck = () => {
+    const key = getTestAnswers(testId);
+    let answered = 0;
+    let correct = 0;
+    for (const [qStr, ans] of Object.entries(answers)) {
+      answered++;
+      if (key[qStr] === ans) correct++;
+    }
+    setPartialResults({ answered, correct, key });
+    setAppState('partial_reviewing');
   };
 
   const handlePreSubmit = () => {
@@ -88,9 +102,11 @@ export default function PracticeTestPlayPage() {
 
   const renderBubble = (q: number, opt: string) => {
     const isSelected = answers[q] === opt;
+    const isAnswered = !!answers[q];
     
-    if (appState === 'reviewing') {
-      const isCorrectOption = results?.key[String(q)] === opt;
+    if (appState === 'reviewing' || (appState === 'partial_reviewing' && isAnswered)) {
+      const keyObj = appState === 'reviewing' ? results?.key : partialResults?.key;
+      const isCorrectOption = keyObj?.[String(q)] === opt;
       const isWrongSelected = isSelected && !isCorrectOption;
 
       let bubbleClass = 'bg-white text-gray-400 border-gray-200';
@@ -211,12 +227,12 @@ export default function PracticeTestPlayPage() {
             </div>
           )}
 
-          {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming') && (
+          {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming' || appState === 'partial_reviewing') && (
             <div className="grid grid-cols-1 gap-y-4 max-w-xs mx-auto pb-20">
               {questions.map((q) => {
                 const userAns = answers[q];
                 const isReviewing = appState === 'reviewing';
-                const correctAns = results?.key?.[String(q)];
+                const correctAns = (appState === 'partial_reviewing' ? partialResults?.key : results?.key)?.[String(q)];
                 const isCorrect = userAns === correctAns;
                 const isUnanswered = !userAns;
                 const isWrong = userAns && !isCorrect;
@@ -245,9 +261,23 @@ export default function PracticeTestPlayPage() {
         
         {/* Footer actions */}
         {(appState === 'playing' || appState === 'confirming') && (
-          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-end">
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-end gap-3">
+            <button onClick={handlePartialCheck} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
+              Chấm điểm nhanh
+            </button>
             <button onClick={handlePreSubmit} className="bg-[#f29f77] hover:bg-[#e08b63] text-white font-bold py-3 px-8 rounded-full transition-colors shadow-sm">
               Nộp bài
+            </button>
+          </div>
+        )}
+        
+        {appState === 'partial_reviewing' && (
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center">
+            <div className="font-bold text-[#213a34]">
+              Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span>
+            </div>
+            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
+              Tiếp tục làm bài
             </button>
           </div>
         )}
