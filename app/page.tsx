@@ -3755,6 +3755,14 @@ function Header({
   onSignOut: () => void;
 }) {
   const router = useRouter();
+  const [activeHash, setActiveHash] = useState('');
+
+  useEffect(() => {
+    setActiveHash(window.location.hash || '#home');
+    const handleHashChange = () => setActiveHash(window.location.hash || '#home');
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   return (
     <header className="relative z-20 border-b border-[#213a34]/10 bg-[#f5f0e6]/90 px-5 py-4 backdrop-blur md:px-8">
@@ -3772,28 +3780,28 @@ function Header({
             <button
               type="button"
               onClick={onHome}
-              className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed]"
+              className={`rounded-full px-3 py-1.5 ${activeHash === "#home" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Trang chủ
             </button>
             <button
               type="button"
               onClick={onLibrary}
-              className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed]"
+              className={`rounded-full px-3 py-1.5 ${activeHash === "#library" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Bộ từ
             </button>
             <button
               type="button"
               onClick={onLife}
-              className="rounded-full bg-[#f8d467] px-3 py-1.5 hover:bg-[#f3c943]"
+              className={`rounded-full px-3 py-1.5 ${activeHash === "#life" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Đời sống
             </button>
             <button
               type="button"
               onClick={onAbout}
-              className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed]"
+              className={`rounded-full px-3 py-1.5 ${activeHash === "#about" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Giới thiệu
             </button>
@@ -3807,7 +3815,7 @@ function Header({
             <button
               type="button"
               onClick={() => router.push('/listening-test')}
-              className="rounded-full bg-[#e9f2ed] px-4 py-1.5 hover:bg-[#d5e5db] font-black text-[#213a34]"
+              className="rounded-full px-4 py-1.5 hover:bg-[#e9f2ed] font-black text-[#213a34]"
             >
               Luyện Listening TOEIC
             </button>
