@@ -262,7 +262,7 @@ export default function ListeningTestPlayPage() {
           )}
 
           {(appState === 'playing' || appState === 'reviewing' || appState === 'confirming') && (
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-xl mx-auto pb-20">
+            <div className="grid grid-cols-1 gap-y-4 max-w-xs mx-auto pb-20">
               {questions.map((q) => {
                 const userAns = answers[q];
                 const isReviewing = appState === 'reviewing';
