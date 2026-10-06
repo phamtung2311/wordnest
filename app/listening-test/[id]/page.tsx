@@ -20,7 +20,7 @@ export default function ListeningTestPlayPage() {
   const [mounted, setMounted] = useState(false);
   const [appState, setAppState] = useState<AppState>('playing');
   const [results, setResults] = useState<any>(null);
-  const [partialResults, setPartialResults] = useState<{answered: number, correct: number, key: any} | null>(null);
+  const [partialResults, setPartialResults] = useState<any>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const lastSavedTime = useRef<number>(0);
 
@@ -82,11 +82,24 @@ export default function ListeningTestPlayPage() {
     const key = getLcAnswers(testId);
     let answered = 0;
     let correct = 0;
+    let part1 = { correct: 0, total: 6 };
+    let part2 = { correct: 0, total: 25 };
+    let part3 = { correct: 0, total: 39 };
+    let part4 = { correct: 0, total: 30 };
+
     for (const [qStr, ans] of Object.entries(answers)) {
       answered++;
-      if (key[qStr] === ans) correct++;
+      const qNum = parseInt(qStr);
+      const isCorrect = key[qStr] === ans;
+      if (isCorrect) {
+        correct++;
+        if (qNum <= 6) part1.correct++;
+        else if (qNum <= 31) part2.correct++;
+        else if (qNum <= 70) part3.correct++;
+        else part4.correct++;
+      }
     }
-    setPartialResults({ answered, correct, key });
+    setPartialResults({ answered, correct, part1, part2, part3, part4, key });
     setAppState('partial_reviewing');
   };
 
@@ -328,12 +341,17 @@ export default function ListeningTestPlayPage() {
         )}
         
         {appState === 'partial_reviewing' && (
-          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center">
-            <div className="font-bold text-[#213a34]">
-              Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span>
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center gap-4">
+            <div className="font-bold text-[#213a34] flex gap-3 overflow-x-auto whitespace-nowrap scrollbar-none items-center text-sm md:text-base">
+              <div>Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span></div>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <div>P1: <span className="text-green-600">{partialResults?.part1?.correct}</span>/6</div>
+              <div>P2: <span className="text-green-600">{partialResults?.part2?.correct}</span>/25</div>
+              <div>P3: <span className="text-green-600">{partialResults?.part3?.correct}</span>/39</div>
+              <div>P4: <span className="text-green-600">{partialResults?.part4?.correct}</span>/30</div>
             </div>
-            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
-              Tiếp tục làm bài
+            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm whitespace-nowrap">
+              Tiếp tục
             </button>
           </div>
         )}

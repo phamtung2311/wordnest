@@ -1,0 +1,42 @@
+[debug] [2026-10-06T13:41:36.028Z] ----------------------------------------------------------------------
+[debug] [2026-10-06T13:41:36.030Z] Command:       /usr/bin/node-22 /home/tung/web hoc tu vung/node_modules/.bin/firebase deploy --only hosting
+[debug] [2026-10-06T13:41:36.030Z] CLI Version:   15.32.1
+[debug] [2026-10-06T13:41:36.030Z] Platform:      linux
+[debug] [2026-10-06T13:41:36.030Z] Node Version:  v22.23.1
+[debug] [2026-10-06T13:41:36.030Z] Detected Agent: antigravity
+[debug] [2026-10-06T13:41:36.031Z] Time:          Tue Oct 06 2026 20:41:36 GMT+0700 (Giờ Đông Dương)
+[debug] [2026-10-06T13:41:36.031Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-06T13:41:36.960Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-06T13:41:36.960Z] > authorizing via signed-in user (phamvantunghn2b@gmail.com)
+[debug] [2026-10-06T13:41:36.960Z] [iam] checking project wordnest-english-vocab for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-10-06T13:41:36.974Z] Checked if tokens are valid: false, expires at: 1791251525955
+[debug] [2026-10-06T13:41:36.974Z] Checked if tokens are valid: false, expires at: 1791251525955
+[debug] [2026-10-06T13:41:36.975Z] > refreshing access token with scopes: []
+[debug] [2026-10-06T13:41:36.977Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-06T13:41:36.977Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-06T13:41:37.177Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-06T13:41:37.177Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-06T13:41:37.184Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions [none]
+[debug] [2026-10-06T13:41:37.184Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions  x-goog-user-project=wordnest-english-vocab
+[debug] [2026-10-06T13:41:37.184Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-06T13:41:38.619Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions 200
+[debug] [2026-10-06T13:41:38.620Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/wordnest-english-vocab:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-06T13:41:38.621Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:38.621Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:38.621Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab [none]
+[debug] [2026-10-06T13:41:39.053Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab 200
+[debug] [2026-10-06T13:41:39.053Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/wordnest-english-vocab {"projectId":"wordnest-english-vocab","projectNumber":"605822510451","displayName":"WordNest English Vocab","name":"projects/wordnest-english-vocab","resources":{"hostingSite":"wordnest-english-vocab"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_fbd05e7a-2219-4dc9-b3af-aa43c7038590"}
+[info] 
+[info] === Deploying to 'wordnest-english-vocab'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-10-06T13:41:39.059Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:39.059Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:39.059Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab [none]
+[debug] [2026-10-06T13:41:39.913Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab 200
+[debug] [2026-10-06T13:41:39.913Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/wordnest-english-vocab/sites/wordnest-english-vocab {"name":"projects/wordnest-english-vocab/sites/wordnest-english-vocab","defaultUrl":"https://wordnest-english-vocab.web.app","appId":"1:605822510451:web:618a9b05a4f6b1d7b49106","type":"DEFAULT_SITE"}
+[debug] [2026-10-06T13:41:39.914Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:39.915Z] Checked if tokens are valid: true, expires at: 1791297696177
+[debug] [2026-10-06T13:41:39.915Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions [none]
+[debug] [2026-10-06T13:41:39.915Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/wordnest-english-vocab/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}

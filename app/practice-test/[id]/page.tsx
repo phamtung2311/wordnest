@@ -19,7 +19,7 @@ export default function PracticeTestPlayPage() {
   const [mounted, setMounted] = useState(false);
   const [appState, setAppState] = useState<AppState>('playing');
   const [results, setResults] = useState<any>(null);
-  const [partialResults, setPartialResults] = useState<{answered: number, correct: number, key: any} | null>(null);
+  const [partialResults, setPartialResults] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -48,11 +48,22 @@ export default function PracticeTestPlayPage() {
     const key = getAnswers(testId);
     let answered = 0;
     let correct = 0;
+    let part5 = { correct: 0, total: 30 };
+    let part6 = { correct: 0, total: 16 };
+    let part7 = { correct: 0, total: 54 };
+
     for (const [qStr, ans] of Object.entries(answers)) {
       answered++;
-      if (key[qStr] === ans) correct++;
+      const qNum = parseInt(qStr);
+      const isCorrect = key[qStr] === ans;
+      if (isCorrect) {
+        correct++;
+        if (qNum <= 130) part5.correct++;
+        else if (qNum <= 146) part6.correct++;
+        else part7.correct++;
+      }
     }
-    setPartialResults({ answered, correct, key });
+    setPartialResults({ answered, correct, part5, part6, part7, key });
     setAppState('partial_reviewing');
   };
 
@@ -272,12 +283,16 @@ export default function PracticeTestPlayPage() {
         )}
         
         {appState === 'partial_reviewing' && (
-          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center">
-            <div className="font-bold text-[#213a34]">
-              Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span>
+          <div className="absolute bottom-0 w-full p-4 bg-white border-t border-[#213a34]/10 shrink-0 flex justify-between items-center gap-4">
+            <div className="font-bold text-[#213a34] flex gap-3 overflow-x-auto whitespace-nowrap scrollbar-none items-center text-sm md:text-base">
+              <div>Đã làm: <span className="text-gray-700">{partialResults?.answered}</span> | Đúng: <span className="text-green-600">{partialResults?.correct}</span></div>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <div>P5: <span className="text-green-600">{partialResults?.part5?.correct}</span>/30</div>
+              <div>P6: <span className="text-green-600">{partialResults?.part6?.correct}</span>/16</div>
+              <div>P7: <span className="text-green-600">{partialResults?.part7?.correct}</span>/54</div>
             </div>
-            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm">
-              Tiếp tục làm bài
+            <button onClick={() => setAppState('playing')} className="bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm whitespace-nowrap">
+              Tiếp tục
             </button>
           </div>
         )}
