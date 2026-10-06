@@ -45,7 +45,7 @@ export default function PracticeTestPlayPage() {
 
   
   const handlePartialCheck = () => {
-    const key = getTestAnswers(testId);
+    const key = getAnswers(testId);
     let answered = 0;
     let correct = 0;
     for (const [qStr, ans] of Object.entries(answers)) {
