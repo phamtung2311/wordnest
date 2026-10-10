@@ -156,7 +156,7 @@ export default function PracticeTestPlayPage() {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#f5f0e6]">
       {/* Left Column: PDF Viewer */}
-      <div className="flex h-full w-[60%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
+      <div className="flex h-full w-[70%] flex-col bg-gray-600 border-r border-[#213a34]/10 relative">
         {mounted && (
           <iframe 
             src={testId.toString().includes("-") ? `/tests/reading${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf?v=2` : `/tests/test${testId}.pdf?v=2`}
@@ -167,7 +167,7 @@ export default function PracticeTestPlayPage() {
       </div>
 
       {/* Right Column */}
-      <div className="flex h-full w-[40%] flex-col bg-[#e9f2ed] relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
+      <div className="flex h-full w-[30%] flex-col bg-[#e9f2ed] relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
         
         {/* Header */}
         <div className="flex justify-between items-center border-b border-[#213a34]/10 p-6 bg-white shrink-0">
