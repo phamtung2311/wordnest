@@ -1,16 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { QuestionItem } from '@/data/intensive_listening_test1';
+import type { QuestionItem, DialogueLine } from '@/data/intensive_listening_test1';
 import {
   CheckCircle2,
   XCircle,
-  HelpCircle,
   RotateCcw,
   Sparkles,
   Eye,
   EyeOff,
   Check,
+  FileText,
+  Languages,
 } from 'lucide-react';
 
 interface QuizTabProps {
@@ -18,6 +19,7 @@ interface QuizTabProps {
   questions: QuestionItem[];
   part?: 1 | 2 | 3 | 4;
   imageUrl?: string;
+  transcript?: DialogueLine[];
   onCompleteItem?: (score: number, total: number) => void;
 }
 
@@ -26,6 +28,7 @@ export function QuizTab({
   questions,
   part = 1,
   imageUrl,
+  transcript,
   onCompleteItem,
 }: QuizTabProps) {
   // Selected answers: { [questionNum]: 'A' | 'B' | 'C' | 'D' }
@@ -33,6 +36,8 @@ export function QuizTab({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [peekTranscript, setPeekTranscript] = useState<boolean>(false);
+  const [showTranslation, setShowTranslation] = useState<boolean>(false);
+  const [showScript, setShowScript] = useState<boolean>(false);
 
   // Reset state when switching items
   useEffect(() => {
@@ -40,14 +45,27 @@ export function QuizTab({
     setIsSubmitted(false);
     setShowExplanation(false);
     setPeekTranscript(false);
+    setShowTranslation(false);
+    setShowScript(false);
   }, [itemId]);
 
   const handleSelectOption = (qNum: number, key: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
+    const nextAnswers = {
+      ...selectedAnswers,
       [qNum]: key,
-    }));
+    };
+    setSelectedAnswers(nextAnswers);
+
+    // Part 1 & Part 2: Kiểm tra đáp án chính xác NGAY LẬP TỨC sau khi chọn
+    if (part === 1 || part === 2) {
+      setIsSubmitted(true);
+      setShowExplanation(true);
+      const isRight = key === questions[0]?.correctAnswer;
+      if (onCompleteItem) {
+        onCompleteItem(isRight ? 1 : 0, 1);
+      }
+    }
   };
 
   const handleCheckAnswers = () => {
@@ -68,6 +86,7 @@ export function QuizTab({
     setSelectedAnswers({});
     setIsSubmitted(false);
     setShowExplanation(false);
+    setPeekTranscript(false);
   };
 
   const totalQuestions = questions.length;
@@ -81,7 +100,7 @@ export function QuizTab({
 
   return (
     <div className="space-y-6">
-      {/* Intro banner */}
+      {/* Intro banner & Control Toggles */}
       <div className="bg-[#f5f0e6] rounded-2xl p-4 border border-[#213a34]/10 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-sm shrink-0">
@@ -89,17 +108,17 @@ export function QuizTab({
           </div>
           <div>
             <h3 className="font-black text-[#213a34] text-sm">
-              Luyện trắc nghiệm {isAudioOnlyExamPart ? '(Ẩn Lời Thoại · Chuẩn Thi Thật)' : '(Part ' + part + ')'}
+              Luyện trắc nghiệm {isAudioOnlyExamPart ? '(Ẩn Lời Thoại · Chọn Là Chấm Điểm)' : `(Part ${part})`}
             </h3>
             <p className="text-xs text-gray-600 font-medium">
               {isAudioOnlyExamPart
-                ? 'Đề thi thật không in chữ. Hãy nghe audio, chọn đáp án và bấm "Kiểm tra đáp án" để xem giải thích.'
-                : 'Tập trung nghe audio, chọn đáp án đúng nhất sau đó bấm "Kiểm tra đáp án".'}
+                ? 'Bấm chọn đáp án để kiểm tra kết quả ngay lập tức kèm lời giải.'
+                : 'Tập trung nghe audio, chọn đáp án và bấm "Kiểm tra đáp án".'}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Peeking toggle for Part 1 & 2 */}
           {isAudioOnlyExamPart && !isSubmitted && (
             <button
@@ -110,7 +129,7 @@ export function QuizTab({
               {peekTranscript ? (
                 <>
                   <EyeOff className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Ẩn lời thoại (Luyện phản xạ)</span>
+                  <span>Ẩn lời thoại</span>
                 </>
               ) : (
                 <>
@@ -121,6 +140,36 @@ export function QuizTab({
             </button>
           )}
 
+          {/* Script Toggle for Part 3 & 4 */}
+          {(part === 3 || part === 4) && transcript && transcript.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowScript(!showScript)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border shadow-xs transition-colors ${
+                showScript
+                  ? 'bg-[#213a34] text-white border-[#213a34]'
+                  : 'bg-white text-[#213a34] border-[#213a34]/15 hover:bg-[#e9f2ed]'
+              }`}
+            >
+              <FileText className={`w-3.5 h-3.5 ${showScript ? 'text-[#f8d467]' : 'text-blue-600'}`} />
+              <span>{showScript ? 'Ẩn lời thoại (Script)' : 'Hiện lời thoại (Script)'}</span>
+            </button>
+          )}
+
+          {/* Translation Toggle for all parts */}
+          <button
+            type="button"
+            onClick={() => setShowTranslation(!showTranslation)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border shadow-xs transition-colors ${
+              showTranslation
+                ? 'bg-emerald-700 text-white border-emerald-700'
+                : 'bg-white text-[#213a34] border-[#213a34]/15 hover:bg-[#e9f2ed]'
+            }`}
+          >
+            <Languages className={`w-3.5 h-3.5 ${showTranslation ? 'text-[#f8d467]' : 'text-emerald-700'}`} />
+            <span>{showTranslation ? 'Ẩn dịch Tiếng Việt' : 'Hiện dịch Tiếng Việt'}</span>
+          </button>
+
           {isSubmitted && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-black ${
@@ -129,24 +178,70 @@ export function QuizTab({
                   : 'bg-amber-100 text-amber-800 border border-amber-300'
               }`}
             >
-              Kết quả: {correctCount}/{totalQuestions} câu đúng
+              {correctCount}/{totalQuestions} câu đúng
             </span>
           )}
         </div>
       </div>
 
-      {/* Part 1 Photo Display */}
-      {part === 1 && imageUrl && (
+      {/* Part 3 & 4 Expandable Script Box */}
+      {(part === 3 || part === 4) && showScript && transcript && transcript.length > 0 && (
+        <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border-2 border-[#213a34]/15 shadow-sm space-y-3 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between border-b border-[#213a34]/10 pb-2.5">
+            <span className="text-xs font-black uppercase tracking-wider text-[#213a34] flex items-center gap-1.5">
+              📜 Lời thoại đoạn nghe ({part === 3 ? 'Hội thoại' : 'Bài nói'})
+            </span>
+            <span className="text-[11px] text-gray-500 font-bold">
+              {showTranslation ? 'Đang bật bản dịch Tiếng Việt' : 'Bấm nút "Hiện dịch Tiếng Việt" để đối chiếu'}
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {transcript.map((line, idx) => (
+              <div key={line.id || idx} className="text-sm">
+                <div className="flex items-start gap-2.5">
+                  {line.speaker && (
+                    <span
+                      className={`text-[11px] font-black px-2.5 py-0.5 rounded-full shrink-0 mt-0.5 ${
+                        line.speaker.toLowerCase().includes('w')
+                          ? 'bg-rose-100 text-rose-700 border border-rose-200'
+                          : 'bg-blue-100 text-blue-800 border border-blue-200'
+                      }`}
+                    >
+                      {line.speaker}
+                    </span>
+                  )}
+                  <p className="font-extrabold text-[#213a34] leading-relaxed flex-1">
+                    {line.text}
+                  </p>
+                </div>
+                {showTranslation && line.vietnamese && (
+                  <p className="text-xs text-gray-600 font-medium ml-12 sm:ml-14 mt-1 bg-[#fbf9f5] p-2 rounded-xl border border-gray-100">
+                    {line.vietnamese}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Image / Graphic Display for Part 1, Part 3 & Part 4 */}
+      {imageUrl && (
         <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
           <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
             <img
               src={imageUrl}
-              alt={`Part 1 - ${questions[0]?.num ? 'Câu ' + questions[0].num : 'Hình ảnh'}`}
+              alt={part === 1 ? 'Part 1 bức tranh' : 'Bảng biểu / Sơ đồ đính kèm'}
               className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl"
             />
           </div>
           <span className="text-xs font-bold text-gray-500 mt-2.5 flex items-center gap-1.5">
-            📸 Bức tranh câu hỏi {questions[0]?.num}
+            {part === 1 ? (
+              `📸 Bức tranh câu hỏi ${questions[0]?.num}`
+            ) : (
+              `📊 Bảng biểu / Sơ đồ đính kèm câu hỏi (Look at the graphic)`
+            )}
           </span>
         </div>
       )}
@@ -190,7 +285,7 @@ export function QuizTab({
                       💡 TOEIC Part 2 không in sẵn câu hỏi hay phương án trên đề thi.
                     </p>
                   )}
-                  {canShowTranscriptText && q.vietnameseQuestion && (
+                  {showTranslation && q.vietnameseQuestion && (
                     <p className="text-xs text-gray-500 font-bold mt-1">
                       Dịch: {q.vietnameseQuestion}
                     </p>
@@ -265,7 +360,7 @@ export function QuizTab({
                         <div className="font-extrabold text-[#213a34] text-sm sm:text-base leading-relaxed">
                           {optionDisplayText}
                         </div>
-                        {canShowTranscriptText && opt.vietnamese && (
+                        {showTranslation && opt.vietnamese && (
                           <div className="text-xs text-gray-500 font-medium mt-0.5">
                             {opt.vietnamese}
                           </div>
@@ -296,7 +391,11 @@ export function QuizTab({
       {/* Bottom Action Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#213a34]/10">
         <div className="text-xs text-gray-500 font-bold">
-          Đã chọn {answeredCount}/{totalQuestions} câu
+          {isAudioOnlyExamPart ? (
+            isSubmitted ? 'Đã kiểm tra kết quả' : 'Chưa chọn đáp án'
+          ) : (
+            `Đã chọn ${answeredCount}/${totalQuestions} câu`
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -327,14 +426,16 @@ export function QuizTab({
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              disabled={answeredCount === 0}
-              onClick={handleCheckAnswers}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#213a34] hover:bg-[#2c4e46] text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
-            >
-              <Check className="w-4 h-4 text-[#f8d467]" /> Kiểm tra đáp án
-            </button>
+            !isAudioOnlyExamPart && (
+              <button
+                type="button"
+                disabled={answeredCount === 0}
+                onClick={handleCheckAnswers}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#213a34] hover:bg-[#2c4e46] text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+              >
+                <Check className="w-4 h-4 text-[#f8d467]" /> Kiểm tra đáp án
+              </button>
+            )
           )}
         </div>
       </div>

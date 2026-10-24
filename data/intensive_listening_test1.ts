@@ -3959,6 +3959,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part3-62-64",
     "part": 3,
+    "imageUrl": "/images/intensive/test1/q62_64.png",
     "partTitle": "Part 3: Đoạn hội thoại",
     "questionRange": "Câu 62 - 64",
     "title": "Part 3 - Câu 62-64: Lịch trình công tác tại Chicago",
@@ -4099,6 +4100,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part3-65-67",
     "part": 3,
+    "imageUrl": "/images/intensive/test1/q65_67.png",
     "partTitle": "Part 3: Đoạn hội thoại",
     "questionRange": "Câu 65 - 67",
     "title": "Part 3 - Câu 65-67: Chỉnh sửa trang web vườn bách thảo",
@@ -4239,6 +4241,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part3-68-70",
     "part": 3,
+    "imageUrl": "/images/intensive/test1/q68_70.png",
     "partTitle": "Part 3: Đoạn hội thoại",
     "questionRange": "Câu 68 - 70",
     "title": "Part 3 - Câu 68-70: Lắp đặt giá để xe đạp tại nhà ga",
@@ -5554,6 +5557,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part4-95-97",
     "part": 4,
+    "imageUrl": "/images/intensive/test1/q95_97.png",
     "partTitle": "Part 4: Bài nói ngắn",
     "questionRange": "Câu 95 - 97",
     "title": "Part 4 - Câu 95-97: Tòa tháp văn phòng Reston hoàn thành",
@@ -5693,6 +5697,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part4-98-100",
     "part": 4,
+    "imageUrl": "/images/intensive/test1/q98_100.png",
     "partTitle": "Part 4: Bài nói ngắn",
     "questionRange": "Câu 98 - 100",
     "title": "Part 4 - Câu 98-100: Dự án mở mỏ bạc mới của công ty khai khoáng",

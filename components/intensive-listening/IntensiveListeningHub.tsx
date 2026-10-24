@@ -257,6 +257,7 @@ export function IntensiveListeningHub() {
                 itemId={currentItem.id}
                 part={currentItem.part}
                 imageUrl={currentItem.imageUrl}
+                transcript={currentItem.transcript}
                 questions={currentItem.questions}
                 onCompleteItem={(score, total) => {
                   if (score / total >= 0.6) {
