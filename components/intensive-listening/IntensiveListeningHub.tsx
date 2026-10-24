@@ -255,6 +255,8 @@ export function IntensiveListeningHub() {
               <QuizTab
                 key={`quiz-${currentItem.id}`}
                 itemId={currentItem.id}
+                part={currentItem.part}
+                imageUrl={currentItem.imageUrl}
                 questions={currentItem.questions}
                 onCompleteItem={(score, total) => {
                   if (score / total >= 0.6) {
@@ -267,6 +269,7 @@ export function IntensiveListeningHub() {
             {activeTab === 'transcript' && (
               <TranscriptTab
                 key={`trans-${currentItem.id}`}
+                imageUrl={currentItem.imageUrl}
                 transcript={currentItem.transcript}
                 vocabulary={currentItem.vocabulary}
               />
@@ -275,6 +278,7 @@ export function IntensiveListeningHub() {
             {activeTab === 'dictation' && (
               <DictationTab
                 key={`dict-${currentItem.id}`}
+                imageUrl={currentItem.imageUrl}
                 transcript={currentItem.transcript}
                 onCompleteItem={() => markItemCompleted(currentItem.id)}
               />

@@ -16,20 +16,30 @@ import {
 interface QuizTabProps {
   itemId: string;
   questions: QuestionItem[];
+  part?: 1 | 2 | 3 | 4;
+  imageUrl?: string;
   onCompleteItem?: (score: number, total: number) => void;
 }
 
-export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
+export function QuizTab({
+  itemId,
+  questions,
+  part = 1,
+  imageUrl,
+  onCompleteItem,
+}: QuizTabProps) {
   // Selected answers: { [questionNum]: 'A' | 'B' | 'C' | 'D' }
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
+  const [peekTranscript, setPeekTranscript] = useState<boolean>(false);
 
   // Reset state when switching items
   useEffect(() => {
     setSelectedAnswers({});
     setIsSubmitted(false);
     setShowExplanation(false);
+    setPeekTranscript(false);
   }, [itemId]);
 
   const handleSelectOption = (qNum: number, key: string) => {
@@ -66,6 +76,9 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
     (q) => selectedAnswers[q.num] === q.correctAnswer
   ).length;
 
+  const isAudioOnlyExamPart = part === 1 || part === 2;
+  const canShowTranscriptText = isSubmitted || peekTranscript || !isAudioOnlyExamPart;
+
   return (
     <div className="space-y-6">
       {/* Intro banner */}
@@ -76,16 +89,39 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
           </div>
           <div>
             <h3 className="font-black text-[#213a34] text-sm">
-              Luyện trắc nghiệm (Ẩn Transcript)
+              Luyện trắc nghiệm {isAudioOnlyExamPart ? '(Ẩn Lời Thoại · Chuẩn Thi Thật)' : '(Part ' + part + ')'}
             </h3>
             <p className="text-xs text-gray-600 font-medium">
-              Tập trung nghe audio, chọn đáp án đúng nhất sau đó bấm "Kiểm tra đáp án".
+              {isAudioOnlyExamPart
+                ? 'Đề thi thật không in chữ. Hãy nghe audio, chọn đáp án và bấm "Kiểm tra đáp án" để xem giải thích.'
+                : 'Tập trung nghe audio, chọn đáp án đúng nhất sau đó bấm "Kiểm tra đáp án".'}
             </p>
           </div>
         </div>
 
-        {isSubmitted && (
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          {/* Peeking toggle for Part 1 & 2 */}
+          {isAudioOnlyExamPart && !isSubmitted && (
+            <button
+              type="button"
+              onClick={() => setPeekTranscript(!peekTranscript)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-[#213a34] bg-white border border-[#213a34]/15 hover:bg-[#e9f2ed] shadow-xs transition-colors"
+            >
+              {peekTranscript ? (
+                <>
+                  <EyeOff className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Ẩn lời thoại (Luyện phản xạ)</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Xem trước lời thoại</span>
+                </>
+              )}
+            </button>
+          )}
+
+          {isSubmitted && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-black ${
                 correctCount === totalQuestions
@@ -95,15 +131,39 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
             >
               Kết quả: {correctCount}/{totalQuestions} câu đúng
             </span>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {/* Part 1 Photo Display */}
+      {part === 1 && imageUrl && (
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
+          <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
+            <img
+              src={imageUrl}
+              alt={`Part 1 - ${questions[0]?.num ? 'Câu ' + questions[0].num : 'Hình ảnh'}`}
+              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl"
+            />
+          </div>
+          <span className="text-xs font-bold text-gray-500 mt-2.5 flex items-center gap-1.5">
+            📸 Bức tranh câu hỏi {questions[0]?.num}
+          </span>
+        </div>
+      )}
 
       {/* Question List */}
       <div className="space-y-5">
-        {questions.map((q, idx) => {
+        {questions.map((q) => {
           const userAns = selectedAnswers[q.num];
           const isCorrect = userAns === q.correctAnswer;
+
+          // Question header text
+          let questionTitle = q.question;
+          if (part === 1) {
+            questionTitle = `Nhìn hình ảnh và nghe 4 câu miêu tả (A, B, C, D)`;
+          } else if (part === 2 && !canShowTranscriptText) {
+            questionTitle = `Nghe câu hỏi và chọn câu phản hồi đúng nhất (A, B, C)`;
+          }
 
           return (
             <div
@@ -123,9 +183,14 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
                 </span>
                 <div className="flex-1">
                   <h4 className="font-extrabold text-[#213a34] text-base sm:text-lg leading-snug">
-                    {q.question}
+                    {questionTitle}
                   </h4>
-                  {isSubmitted && q.vietnameseQuestion && (
+                  {part === 2 && !canShowTranscriptText && (
+                    <p className="text-xs text-amber-700/80 font-semibold mt-1">
+                      💡 TOEIC Part 2 không in sẵn câu hỏi hay phương án trên đề thi.
+                    </p>
+                  )}
+                  {canShowTranscriptText && q.vietnameseQuestion && (
                     <p className="text-xs text-gray-500 font-bold mt-1">
                       Dịch: {q.vietnameseQuestion}
                     </p>
@@ -177,6 +242,12 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
                     badgeStyle = 'bg-[#213a34] text-white';
                   }
 
+                  // Determine display text for the option
+                  let optionDisplayText = opt.text;
+                  if (isAudioOnlyExamPart && !canShowTranscriptText) {
+                    optionDisplayText = `Phương án ${opt.key}`;
+                  }
+
                   return (
                     <button
                       key={opt.key}
@@ -192,9 +263,9 @@ export function QuizTab({ itemId, questions, onCompleteItem }: QuizTabProps) {
                       </span>
                       <div className="flex-1">
                         <div className="font-extrabold text-[#213a34] text-sm sm:text-base leading-relaxed">
-                          {opt.text}
+                          {optionDisplayText}
                         </div>
-                        {isSubmitted && opt.vietnamese && (
+                        {canShowTranscriptText && opt.vietnamese && (
                           <div className="text-xs text-gray-500 font-medium mt-0.5">
                             {opt.vietnamese}
                           </div>

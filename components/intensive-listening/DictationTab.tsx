@@ -17,6 +17,7 @@ import {
 
 interface DictationTabProps {
   transcript: DialogueLine[];
+  imageUrl?: string;
   onCompleteItem?: () => void;
 }
 
@@ -28,7 +29,11 @@ function cleanWord(w: string) {
     .trim();
 }
 
-export function DictationTab({ transcript, onCompleteItem }: DictationTabProps) {
+export function DictationTab({
+  transcript,
+  imageUrl,
+  onCompleteItem,
+}: DictationTabProps) {
   const [currentSentenceIdx, setCurrentSentenceIdx] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [isChecked, setIsChecked] = useState(false);
@@ -219,6 +224,22 @@ export function DictationTab({ transcript, onCompleteItem }: DictationTabProps) 
           </span>
         </div>
       </div>
+
+      {/* Part 1 Photo Display if applicable */}
+      {imageUrl && (
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
+          <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
+            <img
+              src={imageUrl}
+              alt="Part 1 bức tranh"
+              className="w-auto max-h-[300px] sm:max-h-[360px] object-contain rounded-xl"
+            />
+          </div>
+          <span className="text-xs font-bold text-gray-500 mt-2 flex items-center gap-1.5">
+            📸 Bức tranh minh họa
+          </span>
+        </div>
+      )}
 
       {/* Sentence Navigation Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">

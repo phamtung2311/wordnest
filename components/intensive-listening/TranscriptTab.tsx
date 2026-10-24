@@ -15,9 +15,14 @@ import {
 interface TranscriptTabProps {
   transcript: DialogueLine[];
   vocabulary: VocabItem[];
+  imageUrl?: string;
 }
 
-export function TranscriptTab({ transcript, vocabulary }: TranscriptTabProps) {
+export function TranscriptTab({
+  transcript,
+  vocabulary,
+  imageUrl,
+}: TranscriptTabProps) {
   const [showTranslation, setShowTranslation] = useState<boolean>(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
@@ -101,6 +106,22 @@ export function TranscriptTab({ transcript, vocabulary }: TranscriptTabProps) {
           )}
         </button>
       </div>
+
+      {/* Part 1 Photo Display if applicable */}
+      {imageUrl && (
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
+          <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
+            <img
+              src={imageUrl}
+              alt="Part 1 bức tranh"
+              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl"
+            />
+          </div>
+          <span className="text-xs font-bold text-gray-500 mt-2 flex items-center gap-1.5">
+            📸 Bức tranh minh họa
+          </span>
+        </div>
+      )}
 
       {/* Transcript Line List */}
       <div className="space-y-4">

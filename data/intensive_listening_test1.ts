@@ -37,6 +37,7 @@ export interface IntensiveListeningItem {
   questionRange: string;
   title: string;
   audioSrc: string;
+  imageUrl?: string;
   transcript: DialogueLine[];
   questions: QuestionItem[];
   vocabulary: VocabItem[];
@@ -46,6 +47,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q1.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 1",
     "title": "Part 1 - Câu 1: Người phụ nữ mặc áo khoác",
@@ -133,6 +135,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-2",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q2.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 2",
     "title": "Part 1 - Câu 2: Nhóm người xem sách",
@@ -215,6 +218,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-3",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q3.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 3",
     "title": "Part 1 - Câu 3: Đèn treo từ trần",
@@ -302,6 +306,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-4",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q4.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 4",
     "title": "Part 1 - Câu 4: Thùng gỗ chứa đầy rau củ",
@@ -384,6 +389,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-5",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q5.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 5",
     "title": "Part 1 - Câu 5: Dụng cụ sơn trên sàn nhà",
@@ -471,6 +477,7 @@ export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-6",
     "part": 1,
+    "imageUrl": "/images/intensive/test1/q6.png",
     "partTitle": "Part 1: Mô tả hình ảnh",
     "questionRange": "Câu 6",
     "title": "Part 1 - Câu 6: Nước đọng trên lối đi",
