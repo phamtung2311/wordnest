@@ -14,8 +14,10 @@ import {
   ChevronRight,
   Clock3,
   Cloud,
+  FileText,
   Flame,
   FolderPlus,
+  Headphones,
   Languages,
   LoaderCircle,
   LogIn,
@@ -528,6 +530,7 @@ async function loadStoredDecks(userId: string) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [decks, setDecks] = useState<Deck[]>(starterDecks);
   const [progress, setProgress] = useState<StudyProgress>(emptyProgress);
   const [activeDeck, setActiveDeck] = useState<number | null>(null);
@@ -2111,6 +2114,45 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Quick TOEIC Exam Practice Hub */}
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => router.push('/practice-test')}
+                  className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#213a34]/10 hover:border-[#f29f77] shadow-sm hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-[#e9f2ed] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <FileText className="w-6 h-6 text-[#f29f77]" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#eb6a52] block">Luyện thi ETS 2026/24/23</span>
+                      <h3 className="font-black text-[#213a34] text-base leading-snug">Luyện Đề TOEIC Reading</h3>
+                      <p className="text-xs text-gray-500 font-medium">100 câu Part 5, 6, 7 · Giao diện tối ưu điện thoại</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#213a34] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => router.push('/listening-test')}
+                  className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#213a34]/10 hover:border-[#f29f77] shadow-sm hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-[#e9f2ed] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Headphones className="w-6 h-6 text-[#f29f77]" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#eb6a52] block">Luyện nghe kèm Audio</span>
+                      <h3 className="font-black text-[#213a34] text-base leading-snug">Luyện Đề TOEIC Listening</h3>
+                      <p className="text-xs text-gray-500 font-medium">100 câu Part 1-4 · Audio tua ±5s trên điện thoại</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#213a34] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                </button>
               </div>
             </div>
           </section>
@@ -3776,48 +3818,50 @@ function Header({
           </span>
         </button>
         {!compact && (
-          <nav className="order-3 flex w-full justify-center gap-1 border-t border-[#213a34]/10 pt-3 text-sm font-extrabold lg:order-none lg:w-auto lg:gap-3 lg:border-0 lg:pt-0">
+          <nav className="order-3 flex w-full overflow-x-auto scrollbar-none flex-nowrap justify-start lg:justify-center gap-1.5 border-t border-[#213a34]/10 pt-2.5 pb-1 text-xs sm:text-sm font-extrabold lg:order-none lg:w-auto lg:gap-3 lg:border-0 lg:pt-0 lg:pb-0">
             <button
               type="button"
               onClick={onHome}
-              className={`rounded-full px-3 py-1.5 ${activeHash === "#home" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
+              className={`shrink-0 rounded-full px-3 py-1.5 whitespace-nowrap transition-colors ${activeHash === "#home" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Trang chủ
             </button>
             <button
               type="button"
               onClick={onLibrary}
-              className={`rounded-full px-3 py-1.5 ${activeHash === "#library" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
+              className={`shrink-0 rounded-full px-3 py-1.5 whitespace-nowrap transition-colors ${activeHash === "#library" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Bộ từ
             </button>
             <button
               type="button"
               onClick={onLife}
-              className={`rounded-full px-3 py-1.5 ${activeHash === "#life" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
+              className={`shrink-0 rounded-full px-3 py-1.5 whitespace-nowrap transition-colors ${activeHash === "#life" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Đời sống
             </button>
             <button
               type="button"
               onClick={onAbout}
-              className={`rounded-full px-3 py-1.5 ${activeHash === "#about" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
+              className={`shrink-0 rounded-full px-3 py-1.5 whitespace-nowrap transition-colors ${activeHash === "#about" ? "bg-[#f8d467] hover:bg-[#f3c943]" : "hover:bg-[#e9f2ed]"}`}
             >
               Giới thiệu
             </button>
             <button
               type="button"
               onClick={() => router.push('/practice-test')}
-              className="rounded-full px-3 py-1.5 hover:bg-[#e9f2ed] font-black text-[#213a34]"
+              className="shrink-0 rounded-full px-3 py-1.5 whitespace-nowrap bg-[#e9f2ed] hover:bg-[#d5e5db] font-black text-[#213a34] flex items-center gap-1.5 transition-colors"
             >
-              Luyện Reading TOEIC
+              <FileText size={15} className="text-[#f29f77]" />
+              Luyện Reading
             </button>
             <button
               type="button"
               onClick={() => router.push('/listening-test')}
-              className="rounded-full px-4 py-1.5 hover:bg-[#e9f2ed] font-black text-[#213a34]"
+              className="shrink-0 rounded-full px-3.5 py-1.5 whitespace-nowrap bg-[#e9f2ed] hover:bg-[#d5e5db] font-black text-[#213a34] flex items-center gap-1.5 transition-colors"
             >
-              Luyện Listening TOEIC
+              <Headphones size={15} className="text-[#f29f77]" />
+              Luyện Listening
             </button>
           </nav>
         )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Headphones, History } from 'lucide-react';
+import { ArrowLeft, Headphones, History, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 type TestHistory = {
@@ -13,7 +13,6 @@ type TestHistory = {
 export default function ListeningTestSelectionPage() {
   const router = useRouter();
   const [history, setHistory] = useState<TestHistory[]>([]);
-
   const [inProgress, setInProgress] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -46,117 +45,147 @@ export default function ListeningTestSelectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f0e6] p-8">
+    <div className="min-h-screen bg-[#f5f0e6] p-3 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center mb-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <button
             onClick={() => router.push('/')}
-            className="flex items-center text-[#213a34] hover:text-[#213a34]/70 font-bold transition-colors"
+            className="flex items-center text-xs sm:text-sm text-[#213a34] hover:text-[#213a34]/70 font-bold transition-colors bg-white/80 backdrop-blur px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-[#213a34]/10 shadow-sm"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Quay lại Trang chủ
+            <ArrowLeft className="w-4 h-4 mr-1.5" />
+            Trang chủ
+          </button>
+
+          <button
+            onClick={() => router.push('/practice-test')}
+            className="flex items-center text-xs sm:text-sm text-[#213a34] hover:bg-[#e9f2ed] font-extrabold transition-colors bg-[#f8d467] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-[#213a34]/15 shadow-sm"
+          >
+            <FileText className="w-4 h-4 mr-1.5" />
+            Luyện Reading TOEIC
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10 mb-8">
-          <h1 className="font-display text-4xl font-black text-[#213a34] mb-2 text-center">
-            Luyện Đề TOEIC Listening
-          </h1>
-          <p className="text-center text-gray-500 mb-8">
-            Chọn một đề bên dưới để bắt đầu luyện nghe.
-          </p>
-
-          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2026</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-            {tests2026.map((test) => (
-              <button
-                key={test.id}
-                onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
-              >
-                {inProgress[test.id] && (
-                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
-                    Đang làm
-                  </span>
-                )}
-                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
-                  <Headphones className="w-6 h-6 text-[#f29f77]" />
-                </div>
-                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
-              </button>
-            ))}
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-[#213a34]/10 mb-6 sm:mb-8">
+          <div className="text-center mb-6">
+            <span className="inline-flex items-center gap-1.5 bg-[#e9f2ed] text-[#213a34] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+              <Headphones className="w-3.5 h-3.5 text-[#f29f77]" /> TOEIC Listening (100 câu + Audio)
+            </span>
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-black text-[#213a34] mb-1">
+              Luyện Đề TOEIC Listening
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500">
+              Nghe audio mượt mà trên điện thoại · Tua ±5s & đổi tốc độ đọc
+            </p>
           </div>
 
-          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2024</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {tests2024.map((test) => (
-              <button
-                key={test.id}
-                onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
-              >
-                {inProgress[test.id] && (
-                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
-                    Đang làm
-                  </span>
-                )}
-                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
-                  <Headphones className="w-6 h-6 text-[#f29f77]" />
-                </div>
-                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
-              </button>
-            ))}
+          {/* Section: ETS 2026 */}
+          <div className="mb-6">
+            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
+              <span>Bộ đề ETS 2026</span>
+              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
+              {tests2026.map((test) => (
+                <button
+                  key={test.id}
+                  onClick={() => router.push(`/listening-test/${test.id}`)}
+                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
+                >
+                  {inProgress[test.id] && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                      Đang làm
+                    </span>
+                  )}
+                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                    <Headphones className="w-5 h-5 text-[#f29f77]" />
+                  </div>
+                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Section: ETS 2024 */}
+          <div className="mb-6">
+            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
+              <span>Bộ đề ETS 2024</span>
+              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
+              {tests2024.map((test) => (
+                <button
+                  key={test.id}
+                  onClick={() => router.push(`/listening-test/${test.id}`)}
+                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
+                >
+                  {inProgress[test.id] && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                      Đang làm
+                    </span>
+                  )}
+                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                    <Headphones className="w-5 h-5 text-[#f29f77]" />
+                  </div>
+                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Section: ETS 2023 */}
+          <div>
+            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
+              <span>Bộ đề ETS 2023</span>
+              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
+              {tests2023.map((test) => (
+                <button
+                  key={test.id}
+                  onClick={() => router.push(`/listening-test/${test.id}`)}
+                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
+                >
+                  {inProgress[test.id] && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                      Đang làm
+                    </span>
+                  )}
+                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                    <Headphones className="w-5 h-5 text-[#f29f77]" />
+                  </div>
+                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        
-          <h2 className="font-bold text-xl mb-4 text-[#213a34]">Bộ đề ETS 2023</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-            {tests2023.map((test) => (
-              <button
-                key={test.id}
-                onClick={() => router.push(`/listening-test/${test.id}`)}
-                className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors rounded-2xl p-4 border border-[#213a34]/10 group relative"
-              >
-                {inProgress[test.id] && (
-                  <span className="absolute -top-2 -right-2 bg-[#f29f77] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 border-2 border-white">
-                    Đang làm
-                  </span>
-                )}
-                <div className="bg-white p-3 rounded-full mb-3 shadow-sm group-hover:scale-110 transition-transform">
-                  <Headphones className="w-6 h-6 text-[#f29f77]" />
-                </div>
-                <span className="font-bold text-[#213a34] text-center text-sm">{test.name}</span>
-              </button>
-            ))}
-          </div>
-        
         {history.length > 0 && (
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#213a34]/10">
-            <h2 className="font-display text-2xl font-black text-[#213a34] mb-6 flex items-center">
-              <History className="w-6 h-6 mr-3 text-[#f29f77]" /> Lịch sử làm bài
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-[#213a34]/10">
+            <h2 className="font-display text-lg sm:text-xl font-black text-[#213a34] mb-4 flex items-center">
+              <History className="w-5 h-5 mr-2 text-[#f29f77]" /> Lịch sử làm bài
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b-2 border-gray-100">
-                    <th className="pb-3 text-gray-500 font-bold">Thời gian</th>
-                    <th className="pb-3 text-gray-500 font-bold">Đề thi</th>
-                    <th className="pb-3 text-gray-500 font-bold">Số câu đúng</th>
+                    <th className="pb-2.5 text-gray-500 font-bold">Thời gian</th>
+                    <th className="pb-2.5 text-gray-500 font-bold">Đề thi</th>
+                    <th className="pb-2.5 text-gray-500 font-bold text-right sm:text-left">Điểm số</th>
                   </tr>
                 </thead>
                 <tbody>
                   {history.map((h, idx) => (
                     <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                      <td className="py-4 text-gray-700">
+                      <td className="py-3 text-gray-600 whitespace-nowrap">
                         {new Date(h.date).toLocaleString('vi-VN', { 
                           hour: '2-digit', minute: '2-digit', 
-                          day: '2-digit', month: '2-digit', year: 'numeric' 
+                          day: '2-digit', month: '2-digit' 
                         })}
                       </td>
-                      <td className="py-4 font-bold text-[#213a34]">{getTestName(String(h.testId))}</td>
-                      <td className="py-4">
-                        <span className="bg-[#e9f2ed] text-[#213a34] font-bold px-3 py-1 rounded-full">
+                      <td className="py-3 font-bold text-[#213a34]">{getTestName(String(h.testId))}</td>
+                      <td className="py-3 text-right sm:text-left">
+                        <span className="bg-[#e9f2ed] text-[#213a34] font-black px-2.5 py-0.5 rounded-full text-xs">
                           {h.score}/100
                         </span>
                       </td>

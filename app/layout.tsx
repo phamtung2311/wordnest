@@ -1,14 +1,30 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Fraunces, Nunito } from 'next/font/google';
 import './globals.css';
 
 const nunito = Nunito({ variable: '--font-nunito', subsets: ['latin', 'vietnamese'] });
 const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin', 'vietnamese'] });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+  themeColor: '#213a34',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://wordnest-english-vocab.web.app'),
-  title: 'WordNest — Học từ vựng tiếng Anh và tiếng Trung',
-  description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, học bằng flashcard và ôn lại đúng lúc với phương pháp lặp ngắt quãng.',
+  title: 'WordNest — Học từ vựng & Luyện thi TOEIC',
+  description: 'Tạo bộ từ tiếng Anh hoặc tiếng Trung, luyện đề TOEIC Listening & Reading trực tuyến ngay trên điện thoại và máy tính.',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'WordNest',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
