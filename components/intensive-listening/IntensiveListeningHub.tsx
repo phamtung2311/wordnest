@@ -15,6 +15,7 @@ import { QuizTab } from './QuizTab';
 import { TranscriptTab } from './TranscriptTab';
 import { DictationTab } from './DictationTab';
 import { TestSelectorModal } from './TestSelectorModal';
+import { TestResultModal } from './TestResultModal';
 import {
   ArrowLeft,
   Headphones,
@@ -89,6 +90,8 @@ export function IntensiveListeningHub() {
   // Test Selection state (Test 1 to 10)
   const [currentTestId, setCurrentTestId] = useState<number>(1);
   const [isTestSelectorOpen, setIsTestSelectorOpen] = useState<boolean>(false);
+  const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'wrong' | 'correct'>('all');
   const currentTestData = getIntensiveDataByTestId(currentTestId);
 
   // Item & practice State
@@ -373,13 +376,52 @@ export function IntensiveListeningHub() {
   };
 
   const handleResetEntireTest = (testId: number) => {
+    try {
+      localStorage.removeItem(`toeic_intensive_completed_t${testId}`);
+      if (testId === 1) {
+        localStorage.removeItem('toeic_intensive_completed');
+      }
+      localStorage.removeItem(`toeic_intensive_results_t${testId}`);
+      localStorage.removeItem(`toeic_intensive_last_item_t${testId}`);
+      if (testId === 1) {
+        localStorage.removeItem('toeic_intensive_last_item');
+      }
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        if (key.startsWith(`toeic_intensive_quiz_t${testId}_`)) {
+          keysToRemove.push(key);
+        }
+        if (testId === 1 && key.startsWith('toeic_intensive_quiz_part')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    } catch {}
+
     if (testId === currentTestId) {
       setQuizResults({});
       setCompletedItems({});
+      setStatusFilter('all');
       const testData = getIntensiveDataByTestId(testId);
       if (testData.length > 0) {
         setCurrentItemId(testData[0].id);
       }
+      setActiveTab('quiz');
+    }
+  };
+
+  const handleReviewWrong = () => {
+    setIsResultModalOpen(false);
+    setStatusFilter('wrong');
+    // Find the first wrong item
+    const firstWrong = currentTestData.find((item) => {
+      const res = quizResults[item.id];
+      return res && !res.isCorrect;
+    });
+    if (firstWrong) {
+      handleSelectItem(firstWrong.id);
       setActiveTab('quiz');
     }
   };
@@ -484,28 +526,41 @@ export function IntensiveListeningHub() {
 
           {/* Right: Progress & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Score & Progress Pill */}
-            <div
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f0e6] border border-[#213a34]/10 cursor-pointer hover:bg-[#e9f2ed] transition-colors"
-              onClick={() => setIsMobileSidebarOpen(true)}
-              title="Điểm số câu đúng / Tổng số câu đề này"
+            {/* Score & Progress Pill (Desktop) */}
+            <button
+              type="button"
+              onClick={() => setIsResultModalOpen(true)}
+              className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f5f0e6] border border-[#213a34]/15 hover:border-emerald-600 hover:bg-emerald-50 cursor-pointer transition-all group shadow-2xs"
+              title="Nhấn để xem bảng tổng kết kết quả chi tiết & quy đổi điểm TOEIC"
             >
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-black text-[#213a34]">
+              <Trophy className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-black text-[#213a34] group-hover:text-emerald-800">
                 {totalCorrectQuestions}/{totalQuestionsInTest} câu đúng
               </span>
-            </div>
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                Xem kết quả
+              </span>
+            </button>
+
+            {/* Mobile Score / Result Button */}
+            <button
+              type="button"
+              onClick={() => setIsResultModalOpen(true)}
+              className="sm:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-black shadow-xs active:scale-95 transition-all cursor-pointer"
+              title="Xem bảng kết quả bài thi"
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <span>{totalCorrectQuestions}/{totalQuestionsInTest}</span>
+            </button>
 
             {/* Mobile Open Sidebar Button */}
             <button
               type="button"
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#213a34] text-white text-xs font-black shadow-xs active:scale-95 transition-all"
+              className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#213a34] text-white text-xs font-black shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               <Menu className="w-4 h-4 text-[#f8d467]" />
-              <span>
-                {activeTestInfo?.shortTitle} ({totalCorrectQuestions}/{totalQuestionsInTest})
-              </span>
+              <span className="hidden xs:inline">DS Câu</span>
             </button>
           </div>
         </div>
@@ -526,6 +581,9 @@ export function IntensiveListeningHub() {
           onSelectTest={handleSelectTest}
           availableTests={availableIntensiveTests}
           onOpenTestSelector={() => setIsTestSelectorOpen(true)}
+          onOpenResultModal={() => setIsResultModalOpen(true)}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
         />
 
         {/* Right Study Area */}
@@ -592,30 +650,53 @@ export function IntensiveListeningHub() {
             )}
 
             {/* Compact Bottom Next/Prev Pagination Footer */}
-            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-white rounded-2xl border border-[#213a34]/12 shadow-2xs mt-3">
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-white rounded-2xl border border-[#213a34]/12 shadow-2xs mt-3 gap-2">
               <button
                 type="button"
                 onClick={handlePrevItem}
                 disabled={!hasPrev}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Bài trước</span>
               </button>
 
-              <div className="text-xs font-bold text-gray-500">
-                {activeTestInfo?.shortTitle} · Bài {currentItemIndex + 1} / {totalCount}
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:inline text-xs font-bold text-gray-500">
+                  {activeTestInfo?.shortTitle} · Bài {currentItemIndex + 1} / {totalCount}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setIsResultModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300/80 transition-all cursor-pointer shadow-2xs"
+                  title="Nhấn để mở bảng tổng kết kết quả đề thi"
+                >
+                  <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Xem kết quả</span>
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={handleNextItem}
-                disabled={!hasNext}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-white bg-[#213a34] hover:bg-[#2c4e46] disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors cursor-pointer"
-              >
-                <span>Bài tiếp</span>
-                <ChevronRight className="w-4 h-4 text-[#f8d467]" />
-              </button>
+              {!hasNext ? (
+                <button
+                  type="button"
+                  onClick={() => setIsResultModalOpen(true)}
+                  className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-[#213a34] hover:from-emerald-500 hover:to-[#2c4e46] shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:scale-95 cursor-pointer ring-2 ring-emerald-400/50 shrink-0"
+                  title="Chúc mừng bạn đã hoàn thành câu hỏi cuối cùng! Nhấn để xem tổng kết điểm"
+                >
+                  <span>🎉 Hoàn thành bài thi</span>
+                  <Trophy className="w-4 h-4 text-amber-300 animate-bounce" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleNextItem}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-white bg-[#213a34] hover:bg-[#2c4e46] shadow-2xs transition-colors cursor-pointer shrink-0"
+                >
+                  <span>Bài tiếp</span>
+                  <ChevronRight className="w-4 h-4 text-[#f8d467]" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -628,6 +709,19 @@ export function IntensiveListeningHub() {
         currentTestId={currentTestId}
         onSelectTest={handleSelectTest}
         onResetTest={handleResetEntireTest}
+      />
+
+      {/* Test Result Summary Modal */}
+      <TestResultModal
+        isOpen={isResultModalOpen}
+        onClose={() => setIsResultModalOpen(false)}
+        currentTestId={currentTestId}
+        testTitle={activeTestInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`}
+        items={currentTestData}
+        quizResults={quizResults}
+        onReviewWrong={handleReviewWrong}
+        onResetTest={handleResetEntireTest}
+        onOpenTestSelector={() => setIsTestSelectorOpen(true)}
       />
     </div>
   );

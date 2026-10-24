@@ -26,6 +26,9 @@ interface IntensiveSidebarProps {
   onSelectTest?: (testId: number) => void;
   availableTests?: IntensiveTestOption[];
   onOpenTestSelector?: () => void;
+  onOpenResultModal?: () => void;
+  statusFilter?: 'all' | 'wrong' | 'correct';
+  onStatusFilterChange?: (filter: 'all' | 'wrong' | 'correct') => void;
 }
 
 export function IntensiveSidebar({
@@ -40,9 +43,22 @@ export function IntensiveSidebar({
   onSelectTest,
   availableTests,
   onOpenTestSelector,
+  onOpenResultModal,
+  statusFilter: propStatusFilter,
+  onStatusFilterChange,
 }: IntensiveSidebarProps) {
   const [selectedPart, setSelectedPart] = useState<PartFilter>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'wrong' | 'correct'>('all');
+  const [internalStatusFilter, setInternalStatusFilter] = useState<'all' | 'wrong' | 'correct'>('all');
+  const statusFilter = propStatusFilter !== undefined ? propStatusFilter : internalStatusFilter;
+
+  const setStatusFilter = (newFilter: 'all' | 'wrong' | 'correct') => {
+    if (onStatusFilterChange) {
+      onStatusFilterChange(newFilter);
+    }
+    setInternalStatusFilter(newFilter);
+  };
+
+  const searchQueryRef = useRef('');
   const [searchQuery, setSearchQuery] = useState('');
   const activeItemRef = useRef<HTMLButtonElement | null>(null);
 
@@ -190,14 +206,21 @@ export function IntensiveSidebar({
         )}
 
         {/* STATS SCOREBOARD: Đếm số câu đúng từng Part */}
-        <div className="p-2 rounded-xl bg-white border border-[#213a34]/12 shadow-2xs space-y-1.5">
+        <div
+          onClick={onOpenResultModal}
+          className={`p-2 rounded-xl bg-white border border-[#213a34]/12 shadow-2xs space-y-1.5 ${
+            onOpenResultModal ? 'cursor-pointer hover:border-emerald-500 hover:shadow-xs transition-all group' : ''
+          }`}
+          title="Nhấn để xem bảng tổng kết kết quả & quy đổi TOEIC"
+        >
           <div className="flex items-center justify-between text-[11px] font-black text-[#213a34]">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 group-hover:text-emerald-800 transition-colors">
               <Trophy className="w-3 h-3 text-amber-500" />
               <span>Số câu đúng từng Part:</span>
             </span>
-            <span className="text-emerald-700 font-bold">
-              {allStats.correctQuestions}/{allStats.totalQuestions} câu
+            <span className="text-emerald-700 font-bold group-hover:underline flex items-center gap-0.5">
+              <span>{allStats.correctQuestions}/{allStats.totalQuestions}</span>
+              <span className="text-[10px] text-gray-400 group-hover:text-emerald-700">&rarr;</span>
             </span>
           </div>
 
@@ -443,6 +466,20 @@ export function IntensiveSidebar({
           })
         )}
       </div>
+
+      {/* Sticky Bottom Result Button */}
+      {onOpenResultModal && (
+        <div className="p-2.5 border-t border-[#213a34]/10 bg-[#f5f0e6]/60 shrink-0">
+          <button
+            type="button"
+            onClick={onOpenResultModal}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#213a34] hover:bg-[#2c4e46] text-white text-xs font-black shadow-xs transition-all active:scale-95 cursor-pointer"
+          >
+            <Trophy className="w-4 h-4 text-amber-300" />
+            <span>Xem bảng kết quả ({allStats.correctQuestions}/{allStats.totalQuestions})</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 
