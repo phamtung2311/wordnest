@@ -9,10 +9,11 @@ import {
   Eye,
   EyeOff,
   BookOpen,
-  Sparkles,
   Plus,
   FolderPlus,
   BookmarkPlus,
+  Maximize2,
+  X,
 } from 'lucide-react';
 import { AddToDeckModal, type VocabCandidate } from './AddToDeckModal';
 import { getSavedTermsSet, normalizeTerm } from '@/lib/vocabService';
@@ -31,6 +32,7 @@ export function TranscriptTab({
   const [showTranslation, setShowTranslation] = useState<boolean>(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
+  const [isImageZoomOpen, setIsImageZoomOpen] = useState(false);
 
   // Deck modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,157 +130,185 @@ export function TranscriptTab({
 
     if (lower.includes('woman') || lower.includes('w')) {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-200">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-200">
           👩 {speaker}
         </span>
       );
     }
     if (lower.includes('man') || lower.includes('m')) {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800 border border-blue-200">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-200">
           👨 {speaker}
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
         🎙️ {speaker}
       </span>
     );
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Top Bar Controls */}
-      <div className="bg-[#f5f0e6] rounded-2xl p-4 border border-[#213a34]/10 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-sm shrink-0">
-            💬
-          </div>
-          <div>
-            <h3 className="font-black text-[#213a34] text-sm">
-              Lời thoại & Dịch nghĩa chi tiết
-            </h3>
-            <p className="text-xs text-gray-600 font-medium">
-              Nghe và so sánh từng câu thoại, bấm loa để nghe lại câu riêng biệt.
-            </p>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowTranslation(!showTranslation)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-white hover:bg-[#e9f2ed] border border-[#213a34]/15 text-[#213a34] shadow-sm transition-colors cursor-pointer"
+  // Render dialogue lines list
+  const renderDialogueLines = () => (
+    <div className="space-y-2">
+      {transcript.map((line, idx) => (
+        <div
+          key={line.id || idx}
+          className="bg-white rounded-2xl p-2.5 sm:p-3 border border-[#213a34]/12 shadow-2xs hover:border-[#213a34]/30 transition-all group"
         >
-          {showTranslation ? (
-            <>
-              <EyeOff className="w-3.5 h-3.5" /> Ẩn dịch nghĩa
-            </>
-          ) : (
-            <>
-              <Eye className="w-3.5 h-3.5" /> Hiện dịch nghĩa
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Part 1 Photo Display if applicable */}
-      {imageUrl && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
-          <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
-            <img
-              src={imageUrl}
-              alt="Part 1 bức tranh"
-              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl"
-            />
-          </div>
-          <span className="text-xs font-bold text-gray-500 mt-2 flex items-center gap-1.5">
-            📸 Bức tranh minh họa
-          </span>
-        </div>
-      )}
-
-      {/* Transcript Line List */}
-      <div className="space-y-4">
-        {transcript.map((line, idx) => (
-          <div
-            key={line.id || idx}
-            className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm hover:border-[#213a34]/20 transition-all group"
-          >
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold text-gray-400 font-mono">
-                  #{idx + 1}
-                </span>
-                {getSpeakerBadge(line.speaker)}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                {/* Add Word from this sentence */}
-                <button
-                  type="button"
-                  onClick={() => handleAddFromLine(line)}
-                  title="Thêm từ vựng từ câu này vào sổ từ"
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed] border border-transparent hover:border-[#213a34]/15 transition-colors cursor-pointer"
-                >
-                  <BookmarkPlus className="w-3.5 h-3.5 text-[#eb6a52]" />
-                  <span className="hidden sm:inline text-[11px] font-black text-[#213a34]">+ Từ</span>
-                </button>
-
-                {/* Text-to-Speech Speak */}
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(line.text, line.id)}
-                  title="Nghe phát âm câu này"
-                  className={`p-1.5 rounded-lg text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors ${
-                    speakingId === line.id ? 'bg-[#e9f2ed] text-[#213a34] ring-2 ring-[#213a34]/20' : ''
-                  }`}
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
-
-                {/* Copy */}
-                <button
-                  type="button"
-                  onClick={() => handleCopy(line.text, line.id)}
-                  title="Sao chép câu thoại"
-                  className="p-1.5 rounded-lg text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors"
-                >
-                  {copiedId === line.id ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
+          {/* Header row: Speaker badge & actions */}
+          <div className="flex items-center justify-between gap-2 mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-black text-gray-400 font-mono">
+                #{idx + 1}
+              </span>
+              {getSpeakerBadge(line.speaker)}
             </div>
 
-            {/* English Sentence */}
-            <p className="font-extrabold text-[#213a34] text-base sm:text-lg leading-relaxed select-text">
-              {line.text}
-            </p>
+            {/* Actions: Add word, speak, copy */}
+            <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+              <button
+                type="button"
+                onClick={() => handleAddFromLine(line)}
+                title="Lưu từ vựng từ câu này vào sổ từ"
+                className="flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors cursor-pointer"
+              >
+                <BookmarkPlus className="w-3 h-3 text-[#eb6a52]" />
+                <span className="text-[10px] font-black text-[#213a34]">+ Từ</span>
+              </button>
 
-            {/* Vietnamese Translation */}
-            {showTranslation && (
-              <p className="text-sm text-gray-600 font-medium leading-relaxed mt-2 pt-2 border-t border-gray-100 select-text">
-                {line.vietnamese}
-              </p>
-            )}
+              <button
+                type="button"
+                onClick={() => handleSpeak(line.text, line.id)}
+                title="Nghe phát âm câu này"
+                className={`p-1 rounded-md text-gray-500 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors cursor-pointer ${
+                  speakingId === line.id ? 'bg-[#e9f2ed] text-[#213a34] ring-1 ring-[#213a34]/30' : ''
+                }`}
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopy(line.text, line.id)}
+                title="Sao chép câu thoại"
+                className="p-1 rounded-md text-gray-400 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors cursor-pointer"
+              >
+                {copiedId === line.id ? (
+                  <Check className="w-3.5 h-3.5 text-green-600" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
+              </button>
+            </div>
           </div>
-        ))}
+
+          {/* English Sentence */}
+          <p className="font-bold text-[#213a34] text-xs sm:text-sm leading-relaxed select-text">
+            {line.text}
+          </p>
+
+          {/* Vietnamese Translation */}
+          {showTranslation && line.vietnamese && (
+            <p className="text-[11px] sm:text-xs text-gray-600 font-medium leading-relaxed mt-1 pt-1 border-t border-gray-100/90 select-text">
+              {line.vietnamese}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="space-y-3">
+      {/* Sleek Top Toolbar (Compact, no bloated filler text) */}
+      <div className="flex items-center justify-between gap-2 px-1">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-black text-[#213a34] flex items-center gap-1.5">
+            💬 Lời thoại ({transcript.length} câu)
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Toggle Translation */}
+          <button
+            type="button"
+            onClick={() => setShowTranslation(!showTranslation)}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-white hover:bg-[#e9f2ed] border border-[#213a34]/15 text-[#213a34] shadow-2xs transition-colors cursor-pointer"
+          >
+            {showTranslation ? (
+              <>
+                <EyeOff className="w-3.5 h-3.5 text-gray-500" />
+                <span>Ẩn dịch</span>
+              </>
+            ) : (
+              <>
+                <Eye className="w-3.5 h-3.5 text-[#eb6a52]" />
+                <span>Hiện dịch</span>
+              </>
+            )}
+          </button>
+
+          {/* Batch Add All Vocab */}
+          {vocabulary && vocabulary.length > 0 && (
+            <button
+              type="button"
+              onClick={handleOpenAddBatch}
+              className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467] shadow-2xs transition-all active:scale-95 cursor-pointer"
+            >
+              <FolderPlus className="w-3.5 h-3.5" />
+              <span>Lưu {vocabulary.length} từ</span>
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Vocabulary Highlights Section */}
+      {/* Main Content Area: If imageUrl exists, split side-by-side on desktop */}
+      {imageUrl ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+          {/* Left Column: Image preview */}
+          <div className="lg:col-span-5 bg-white rounded-2xl p-2.5 border border-[#213a34]/12 shadow-2xs flex flex-col items-center sticky top-2">
+            <div
+              className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5] cursor-zoom-in group"
+              onClick={() => setIsImageZoomOpen(true)}
+              title="Nhấn để phóng to hình ảnh"
+            >
+              <img
+                src={imageUrl}
+                alt="Bức tranh minh họa"
+                className="w-auto max-h-[260px] sm:max-h-[300px] object-contain rounded-xl group-hover:scale-[1.02] transition-transform duration-200"
+              />
+              <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <span className="px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm">
+                  <Maximize2 className="w-3 h-3 text-[#f8d467]" /> Phóng to ảnh
+                </span>
+              </div>
+            </div>
+            <span className="text-[10px] font-bold text-gray-400 mt-1.5 flex items-center gap-1">
+              📸 Bức tranh minh họa · Click để xem to
+            </span>
+          </div>
+
+          {/* Right Column: Dialogue lines */}
+          <div className="lg:col-span-7">
+            {renderDialogueLines()}
+          </div>
+        </div>
+      ) : (
+        renderDialogueLines()
+      )}
+
+      {/* Vocabulary Section (Compact Chips Grid) */}
       {vocabulary && vocabulary.length > 0 && (
-        <div className="bg-[#fffdf8] rounded-2xl sm:rounded-3xl p-5 sm:p-6 border-2 border-[#213a34]/15 shadow-sm space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-[#fffdf8] rounded-2xl p-3 sm:p-4 border border-[#213a34]/15 shadow-2xs space-y-2.5">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[#eb6a52]" />
-              <h4 className="font-black text-[#213a34] text-base sm:text-lg">
+              <BookOpen className="w-4 h-4 text-[#eb6a52]" />
+              <h4 className="font-black text-[#213a34] text-xs sm:text-sm">
                 Từ vựng trọng tâm trong bài
               </h4>
-              <span className="text-xs font-bold text-gray-500 bg-[#e9f2ed] px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold text-gray-500 bg-[#e9f2ed] px-1.5 py-0.5 rounded-full">
                 {vocabulary.length} từ
               </span>
             </div>
@@ -286,71 +316,101 @@ export function TranscriptTab({
             <button
               type="button"
               onClick={handleOpenAddBatch}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467] shadow-sm transition-all active:scale-95 cursor-pointer"
+              className="sm:hidden flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black bg-[#213a34] text-[#f8d467]"
             >
-              <FolderPlus className="w-4 h-4 text-[#f8d467]" />
-              <span>Thêm tất cả {vocabulary.length} từ vào bộ từ</span>
+              <FolderPlus className="w-3 h-3" />
+              <span>Lưu tất cả</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {vocabulary.map((vocab, vIdx) => {
               const isSaved = savedTerms.has(normalizeTerm(vocab.word));
 
               return (
                 <div
                   key={vIdx}
-                  className="bg-white p-3.5 rounded-xl sm:rounded-2xl border border-[#213a34]/10 hover:border-[#f29f77] shadow-xs hover:shadow-sm transition-all flex items-start justify-between gap-3 group"
+                  className="bg-white p-2.5 rounded-xl border border-[#213a34]/10 hover:border-[#f29f77] shadow-2xs transition-all flex items-start justify-between gap-2 group"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-black text-[#213a34] text-sm sm:text-base">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-black text-[#213a34] text-xs truncate">
                         {vocab.word}
                       </span>
                       {vocab.partOfSpeech && (
-                        <span className="text-[10px] font-black uppercase text-[#eb6a52] bg-[#f5f0e6] px-1.5 py-0.5 rounded">
+                        <span className="text-[9px] font-black uppercase text-[#eb6a52] bg-[#f5f0e6] px-1 rounded">
                           {vocab.partOfSpeech}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
+                    <p className="text-[11px] text-gray-600 font-medium truncate mt-0.5">
                       {vocab.meaning}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1 shrink-0">
                     <button
                       type="button"
                       onClick={() => handleSpeak(vocab.word, `vocab-${vIdx}`)}
                       title={`Nghe phát âm từ: ${vocab.word}`}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors"
+                      className="p-1 rounded-md text-gray-400 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors cursor-pointer"
                     >
-                      <Volume2 className="w-4 h-4" />
+                      <Volume2 className="w-3.5 h-3.5" />
                     </button>
 
                     {isSaved ? (
                       <span
-                        title="Từ này đã có trong bộ từ vựng của bạn"
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        title="Đã lưu vào sổ từ"
+                        className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"
                       >
-                        <Check className="w-3.5 h-3.5" />
+                        <Check className="w-3 h-3" />
                         <span>Đã lưu</span>
                       </span>
                     ) : (
                       <button
                         type="button"
                         onClick={() => handleOpenAddSingle(vocab)}
-                        title="Lưu từ này vào sổ từ vựng"
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black bg-[#f5f0e6] hover:bg-[#213a34] text-[#213a34] hover:text-[#f8d467] border border-[#213a34]/15 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                        title="Lưu từ này vào sổ từ"
+                        className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-lg text-[10px] font-black bg-[#f5f0e6] hover:bg-[#213a34] text-[#213a34] hover:text-[#f8d467] border border-[#213a34]/15 transition-all cursor-pointer shadow-2xs"
                       >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Lưu từ</span>
+                        <Plus className="w-3 h-3" />
+                        <span>Lưu</span>
                       </button>
                     )}
                   </div>
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Image Zoom Lightbox Modal */}
+      {isImageZoomOpen && imageUrl && (
+        <div
+          onClick={() => setIsImageZoomOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm cursor-zoom-out animate-in fade-in duration-150"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-5xl max-h-[92vh] bg-white p-3 sm:p-4 rounded-3xl shadow-2xl flex flex-col items-center border-2 border-white/20"
+          >
+            <button
+              type="button"
+              onClick={() => setIsImageZoomOpen(false)}
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-2xl bg-black/60 hover:bg-black/80 text-white transition-colors z-10 cursor-pointer"
+              title="Đóng (hoặc nhấn ra ngoài)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={imageUrl}
+              alt="Phóng to tranh minh họa"
+              className="max-h-[82vh] w-auto max-w-full object-contain rounded-2xl"
+            />
+            <div className="text-xs font-bold text-gray-500 mt-2">
+              📸 Bức tranh minh họa (Click ra ngoài để đóng)
+            </div>
           </div>
         </div>
       )}

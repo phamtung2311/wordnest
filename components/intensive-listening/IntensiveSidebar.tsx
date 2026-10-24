@@ -312,7 +312,7 @@ export function IntensiveSidebar({
   return (
     <>
       {/* Desktop Persistent Sidebar */}
-      <aside className="hidden lg:block w-80 shrink-0 h-[calc(100vh-6.5rem)] sticky top-20">
+      <aside className="hidden lg:block w-72 xl:w-80 shrink-0 h-full overflow-hidden">
         {content}
       </aside>
 

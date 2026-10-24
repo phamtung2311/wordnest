@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -49,6 +49,15 @@ export function IntensiveListeningHub() {
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
+
+  // Ref to scroll right content area back to top on item switch
+  const studyAreaRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (studyAreaRef.current) {
+      studyAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentItemId]);
 
   // Load saved preferences and current test from localStorage on initial mount
   useEffect(() => {
@@ -257,10 +266,10 @@ export function IntensiveListeningHub() {
   const activeTestInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
 
   return (
-    <div className="min-h-screen bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-[#213a34]/10 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-[#213a34]/10 shadow-xs shrink-0">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3">
           {/* Left: Back & Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <a
@@ -344,7 +353,7 @@ export function IntensiveListeningHub() {
       </header>
 
       {/* Main Layout Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex gap-6">
+      <main className="flex-1 lg:overflow-hidden max-w-7xl w-full mx-auto p-2 sm:p-3 sm:px-6 flex gap-4">
         {/* Left Sidebar */}
         <IntensiveSidebar
           items={currentTestData}
@@ -360,66 +369,32 @@ export function IntensiveListeningHub() {
         />
 
         {/* Right Study Area */}
-        <div className="flex-1 min-w-0 space-y-5">
-          {/* Audio Player Card */}
-          <IntensiveAudioPlayer
-            audioSrc={currentItem.audioSrc}
-            title={currentItem.title}
-            questionRange={currentItem.questionRange}
-            isLooping={isLooping}
-            autoAdvance={autoAdvance}
-            onToggleLoop={handleToggleLoop}
-            onToggleAutoAdvance={handleToggleAutoAdvance}
-            onNext={handleNextItem}
-            onPrev={handlePrevItem}
-            hasNext={hasNext}
-            hasPrev={hasPrev}
-          />
-
-          {/* 3 Practice Mode Tabs Switcher */}
-          <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border-2 border-[#213a34]/10 shadow-xs">
-            <button
-              type="button"
-              onClick={() => setActiveTab('quiz')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all ${
-                activeTab === 'quiz'
-                  ? 'bg-[#213a34] text-white shadow-sm'
-                  : 'text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              <PenTool className="w-4 h-4 text-[#f8d467]" />
-              <span>1. Làm trắc nghiệm</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('transcript')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all ${
-                activeTab === 'transcript'
-                  ? 'bg-[#213a34] text-white shadow-sm'
-                  : 'text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              <MessageSquare className="w-4 h-4 text-[#f8d467]" />
-              <span>2. Lời thoại & Dịch</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('dictation')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all ${
-                activeTab === 'dictation'
-                  ? 'bg-[#213a34] text-white shadow-sm'
-                  : 'text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              <Headphones className="w-4 h-4 text-[#f8d467]" />
-              <span>3. Chép chính tả</span>
-            </button>
+        <div className="flex-1 min-w-0 h-full flex flex-col lg:overflow-hidden">
+          {/* Pinned Audio Player & Tabs at top (Never scrolls away) */}
+          <div className="shrink-0 mb-2.5 sticky top-14 lg:static z-20">
+            <IntensiveAudioPlayer
+              audioSrc={currentItem.audioSrc}
+              title={currentItem.title}
+              questionRange={currentItem.questionRange}
+              part={currentItem.part}
+              isLooping={isLooping}
+              autoAdvance={autoAdvance}
+              onToggleLoop={handleToggleLoop}
+              onToggleAutoAdvance={handleToggleAutoAdvance}
+              onNext={handleNextItem}
+              onPrev={handlePrevItem}
+              hasNext={hasNext}
+              hasPrev={hasPrev}
+              activeTab={activeTab}
+              onChangeTab={setActiveTab}
+            />
           </div>
 
-          {/* Active Tab View */}
-          <div className="min-h-[400px]">
+          {/* Scrollable Content Container */}
+          <div
+            ref={studyAreaRef}
+            className="flex-1 lg:overflow-y-auto pr-1 space-y-3.5 pb-6 scrollbar-thin"
+          >
             {activeTab === 'quiz' && (
               <QuizTab
                 key={`quiz-${currentTestId}-${currentItem.id}`}
@@ -453,33 +428,33 @@ export function IntensiveListeningHub() {
                 onCompleteItem={() => markItemCompleted(currentItem.id)}
               />
             )}
-          </div>
 
-          {/* Bottom Next/Prev Pagination Footer */}
-          <div className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#213a34]/10 shadow-xs">
-            <button
-              type="button"
-              onClick={handlePrevItem}
-              disabled={!hasPrev}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Bài trước</span>
-            </button>
+            {/* Compact Bottom Next/Prev Pagination Footer */}
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-white rounded-2xl border border-[#213a34]/12 shadow-2xs mt-3">
+              <button
+                type="button"
+                onClick={handlePrevItem}
+                disabled={!hasPrev}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Bài trước</span>
+              </button>
 
-            <div className="text-xs font-bold text-gray-500">
-              {activeTestInfo?.shortTitle} · Bài {currentItemIndex + 1} / {totalCount}
+              <div className="text-xs font-bold text-gray-500">
+                {activeTestInfo?.shortTitle} · Bài {currentItemIndex + 1} / {totalCount}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNextItem}
+                disabled={!hasNext}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-white bg-[#213a34] hover:bg-[#2c4e46] disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors cursor-pointer"
+              >
+                <span>Bài tiếp</span>
+                <ChevronRight className="w-4 h-4 text-[#f8d467]" />
+              </button>
             </div>
-
-            <button
-              type="button"
-              onClick={handleNextItem}
-              disabled={!hasNext}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-black text-white bg-[#213a34] hover:bg-[#2c4e46] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-colors"
-            >
-              <span>Bài tiếp</span>
-              <ChevronRight className="w-4 h-4 text-[#f8d467]" />
-            </button>
           </div>
         </div>
       </main>

@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   XCircle,
   RotateCcw,
-  Sparkles,
   Eye,
   EyeOff,
   Check,
@@ -122,7 +121,7 @@ export function QuizTab({
     }
   };
 
-  const handleReset = () => {
+  const handleResetQuiz = () => {
     setSelectedAnswers({});
     setIsSubmitted(false);
     setShowExplanation(false);
@@ -142,33 +141,207 @@ export function QuizTab({
   const isAudioOnlyExamPart = part === 1 || part === 2;
   const canShowTranscriptText = isSubmitted || peekTranscript || !isAudioOnlyExamPart;
 
+  // Render question list
+  const renderQuestions = () => (
+    <div className="space-y-3">
+      {questions.map((q) => {
+        const userAns = selectedAnswers[q.num];
+        const isCorrect = userAns === q.correctAnswer;
+
+        // Question header text
+        let questionTitle = q.question;
+        if (part === 1) {
+          questionTitle = `Nhìn hình ảnh và nghe 4 câu miêu tả (A, B, C, D)`;
+        } else if (part === 2 && !canShowTranscriptText) {
+          questionTitle = `Nghe câu hỏi và chọn câu phản hồi đúng nhất (A, B, C)`;
+        }
+
+        return (
+          <div
+            key={q.num}
+            className={`bg-white rounded-2xl p-3 sm:p-3.5 border-2 transition-all ${
+              isSubmitted
+                ? isCorrect
+                  ? 'border-green-300 shadow-2xs bg-green-50/20'
+                  : 'border-red-200 shadow-2xs bg-red-50/10'
+                : 'border-[#213a34]/12 shadow-2xs hover:border-[#213a34]/25'
+            }`}
+          >
+            {/* Question Header */}
+            <div className="flex items-start gap-2.5 mb-2.5">
+              <span className="w-6 h-6 rounded-lg bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                {q.num}
+              </span>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-[#213a34] text-xs sm:text-sm leading-snug">
+                  {questionTitle}
+                </h4>
+                {part === 2 && !canShowTranscriptText && (
+                  <p className="text-[11px] text-amber-700 font-medium mt-0.5">
+                    💡 Đề thi thật Part 2 không in câu hỏi và đáp án trên giấy.
+                  </p>
+                )}
+                {showTranslation && q.vietnameseQuestion && (
+                  <p className="text-[11px] text-gray-500 font-semibold mt-0.5">
+                    Dịch: {q.vietnameseQuestion}
+                  </p>
+                )}
+              </div>
+
+              {/* Status indicator if submitted */}
+              {isSubmitted && (
+                <div className="shrink-0">
+                  {isCorrect ? (
+                    <span className="flex items-center gap-1 text-green-700 bg-green-100 px-2 py-0.5 rounded-full text-[10px] font-black">
+                      <CheckCircle2 className="w-3 h-3" /> Đúng
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-red-700 bg-red-100 px-2 py-0.5 rounded-full text-[10px] font-black">
+                      <XCircle className="w-3 h-3" /> Sai
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Options */}
+            <div className="space-y-1.5">
+              {q.options.map((opt) => {
+                const isSelected = userAns === opt.key;
+                const isThisCorrect = opt.key === q.correctAnswer;
+
+                let optStyle =
+                  'border-[#213a34]/10 hover:border-[#213a34]/30 hover:bg-[#f5f0e6]/40 bg-white';
+                let badgeStyle = 'bg-[#e9f2ed] text-[#213a34]';
+
+                if (isSubmitted) {
+                  if (isThisCorrect) {
+                    optStyle =
+                      'border-green-500 bg-green-50/70 text-green-950 font-bold ring-1 ring-green-400/30';
+                    badgeStyle = 'bg-green-600 text-white';
+                  } else if (isSelected && !isThisCorrect) {
+                    optStyle =
+                      'border-red-400 bg-red-50 text-red-950 ring-1 ring-red-400/30';
+                    badgeStyle = 'bg-red-500 text-white';
+                  } else {
+                    optStyle = 'border-gray-200 opacity-60 bg-gray-50/50';
+                    badgeStyle = 'bg-gray-200 text-gray-600';
+                  }
+                } else if (isSelected) {
+                  optStyle =
+                    'border-[#213a34] bg-[#e9f2ed] ring-1 ring-[#213a34]/30';
+                  badgeStyle = 'bg-[#213a34] text-white';
+                }
+
+                // Determine display text for the option
+                let optionDisplayText = opt.text;
+                if (isAudioOnlyExamPart && !canShowTranscriptText) {
+                  optionDisplayText = `Phương án ${opt.key}`;
+                }
+
+                return (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => handleSelectOption(q.num, opt.key)}
+                    disabled={isSubmitted}
+                    className={`w-full p-2.5 rounded-xl border text-left transition-all flex items-center justify-between gap-2.5 cursor-pointer disabled:cursor-default ${optStyle}`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className={`w-6 h-6 rounded-lg font-black text-xs flex items-center justify-center shrink-0 ${badgeStyle}`}
+                      >
+                        {opt.key}
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold truncate">
+                        {optionDisplayText}
+                      </span>
+                    </div>
+
+                    {isSubmitted && isThisCorrect && (
+                      <Check className="w-4 h-4 text-green-600 shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation box after submit */}
+            {isSubmitted && (
+              <div className="mt-2.5 pt-2 border-t border-gray-100 text-xs space-y-1 bg-[#fbf9f5] p-2.5 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-[#213a34]">Đáp án đúng:</span>
+                  <span className="px-2 py-0.5 rounded-md bg-green-600 text-white font-black text-xs">
+                    {q.correctAnswer}
+                  </span>
+                </div>
+                {q.explanation && (
+                  <p className="text-gray-700 leading-relaxed font-medium">
+                    {q.explanation}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Part 3 & 4: Check Answers Button */}
+      {!isAudioOnlyExamPart && (
+        <div className="flex items-center justify-end gap-2 pt-1">
+          {isSubmitted ? (
+            <button
+              type="button"
+              onClick={handleResetQuiz}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-gray-700 bg-white border border-[#213a34]/15 hover:bg-[#e9f2ed] shadow-2xs transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Làm lại đoạn này</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleCheckAnswers}
+              disabled={answeredCount === 0}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467] disabled:opacity-40 shadow-sm transition-all active:scale-95 cursor-pointer"
+            >
+              <Check className="w-4 h-4" />
+              <span>Kiểm tra đáp án ({answeredCount}/{totalQuestions})</span>
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
-      {/* Intro banner & Control Toggles */}
-      <div className="bg-[#f5f0e6] rounded-2xl p-4 border border-[#213a34]/10 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-sm shrink-0">
-            ✍️
-          </div>
-          <div>
-            <h3 className="font-black text-[#213a34] text-sm">
-              Luyện trắc nghiệm {isAudioOnlyExamPart ? '(Ẩn Lời Thoại · Chọn Là Chấm Điểm)' : `(Part ${part})`}
-            </h3>
-            <p className="text-xs text-gray-600 font-medium">
-              {isAudioOnlyExamPart
-                ? 'Bấm chọn đáp án để kiểm tra kết quả ngay lập tức kèm lời giải.'
-                : 'Tập trung nghe audio, chọn đáp án và bấm "Kiểm tra đáp án".'}
-            </p>
-          </div>
+    <div className="space-y-3">
+      {/* Sleek Top Toolbar (No oversized banner) */}
+      <div className="flex items-center justify-between gap-2 px-1">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-black text-[#213a34] flex items-center gap-1.5">
+            ✍️ {isAudioOnlyExamPart ? `Trắc nghiệm Part ${part} (Chọn là chấm ngay)` : `Part ${part} (${totalQuestions} câu hỏi)`}
+          </span>
+          {isSubmitted && (
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                correctCount === totalQuestions
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-amber-100 text-amber-800'
+              }`}
+            >
+              {correctCount}/{totalQuestions} đúng
+            </span>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {/* Peeking toggle for Part 1 & 2 */}
           {isAudioOnlyExamPart && !isSubmitted && (
             <button
               type="button"
               onClick={() => setPeekTranscript(!peekTranscript)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-[#213a34] bg-white border border-[#213a34]/15 hover:bg-[#e9f2ed] shadow-xs transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-[#213a34] bg-white border border-[#213a34]/15 hover:bg-[#e9f2ed] shadow-2xs transition-colors cursor-pointer"
             >
               {peekTranscript ? (
                 <>
@@ -189,14 +362,14 @@ export function QuizTab({
             <button
               type="button"
               onClick={() => setShowScript(!showScript)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border shadow-xs transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border shadow-2xs transition-colors cursor-pointer ${
                 showScript
                   ? 'bg-[#213a34] text-white border-[#213a34]'
                   : 'bg-white text-[#213a34] border-[#213a34]/15 hover:bg-[#e9f2ed]'
               }`}
             >
               <FileText className={`w-3.5 h-3.5 ${showScript ? 'text-[#f8d467]' : 'text-blue-600'}`} />
-              <span>{showScript ? 'Ẩn lời thoại (Script)' : 'Hiện lời thoại (Script)'}</span>
+              <span>{showScript ? 'Ẩn Script' : 'Hiện Script'}</span>
             </button>
           )}
 
@@ -204,63 +377,48 @@ export function QuizTab({
           <button
             type="button"
             onClick={() => setShowTranslation(!showTranslation)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border shadow-xs transition-colors ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border shadow-2xs transition-colors cursor-pointer ${
               showTranslation
                 ? 'bg-emerald-700 text-white border-emerald-700'
                 : 'bg-white text-[#213a34] border-[#213a34]/15 hover:bg-[#e9f2ed]'
             }`}
           >
             <Languages className={`w-3.5 h-3.5 ${showTranslation ? 'text-[#f8d467]' : 'text-emerald-700'}`} />
-            <span>{showTranslation ? 'Ẩn dịch Tiếng Việt' : 'Hiện dịch Tiếng Việt'}</span>
+            <span>{showTranslation ? 'Ẩn dịch' : 'Hiện dịch'}</span>
           </button>
-
-          {isSubmitted && (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-black ${
-                correctCount === totalQuestions
-                  ? 'bg-green-100 text-green-800 border border-green-300'
-                  : 'bg-amber-100 text-amber-800 border border-amber-300'
-              }`}
-            >
-              {correctCount}/{totalQuestions} câu đúng
-            </span>
-          )}
         </div>
       </div>
 
       {/* Part 3 & 4 Expandable Script Box */}
       {(part === 3 || part === 4) && showScript && transcript && transcript.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border-2 border-[#213a34]/15 shadow-sm space-y-3 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between border-b border-[#213a34]/10 pb-2.5">
-            <span className="text-xs font-black uppercase tracking-wider text-[#213a34] flex items-center gap-1.5">
-              📜 Lời thoại đoạn nghe ({part === 3 ? 'Hội thoại' : 'Bài nói'})
-            </span>
-            <span className="text-[11px] text-gray-500 font-bold">
-              {showTranslation ? 'Đang bật bản dịch Tiếng Việt' : 'Bấm nút "Hiện dịch Tiếng Việt" để đối chiếu'}
+        <div className="p-3 rounded-2xl bg-white border border-[#213a34]/15 shadow-2xs space-y-2 animate-in fade-in duration-150">
+          <div className="flex items-center justify-between border-b border-[#213a34]/10 pb-1.5">
+            <span className="text-xs font-black uppercase tracking-wider text-[#213a34]">
+              📜 Lời thoại {part === 3 ? 'hội thoại' : 'bài nói'}
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
             {transcript.map((line, idx) => (
-              <div key={line.id || idx} className="text-sm">
-                <div className="flex items-start gap-2.5">
+              <div key={line.id || idx} className="text-xs">
+                <div className="flex items-start gap-1.5">
                   {line.speaker && (
                     <span
-                      className={`text-[11px] font-black px-2.5 py-0.5 rounded-full shrink-0 mt-0.5 ${
+                      className={`text-[9px] font-black px-1.5 py-0.5 rounded shrink-0 mt-0.5 ${
                         line.speaker.toLowerCase().includes('w')
-                          ? 'bg-rose-100 text-rose-700 border border-rose-200'
-                          : 'bg-blue-100 text-blue-800 border border-blue-200'
+                          ? 'bg-rose-100 text-rose-700'
+                          : 'bg-blue-100 text-blue-800'
                       }`}
                     >
                       {line.speaker}
                     </span>
                   )}
-                  <p className="font-extrabold text-[#213a34] leading-relaxed flex-1">
+                  <p className="font-bold text-[#213a34] leading-relaxed flex-1">
                     {line.text}
                   </p>
                 </div>
                 {showTranslation && line.vietnamese && (
-                  <p className="text-xs text-gray-600 font-medium ml-12 sm:ml-14 mt-1 bg-[#fbf9f5] p-2 rounded-xl border border-gray-100">
+                  <p className="text-[11px] text-gray-500 font-medium ml-8 mt-0.5">
                     {line.vietnamese}
                   </p>
                 )}
@@ -270,33 +428,39 @@ export function QuizTab({
         </div>
       )}
 
-      {/* Image / Graphic Display for Part 1, Part 3 & Part 4 */}
-      {imageUrl && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
-          <div
-            onClick={() => setIsImageModalOpen(true)}
-            className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5] cursor-zoom-in group"
-            title="Nhấn để phóng to hình ảnh"
-          >
-            <img
-              src={imageUrl}
-              alt={part === 1 ? 'Part 1 bức tranh' : 'Bảng biểu / Sơ đồ đính kèm'}
-              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl group-hover:scale-[1.01] transition-transform"
-            />
-            <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 shadow-sm">
-              <Maximize2 className="w-3.5 h-3.5 text-[#f8d467]" />
-              <span>Phóng to</span>
+      {/* Main Study Area: Side-by-side grid if imageUrl exists */}
+      {imageUrl ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+          {/* Left Column: Image with click to zoom */}
+          <div className="lg:col-span-5 bg-white rounded-2xl p-2.5 border border-[#213a34]/12 shadow-2xs flex flex-col items-center sticky top-2">
+            <div
+              onClick={() => setIsImageModalOpen(true)}
+              className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5] cursor-zoom-in group"
+              title="Nhấn để phóng to hình ảnh"
+            >
+              <img
+                src={imageUrl}
+                alt={part === 1 ? 'Part 1 bức tranh' : 'Bảng biểu / Sơ đồ đính kèm'}
+                className="w-auto max-h-[260px] sm:max-h-[300px] object-contain rounded-xl group-hover:scale-[1.02] transition-transform duration-200"
+              />
+              <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <span className="px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-bold flex items-center gap-1 shadow-sm">
+                  <Maximize2 className="w-3 h-3 text-[#f8d467]" /> Phóng to
+                </span>
+              </div>
             </div>
+            <span className="text-[10px] font-bold text-gray-400 mt-1.5 flex items-center gap-1">
+              📸 {part === 1 ? 'Bức tranh câu hỏi' : 'Bảng biểu / Sơ đồ đính kèm (Look at the graphic)'}
+            </span>
           </div>
-          <span className="text-xs font-bold text-gray-500 mt-2.5 flex items-center gap-1.5">
-            {part === 1 ? (
-              `📸 Bức tranh câu hỏi ${questions[0]?.num}`
-            ) : (
-              `📊 Bảng biểu / Sơ đồ đính kèm câu hỏi (Look at the graphic)`
-            )}
-            <span className="text-gray-400 font-normal">· Nhấn ảnh để xem to</span>
-          </span>
+
+          {/* Right Column: Questions */}
+          <div className="lg:col-span-7">
+            {renderQuestions()}
+          </div>
         </div>
+      ) : (
+        renderQuestions()
       )}
 
       {/* Image Zoom Lightbox Modal */}
@@ -312,7 +476,7 @@ export function QuizTab({
             <button
               type="button"
               onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-2xl bg-black/60 hover:bg-black/80 text-white transition-colors z-10"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-2xl bg-black/60 hover:bg-black/80 text-white transition-colors z-10 cursor-pointer"
               title="Đóng (hoặc nhấn ra ngoài)"
             >
               <X className="w-5 h-5" />
@@ -328,200 +492,6 @@ export function QuizTab({
           </div>
         </div>
       )}
-
-      {/* Question List */}
-      <div className="space-y-5">
-        {questions.map((q) => {
-          const userAns = selectedAnswers[q.num];
-          const isCorrect = userAns === q.correctAnswer;
-
-          // Question header text
-          let questionTitle = q.question;
-          if (part === 1) {
-            questionTitle = `Nhìn hình ảnh và nghe 4 câu miêu tả (A, B, C, D)`;
-          } else if (part === 2 && !canShowTranscriptText) {
-            questionTitle = `Nghe câu hỏi và chọn câu phản hồi đúng nhất (A, B, C)`;
-          }
-
-          return (
-            <div
-              key={q.num}
-              className={`bg-white rounded-2xl sm:rounded-3xl p-5 border-2 transition-all ${
-                isSubmitted
-                  ? isCorrect
-                    ? 'border-green-300 shadow-sm bg-green-50/20'
-                    : 'border-red-200 shadow-sm bg-red-50/10'
-                  : 'border-[#213a34]/10 shadow-sm hover:border-[#213a34]/20'
-              }`}
-            >
-              {/* Question Header */}
-              <div className="flex items-start gap-3 mb-4">
-                <span className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-sm shrink-0 mt-0.5">
-                  {q.num}
-                </span>
-                <div className="flex-1">
-                  <h4 className="font-extrabold text-[#213a34] text-base sm:text-lg leading-snug">
-                    {questionTitle}
-                  </h4>
-                  {part === 2 && !canShowTranscriptText && (
-                    <p className="text-xs text-amber-700/80 font-semibold mt-1">
-                      💡 TOEIC Part 2 không in sẵn câu hỏi hay phương án trên đề thi.
-                    </p>
-                  )}
-                  {showTranslation && q.vietnameseQuestion && (
-                    <p className="text-xs text-gray-500 font-bold mt-1">
-                      Dịch: {q.vietnameseQuestion}
-                    </p>
-                  )}
-                </div>
-
-                {/* Status indicator if submitted */}
-                {isSubmitted && (
-                  <div className="shrink-0">
-                    {isCorrect ? (
-                      <span className="flex items-center gap-1 text-green-700 bg-green-100 px-2.5 py-1 rounded-full text-xs font-black">
-                        <CheckCircle2 className="w-4 h-4" /> Đúng
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-red-700 bg-red-100 px-2.5 py-1 rounded-full text-xs font-black">
-                        <XCircle className="w-4 h-4" /> Sai
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Options */}
-              <div className="space-y-2.5">
-                {q.options.map((opt) => {
-                  const isSelected = userAns === opt.key;
-                  const isThisCorrect = opt.key === q.correctAnswer;
-
-                  let optStyle =
-                    'border-[#213a34]/10 hover:border-[#213a34]/30 hover:bg-[#f5f0e6]/40 bg-white';
-                  let badgeStyle = 'bg-[#e9f2ed] text-[#213a34]';
-
-                  if (isSubmitted) {
-                    if (isThisCorrect) {
-                      optStyle =
-                        'border-green-500 bg-green-50/70 text-green-950 font-bold ring-2 ring-green-400/20';
-                      badgeStyle = 'bg-green-600 text-white';
-                    } else if (isSelected && !isThisCorrect) {
-                      optStyle =
-                        'border-red-400 bg-red-50 text-red-950 ring-2 ring-red-400/20';
-                      badgeStyle = 'bg-red-500 text-white';
-                    } else {
-                      optStyle = 'border-gray-200 opacity-60 bg-gray-50/50';
-                      badgeStyle = 'bg-gray-200 text-gray-600';
-                    }
-                  } else if (isSelected) {
-                    optStyle =
-                      'border-[#213a34] bg-[#e9f2ed] ring-2 ring-[#213a34]/20';
-                    badgeStyle = 'bg-[#213a34] text-white';
-                  }
-
-                  // Determine display text for the option
-                  let optionDisplayText = opt.text;
-                  if (isAudioOnlyExamPart && !canShowTranscriptText) {
-                    optionDisplayText = `Phương án ${opt.key}`;
-                  }
-
-                  return (
-                    <button
-                      key={opt.key}
-                      type="button"
-                      disabled={isSubmitted}
-                      onClick={() => handleSelectOption(q.num, opt.key)}
-                      className={`w-full flex items-start gap-3 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 text-left transition-all ${optStyle}`}
-                    >
-                      <span
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 mt-0.5 transition-colors ${badgeStyle}`}
-                      >
-                        {opt.key}
-                      </span>
-                      <div className="flex-1">
-                        <div className="font-extrabold text-[#213a34] text-sm sm:text-base leading-relaxed">
-                          {optionDisplayText}
-                        </div>
-                        {showTranslation && opt.vietnamese && (
-                          <div className="text-xs text-gray-500 font-medium mt-0.5">
-                            {opt.vietnamese}
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Explanation Section */}
-              {isSubmitted && showExplanation && q.explanation && (
-                <div className="mt-4 p-4 rounded-2xl bg-[#f5f0e6] border border-[#213a34]/10 space-y-2 animate-in fade-in duration-300">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-[#213a34]">
-                    <Sparkles className="w-4 h-4 text-[#eb6a52]" />
-                    <span>Giải thích chi tiết & Đáp án đúng: {q.correctAnswer}</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
-                    {q.explanation}
-                  </p>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Bottom Action Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#213a34]/10">
-        <div className="text-xs text-gray-500 font-bold">
-          {isAudioOnlyExamPart ? (
-            isSubmitted ? 'Đã kiểm tra kết quả' : 'Chưa chọn đáp án'
-          ) : (
-            `Đã chọn ${answeredCount}/${totalQuestions} câu`
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          {isSubmitted ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setShowExplanation(!showExplanation)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black bg-[#e9f2ed] hover:bg-[#d5e5db] text-[#213a34] transition-colors"
-              >
-                {showExplanation ? (
-                  <>
-                    <EyeOff className="w-4 h-4" /> Ẩn giải thích
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-4 h-4" /> Xem giải thích
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleReset}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-black bg-[#213a34] hover:bg-[#2c4e46] text-white shadow-sm transition-colors"
-              >
-                <RotateCcw className="w-4 h-4 text-[#f8d467]" /> Làm lại
-              </button>
-            </>
-          ) : (
-            !isAudioOnlyExamPart && (
-              <button
-                type="button"
-                disabled={answeredCount === 0}
-                onClick={handleCheckAnswers}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#213a34] hover:bg-[#2c4e46] text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
-              >
-                <Check className="w-4 h-4 text-[#f8d467]" /> Kiểm tra đáp án
-              </button>
-            )
-          )}
-        </div>
-      </div>
     </div>
   );
 }

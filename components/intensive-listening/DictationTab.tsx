@@ -200,42 +200,25 @@ export function DictationTab({
   const completedCount = Object.keys(completedSentences).length;
 
   return (
-    <div className="space-y-6">
-      {/* Intro Header */}
-      <div className="bg-[#f5f0e6] rounded-2xl p-4 border border-[#213a34]/10 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center font-black text-sm shrink-0">
-            🎧
-          </div>
-          <div>
-            <h3 className="font-black text-[#213a34] text-sm">
-              Chép chính tả (Dictation) theo từng câu thoại
-            </h3>
-            <p className="text-xs text-gray-600 font-medium">
-              Bấm loa nghe câu thoại, gõ lại chính xác từng từ để rèn phản xạ và phát hiện từ nối.
-            </p>
-          </div>
-        </div>
-
-        {/* Sentence Counter */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-black bg-white px-3 py-1 rounded-full text-[#213a34] border border-[#213a34]/10 shadow-xs">
-            Đã hoàn thành: {completedCount}/{transcript.length} câu
-          </span>
-        </div>
+    <div className="space-y-3">
+      {/* Sleek Top Toolbar (No bloated filler) */}
+      <div className="flex items-center justify-between gap-2 px-1">
+        <span className="text-xs font-black text-[#213a34] flex items-center gap-1.5">
+          🎧 Chép chính tả (Đã làm {completedCount}/{transcript.length} câu)
+        </span>
       </div>
 
       {/* Part 1 Photo Display if applicable */}
       {imageUrl && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
+        <div className="bg-white rounded-2xl p-2.5 border border-[#213a34]/12 shadow-2xs flex flex-col items-center justify-center">
           <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
             <img
               src={imageUrl}
               alt="Part 1 bức tranh"
-              className="w-auto max-h-[300px] sm:max-h-[360px] object-contain rounded-xl"
+              className="w-auto max-h-[220px] sm:max-h-[260px] object-contain rounded-xl"
             />
           </div>
-          <span className="text-xs font-bold text-gray-500 mt-2 flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-gray-400 mt-1 flex items-center gap-1">
             📸 Bức tranh minh họa
           </span>
         </div>
