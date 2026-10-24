@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 2
-// Nguồn Audio: Audio cut ETS 2026 Test 2
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test2IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -101,7 +95,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "ban công",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q1.png",
+    "graphicImage": "/images/intensive/test2/q1.png"
   },
   {
     "id": "part1-2",
@@ -194,7 +190,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "lan can, rào chắn",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q2.png",
+    "graphicImage": "/images/intensive/test2/q2.png"
   },
   {
     "id": "part1-3",
@@ -282,7 +280,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "tấm pallet (kê hàng)",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q3.png",
+    "graphicImage": "/images/intensive/test2/q3.png"
   },
   {
     "id": "part1-4",
@@ -375,7 +375,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "thùng rác, thùng chứa",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q4.png",
+    "graphicImage": "/images/intensive/test2/q4.png"
   },
   {
     "id": "part1-5",
@@ -468,7 +470,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "tủ lạnh",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q5.png",
+    "graphicImage": "/images/intensive/test2/q5.png"
   },
   {
     "id": "part1-6",
@@ -556,7 +560,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cầu thang bộ",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q6.png",
+    "graphicImage": "/images/intensive/test2/q6.png"
   },
   {
     "id": "part2-7",
@@ -3999,7 +4005,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "nghỉ hưu",
         "partOfSpeech": "v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q62_64.png",
+    "graphicImage": "/images/intensive/test2/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -4152,7 +4160,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "dời lịch, sắp xếp lại lịch hẹn",
         "partOfSpeech": "v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q65_67.png",
+    "graphicImage": "/images/intensive/test2/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -4299,7 +4309,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "danh thiếp, card visit",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q68_70.png",
+    "graphicImage": "/images/intensive/test2/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -5511,7 +5523,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "lịch trình, thời gian biểu",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q95_97.png",
+    "graphicImage": "/images/intensive/test2/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -5646,7 +5660,9 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
         "meaning": "máy bán hàng tự động",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test2/q98_100.png",
+    "graphicImage": "/images/intensive/test2/q98_100.png"
   }
 ];
 

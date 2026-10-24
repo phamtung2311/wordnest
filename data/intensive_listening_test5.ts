@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 5
-// Nguồn Audio: Audio cut ETS 2026 Test 5
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test5IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -105,7 +99,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "hành lang",
         "example": "Please do not leave boxes in the hallway."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q1.png",
+    "image": "/images/intensive/test5/q1.png"
   },
   {
     "id": "part1-2",
@@ -207,7 +203,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "sửa chữa, bảo trì",
         "example": "A technician was called to repair the conveyor motor."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q2.png",
+    "image": "/images/intensive/test5/q2.png"
   },
   {
     "id": "part1-3",
@@ -309,7 +307,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "với tay lấy cái gì",
         "example": "He reached for a glass of lemonade."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q3.png",
+    "image": "/images/intensive/test5/q3.png"
   },
   {
     "id": "part1-4",
@@ -411,7 +411,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "thử đồ, mặc thử quần áo",
         "example": "Customers can try on clothes in the fitting rooms."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q4.png",
+    "image": "/images/intensive/test5/q4.png"
   },
   {
     "id": "part1-5",
@@ -513,7 +515,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "vở, sổ tay ghi chép",
         "example": "The secretary took thorough notes in her spiral notebook."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q5.png",
+    "image": "/images/intensive/test5/q5.png"
   },
   {
     "id": "part1-6",
@@ -615,7 +619,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "biển báo giao thông yêu cầu dừng lại",
         "example": "Drivers must come to a complete stop at the stop sign."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q6.png",
+    "image": "/images/intensive/test5/q6.png"
   },
   {
     "id": "part2-7",
@@ -4387,7 +4393,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "xúc tiến, đẩy nhanh tiến độ",
         "example": "We paid an additional courier fee to expedite parts shipment."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q62_64.png",
+    "image": "/images/intensive/test5/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -4552,7 +4560,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "chuyển đổi sang cái khác",
         "example": "Many couriers switched to electric bicycles to bypass city traffic."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q65_67.png",
+    "image": "/images/intensive/test5/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -4717,7 +4727,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "bảng kê phân tích chi tiết chi phí",
         "example": "The contractor provided a thorough cost breakdown for labor and materials."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q68_70.png",
+    "image": "/images/intensive/test5/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -6194,7 +6206,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "uống đủ nước, giữ cơ thể không bị mất nước",
         "example": "Remember to drink water regularly and stay hydrated during outdoor sports."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q95_97.png",
+    "image": "/images/intensive/test5/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -6353,7 +6367,9 @@ export const test5IntensiveData: IntensiveListeningItem[] = [
         "meaning": "chế độ giờ làm việc mùa hè (thường được về sớm thứ 6)",
         "example": "Many tech companies adopt summer hours allowing staff early weekend departures."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test5/q98_100.png",
+    "image": "/images/intensive/test5/q98_100.png"
   }
 ];
 

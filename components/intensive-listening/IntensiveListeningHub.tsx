@@ -356,7 +356,7 @@ export function IntensiveListeningHub() {
                 key={`quiz-${currentTestId}-${currentItem.id}`}
                 itemId={currentItem.id}
                 part={currentItem.part}
-                imageUrl={currentItem.imageUrl}
+                imageUrl={currentItem.imageUrl || (currentItem as any).image || (currentItem as any).graphicImage}
                 transcript={currentItem.transcript}
                 questions={currentItem.questions}
                 onCompleteItem={(score, total) => {
@@ -370,7 +370,7 @@ export function IntensiveListeningHub() {
             {activeTab === 'transcript' && (
               <TranscriptTab
                 key={`trans-${currentTestId}-${currentItem.id}`}
-                imageUrl={currentItem.imageUrl}
+                imageUrl={currentItem.imageUrl || (currentItem as any).image || (currentItem as any).graphicImage}
                 transcript={currentItem.transcript}
                 vocabulary={currentItem.vocabulary}
               />
@@ -379,7 +379,7 @@ export function IntensiveListeningHub() {
             {activeTab === 'dictation' && (
               <DictationTab
                 key={`dict-${currentTestId}-${currentItem.id}`}
-                imageUrl={currentItem.imageUrl}
+                imageUrl={currentItem.imageUrl || (currentItem as any).image || (currentItem as any).graphicImage}
                 transcript={currentItem.transcript}
                 onCompleteItem={() => markItemCompleted(currentItem.id)}
               />

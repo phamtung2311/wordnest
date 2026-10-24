@@ -12,6 +12,8 @@ import {
   Check,
   FileText,
   Languages,
+  Maximize2,
+  X,
 } from 'lucide-react';
 
 interface QuizTabProps {
@@ -38,6 +40,7 @@ export function QuizTab({
   const [peekTranscript, setPeekTranscript] = useState<boolean>(false);
   const [showTranslation, setShowTranslation] = useState<boolean>(false);
   const [showScript, setShowScript] = useState<boolean>(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
 
   // Reset state when switching items
   useEffect(() => {
@@ -46,6 +49,8 @@ export function QuizTab({
     setShowExplanation(false);
     setPeekTranscript(false);
     setShowTranslation(false);
+    setShowScript(false);
+    setIsImageModalOpen(false);
     setShowScript(false);
   }, [itemId]);
 
@@ -229,12 +234,20 @@ export function QuizTab({
       {/* Image / Graphic Display for Part 1, Part 3 & Part 4 */}
       {imageUrl && (
         <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/10 shadow-sm flex flex-col items-center justify-center">
-          <div className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5]">
+          <div
+            onClick={() => setIsImageModalOpen(true)}
+            className="relative overflow-hidden rounded-xl border border-gray-200/80 max-w-full bg-[#fbf9f5] cursor-zoom-in group"
+            title="Nhấn để phóng to hình ảnh"
+          >
             <img
               src={imageUrl}
               alt={part === 1 ? 'Part 1 bức tranh' : 'Bảng biểu / Sơ đồ đính kèm'}
-              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl"
+              className="w-auto max-h-[380px] sm:max-h-[440px] object-contain rounded-xl group-hover:scale-[1.01] transition-transform"
             />
+            <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 shadow-sm">
+              <Maximize2 className="w-3.5 h-3.5 text-[#f8d467]" />
+              <span>Phóng to</span>
+            </div>
           </div>
           <span className="text-xs font-bold text-gray-500 mt-2.5 flex items-center gap-1.5">
             {part === 1 ? (
@@ -242,7 +255,38 @@ export function QuizTab({
             ) : (
               `📊 Bảng biểu / Sơ đồ đính kèm câu hỏi (Look at the graphic)`
             )}
+            <span className="text-gray-400 font-normal">· Nhấn ảnh để xem to</span>
           </span>
+        </div>
+      )}
+
+      {/* Image Zoom Lightbox Modal */}
+      {isImageModalOpen && imageUrl && (
+        <div
+          onClick={() => setIsImageModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm cursor-zoom-out animate-in fade-in duration-150"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-5xl max-h-[92vh] bg-white p-3 sm:p-4 rounded-3xl shadow-2xl flex flex-col items-center border-2 border-white/20"
+          >
+            <button
+              type="button"
+              onClick={() => setIsImageModalOpen(false)}
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-2xl bg-black/60 hover:bg-black/80 text-white transition-colors z-10"
+              title="Đóng (hoặc nhấn ra ngoài)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={imageUrl}
+              alt="Phóng to hình ảnh / bảng biểu"
+              className="max-h-[82vh] w-auto max-w-full object-contain rounded-2xl"
+            />
+            <div className="text-xs font-bold text-gray-500 mt-2">
+              {part === 1 ? 'Part 1: Bức tranh mô tả' : 'Part 3/4: Bảng biểu / sơ đồ minh họa (Look at the graphic)'}
+            </div>
+          </div>
         </div>
       )}
 

@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 9
-// Nguồn Audio: Audio cut ETS 2026 Test 9
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test9IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -75,7 +69,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q1.png",
+    "graphicImage": "/images/intensive/test9/q1.png"
   },
   {
     "id": "part1-2",
@@ -147,7 +143,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q2.png",
+    "graphicImage": "/images/intensive/test9/q2.png"
   },
   {
     "id": "part1-3",
@@ -219,7 +217,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q3.png",
+    "graphicImage": "/images/intensive/test9/q3.png"
   },
   {
     "id": "part1-4",
@@ -291,7 +291,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q4.png",
+    "graphicImage": "/images/intensive/test9/q4.png"
   },
   {
     "id": "part1-5",
@@ -363,7 +365,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q5.png",
+    "graphicImage": "/images/intensive/test9/q5.png"
   },
   {
     "id": "part1-6",
@@ -435,7 +439,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q6.png",
+    "graphicImage": "/images/intensive/test9/q6.png"
   },
   {
     "id": "part2-7",
@@ -3673,7 +3679,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q62_64.png",
+    "graphicImage": "/images/intensive/test9/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -3827,7 +3835,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q65_67.png",
+    "graphicImage": "/images/intensive/test9/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -3981,7 +3991,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q68_70.png",
+    "graphicImage": "/images/intensive/test9/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -5197,7 +5209,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q95_97.png",
+    "graphicImage": "/images/intensive/test9/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -5333,7 +5347,9 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test9/q98_100.png",
+    "graphicImage": "/images/intensive/test9/q98_100.png"
   }
 ];
 

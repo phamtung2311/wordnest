@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 4
-// Nguồn Audio: Audio cut ETS 2026 Test 4
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test4IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -86,7 +80,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "xe tắc-xi",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q1.png",
+    "graphicImage": "/images/intensive/test4/q1.png"
   },
   {
     "id": "part1-2",
@@ -169,7 +165,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cửa ga-ra / nhà để xe",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q2.png",
+    "graphicImage": "/images/intensive/test4/q2.png"
   },
   {
     "id": "part1-3",
@@ -252,7 +250,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cái thang",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q3.png",
+    "graphicImage": "/images/intensive/test4/q3.png"
   },
   {
     "id": "part1-4",
@@ -335,7 +335,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cúi người qua/xuống",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q4.png",
+    "graphicImage": "/images/intensive/test4/q4.png"
   },
   {
     "id": "part1-5",
@@ -418,7 +420,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "xếp thành hàng",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q5.png",
+    "graphicImage": "/images/intensive/test4/q5.png"
   },
   {
     "id": "part1-6",
@@ -501,7 +505,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "lau chùi sạch sẽ",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q6.png",
+    "graphicImage": "/images/intensive/test4/q6.png"
   },
   {
     "id": "part2-7",
@@ -3967,7 +3973,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "làm rõ, giải thích rõ",
         "partOfSpeech": "v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q62_64.png",
+    "graphicImage": "/images/intensive/test4/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -4126,7 +4134,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "người nổi tiếng",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q65_67.png",
+    "graphicImage": "/images/intensive/test4/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -4285,7 +4295,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "đòi hỏi, yêu cầu",
         "partOfSpeech": "v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test4/q68_70.png",
+    "graphicImage": "/images/intensive/test4/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -5882,7 +5894,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "xe buýt trung chuyển tuyến ngắn đi lại liên tục",
         "example": "Free shuttle buses transport spectators between the arena and parking areas."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test4/q95_97.png",
+    "image": "/images/intensive/test4/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -6061,7 +6075,9 @@ export const test4IntensiveData: IntensiveListeningItem[] = [
         "meaning": "đồ trang trí, công việc trang trí",
         "example": "Hanging banners and decorations took about two hours."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test4/q98_100.png",
+    "image": "/images/intensive/test4/q98_100.png"
   }
 ];
 

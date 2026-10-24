@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 6
-// Nguồn Audio: Audio cut ETS 2026 Test 6
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test6IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -105,7 +99,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "đã được thắp sáng (quá khứ của light)",
         "example": "Scented candles were lit around the room."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q1.png",
+    "image": "/images/intensive/test6/q1.png"
   },
   {
     "id": "part1-2",
@@ -207,7 +203,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "sửa chữa",
         "example": "A technician came to repair the air conditioner."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q2.png",
+    "image": "/images/intensive/test6/q2.png"
   },
   {
     "id": "part1-3",
@@ -309,7 +307,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "lên tàu, xe buýt, máy bay",
         "example": "Passengers are requested to board the plane now."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q3.png",
+    "image": "/images/intensive/test6/q3.png"
   },
   {
     "id": "part1-4",
@@ -411,7 +411,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "lấy ra, dỡ bỏ",
         "example": "She removed the old files from the archive shelf."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q4.png",
+    "image": "/images/intensive/test6/q4.png"
   },
   {
     "id": "part1-5",
@@ -506,7 +508,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "dựa vào, tựa vào",
         "example": "Bicycles were leaning against the brick wall."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q5.png",
+    "image": "/images/intensive/test6/q5.png"
   },
   {
     "id": "part1-6",
@@ -608,7 +612,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "rèm cửa",
         "example": "She drew the curtains to let in the morning sunlight."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q6.png",
+    "image": "/images/intensive/test6/q6.png"
   },
   {
     "id": "part2-7",
@@ -4574,7 +4580,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "sân khấu",
         "example": "The guest speakers took turns coming up on the stage."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q62_64.png",
+    "image": "/images/intensive/test6/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -4758,7 +4766,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "sự khởi hành, xuất phát",
         "example": "Passengers should check the board for departure gates."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q65_67.png",
+    "image": "/images/intensive/test6/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -4948,7 +4958,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
         "meaning": "ampe (đơn vị đo cường độ dòng điện)",
         "example": "The circuit requires a 20-amp breaker."
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q68_70.png",
+    "image": "/images/intensive/test6/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -6164,7 +6176,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q95_97.png",
+    "graphicImage": "/images/intensive/test6/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -6300,7 +6314,9 @@ export const test6IntensiveData: IntensiveListeningItem[] = [
           }
         ]
       }
-    ]
+    ],
+    "imageUrl": "/images/intensive/test6/q98_100.png",
+    "graphicImage": "/images/intensive/test6/q98_100.png"
   }
 ];
 

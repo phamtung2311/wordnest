@@ -1,9 +1,3 @@
-// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 3
-// Nguồn Audio: Audio cut ETS 2026 Test 3
-// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
-
-import type { IntensiveListeningItem } from './intensive_listening_test1';
-
 export const test3IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",
@@ -86,7 +80,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cốc lớn có quai",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q1.png",
+    "graphicImage": "/images/intensive/test3/q1.png"
   },
   {
     "id": "part1-2",
@@ -169,7 +165,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "trồng cây",
         "partOfSpeech": "v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q2.png",
+    "graphicImage": "/images/intensive/test3/q2.png"
   },
   {
     "id": "part1-3",
@@ -252,7 +250,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "trải ra, mở rộng ra",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q3.png",
+    "graphicImage": "/images/intensive/test3/q3.png"
   },
   {
     "id": "part1-4",
@@ -340,7 +340,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "khăn quàng cổ",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q4.png",
+    "graphicImage": "/images/intensive/test3/q4.png"
   },
   {
     "id": "part1-5",
@@ -433,7 +435,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "cuộn lại",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q5.png",
+    "graphicImage": "/images/intensive/test3/q5.png"
   },
   {
     "id": "part1-6",
@@ -521,7 +525,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "dựng lên, thiết lập",
         "partOfSpeech": "phr v"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q6.png",
+    "graphicImage": "/images/intensive/test3/q6.png"
   },
   {
     "id": "part2-7",
@@ -4045,7 +4051,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "dành chỗ, dọn chỗ cho",
         "partOfSpeech": "phrase"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q62_64.png",
+    "graphicImage": "/images/intensive/test3/q62_64.png"
   },
   {
     "id": "part3-65-67",
@@ -4192,7 +4200,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "khung giờ trống, chỗ trống",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q65_67.png",
+    "graphicImage": "/images/intensive/test3/q65_67.png"
   },
   {
     "id": "part3-68-70",
@@ -4344,7 +4354,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "mã phòng ban",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q68_70.png",
+    "graphicImage": "/images/intensive/test3/q68_70.png"
   },
   {
     "id": "part4-71-73",
@@ -5640,7 +5652,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "giới hạn số lượng",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q95_97.png",
+    "graphicImage": "/images/intensive/test3/q95_97.png"
   },
   {
     "id": "part4-98-100",
@@ -5786,7 +5800,9 @@ export const test3IntensiveData: IntensiveListeningItem[] = [
         "meaning": "phim trường, trường quay",
         "partOfSpeech": "n"
       }
-    ]
+    ],
+    "image": "/images/intensive/test3/q98_100.png",
+    "graphicImage": "/images/intensive/test3/q98_100.png"
   }
 ];
 
