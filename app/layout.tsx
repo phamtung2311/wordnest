@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Fraunces, Nunito } from 'next/font/google';
 import './globals.css';
 import TodoFloatingWidget from '@/components/TodoFloatingWidget';
+import VocabFloatingWidget from '@/components/VocabFloatingWidget';
 
 const nunito = Nunito({ variable: '--font-nunito', subsets: ['latin', 'vietnamese'] });
 const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin', 'vietnamese'] });
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="vi">
       <body className={`${nunito.variable} ${fraunces.variable}`}>
         {children}
+        <VocabFloatingWidget />
         <TodoFloatingWidget />
       </body>
     </html>

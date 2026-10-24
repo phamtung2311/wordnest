@@ -32,16 +32,25 @@ export function normalizeTerm(term: string): string {
   return term.trim().toLowerCase();
 }
 
+let cachedDecksRaw: string | null = null;
+let cachedDecks: DeckItem[] = [];
+
 // 1. Get all decks from localStorage
 export function getSavedDecks(): DeckItem[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      return parsed;
+    if (raw === cachedDecksRaw && cachedDecks) return cachedDecks;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        cachedDecksRaw = raw;
+        cachedDecks = parsed;
+        return cachedDecks;
+      }
     }
+    cachedDecksRaw = null;
+    cachedDecks = [];
     return [];
   } catch (e) {
     console.error('Error reading decks from localStorage', e);
@@ -81,11 +90,24 @@ export function getOrCreateDefaultDeck(): DeckItem {
 export function saveDecks(decks: DeckItem[]): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
+    const serialized = JSON.stringify(decks);
+    cachedDecksRaw = serialized;
+    cachedDecks = decks;
+    localStorage.setItem(STORAGE_KEY, serialized);
     window.dispatchEvent(new CustomEvent('wordnest-decks-updated', { detail: decks }));
   } catch (e) {
     console.error('Error saving decks to localStorage', e);
   }
+}
+
+export function subscribeDecks(callback: () => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('wordnest-decks-updated', callback);
+  window.addEventListener('storage', callback);
+  return () => {
+    window.removeEventListener('wordnest-decks-updated', callback);
+    window.removeEventListener('storage', callback);
+  };
 }
 
 // 4. Create a new deck
@@ -302,3 +324,62 @@ export function getSavedTermsSet(): Set<string> {
   });
   return set;
 }
+
+// 8. Update review status for a word (SRS intervals)
+export function updateWordReview(
+  deckId: number,
+  wordId: number,
+  rating: 'again' | 'learning' | 'known'
+): void {
+  const decks = getSavedDecks();
+  const now = Date.now();
+  const DAY = 86400000;
+
+  let nextInterval: number;
+  let nextLevel: Level;
+
+  if (rating === 'again') {
+    nextInterval = 5 * 60 * 1000; // 5 minutes
+    nextLevel = 'learning';
+  } else if (rating === 'learning') {
+    nextInterval = DAY; // 1 day
+    nextLevel = 'learning';
+  } else {
+    nextInterval = DAY * 3; // 3 days
+    nextLevel = 'known';
+  }
+
+  let updatedWord: WordItem | undefined;
+
+  const updatedDecks = decks.map((deck) => {
+    if (deck.id === deckId) {
+      return {
+        ...deck,
+        words: deck.words.map((w) => {
+          if (w.id === wordId) {
+            updatedWord = {
+              ...w,
+              level: nextLevel,
+              nextReview: now + nextInterval,
+            };
+            return updatedWord;
+          }
+          return w;
+        }),
+      };
+    }
+    return deck;
+  });
+
+  saveDecks(updatedDecks);
+
+  if (auth.currentUser && updatedWord) {
+    const userId = auth.currentUser.uid;
+    setDoc(
+      doc(db, 'users', userId, 'decks', String(deckId), 'words', String(wordId)),
+      updatedWord,
+      { merge: true }
+    ).catch(console.error);
+  }
+}
+

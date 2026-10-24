@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useState, useRef, useSyncExternalStore } from 'react';
 import {
   Check,
   Plus,
@@ -56,6 +56,28 @@ export default function TodoFloatingWidget() {
 
   const today = getTodayKey();
   const tomorrow = getTomorrowKey();
+
+  useEffect(() => {
+    const handleActive = (e: Event) => {
+      const custom = e as CustomEvent<string>;
+      if (custom.detail !== 'todo') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('wordnest-active-bubble', handleActive);
+    return () =>
+      window.removeEventListener('wordnest-active-bubble', handleActive);
+  }, []);
+
+  const toggleOpen = () => {
+    const next = !isOpen;
+    setIsOpen(next);
+    if (next) {
+      window.dispatchEvent(
+        new CustomEvent('wordnest-active-bubble', { detail: 'todo' }),
+      );
+    }
+  };
 
   if (!mounted) return null;
 
@@ -630,7 +652,7 @@ export default function TodoFloatingWidget() {
       {/* 2. MESSENGER CHAT BUBBLE (FLOATING ACTION BUTTON) */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         aria-label="Mở Việc cần làm"
         className={`pointer-events-auto relative w-14 h-14 sm:w-15 sm:h-15 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-xl ${
           isOpen
