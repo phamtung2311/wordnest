@@ -372,6 +372,18 @@ export function IntensiveListeningHub() {
     });
   };
 
+  const handleResetEntireTest = (testId: number) => {
+    if (testId === currentTestId) {
+      setQuizResults({});
+      setCompletedItems({});
+      const testData = getIntensiveDataByTestId(testId);
+      if (testData.length > 0) {
+        setCurrentItemId(testData[0].id);
+      }
+      setActiveTab('quiz');
+    }
+  };
+
   // Find current item and indices within active test
   const currentItemIndex = currentTestData.findIndex((i) => i.id === currentItemId);
   const currentItem: IntensiveListeningItem =
@@ -615,6 +627,7 @@ export function IntensiveListeningHub() {
         onClose={() => setIsTestSelectorOpen(false)}
         currentTestId={currentTestId}
         onSelectTest={handleSelectTest}
+        onResetTest={handleResetEntireTest}
       />
     </div>
   );

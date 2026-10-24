@@ -14,6 +14,7 @@ import {
   Check,
   Layers,
   GraduationCap,
+  RotateCcw,
 } from 'lucide-react';
 import {
   availableIntensiveTests,
@@ -25,6 +26,7 @@ interface TestSelectorModalProps {
   onClose: () => void;
   currentTestId: number;
   onSelectTest: (testId: number) => void;
+  onResetTest?: (testId: number) => void;
 }
 
 export function TestSelectorModal({
@@ -32,6 +34,7 @@ export function TestSelectorModal({
   onClose,
   currentTestId,
   onSelectTest,
+  onResetTest,
 }: TestSelectorModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [testStats, setTestStats] = useState<
@@ -40,6 +43,8 @@ export function TestSelectorModal({
   const [lastActiveItems, setLastActiveItems] = useState<
     Record<number, { range: string; title: string }>
   >({});
+  const [hasHistoryMap, setHasHistoryMap] = useState<Record<number, boolean>>({});
+  const [confirmResetTestId, setConfirmResetTestId] = useState<number | null>(null);
 
   // Read stats and last active item from localStorage whenever modal opens
   useEffect(() => {
@@ -47,15 +52,17 @@ export function TestSelectorModal({
 
     const stats: Record<number, { completed: number; total: number; percentage: number }> = {};
     const activeMap: Record<number, { range: string; title: string }> = {};
+    const histMap: Record<number, boolean> = {};
 
     availableIntensiveTests.forEach((t) => {
       try {
         const raw =
           localStorage.getItem(`toeic_intensive_completed_t${t.id}`) ||
           (t.id === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
+        let completed = 0;
         if (raw) {
           const parsed = JSON.parse(raw);
-          const completed = Object.keys(parsed).filter((k) => parsed[k]).length;
+          completed = Object.keys(parsed).filter((k) => parsed[k]).length;
           const total = t.itemCount || 54;
           const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
           stats[t.id] = { completed, total, percentage };
@@ -77,14 +84,107 @@ export function TestSelectorModal({
             };
           }
         }
+
+        // Check if test has quiz results or attempts in localStorage
+        const rawResults = localStorage.getItem(`toeic_intensive_results_t${t.id}`);
+        let hasQuizResults = false;
+        if (rawResults) {
+          try {
+            hasQuizResults = Object.keys(JSON.parse(rawResults)).length > 0;
+          } catch {}
+        }
+
+        let hasQuizKeys = false;
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(`toeic_intensive_quiz_t${t.id}_`)) {
+            hasQuizKeys = true;
+            break;
+          }
+          if (t.id === 1 && k && k.startsWith('toeic_intensive_quiz_part')) {
+            hasQuizKeys = true;
+            break;
+          }
+        }
+
+        histMap[t.id] = completed > 0 || Boolean(lastItemId) || hasQuizResults || hasQuizKeys;
       } catch {
         stats[t.id] = { completed: 0, total: t.itemCount || 54, percentage: 0 };
+        histMap[t.id] = false;
       }
     });
 
     setTestStats(stats);
     setLastActiveItems(activeMap);
+    setHasHistoryMap(histMap);
   }, [isOpen]);
+
+  const executeResetTest = (testId: number) => {
+    try {
+      // 1. Remove completed items
+      localStorage.removeItem(`toeic_intensive_completed_t${testId}`);
+      if (testId === 1) {
+        localStorage.removeItem('toeic_intensive_completed');
+      }
+
+      // 2. Remove results map
+      localStorage.removeItem(`toeic_intensive_results_t${testId}`);
+
+      // 3. Remove last item
+      localStorage.removeItem(`toeic_intensive_last_item_t${testId}`);
+      if (testId === 1) {
+        localStorage.removeItem('toeic_intensive_last_item');
+      }
+
+      // 4. Remove all individual quiz item attempts
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        if (key.startsWith(`toeic_intensive_quiz_t${testId}_`)) {
+          keysToRemove.push(key);
+        }
+        if (testId === 1 && key.startsWith('toeic_intensive_quiz_part')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+
+      // 5. Update global history if it pointed to this test
+      try {
+        const histRaw = localStorage.getItem('toeic_intensive_global_history');
+        if (histRaw) {
+          const hist = JSON.parse(histRaw);
+          if (hist && hist.testId === testId) {
+            localStorage.removeItem('toeic_intensive_global_history');
+          }
+        }
+      } catch {}
+
+      // 6. Update local modal state immediately
+      setTestStats((prev) => ({
+        ...prev,
+        [testId]: { completed: 0, total: 54, percentage: 0 },
+      }));
+      setLastActiveItems((prev) => {
+        const next = { ...prev };
+        delete next[testId];
+        return next;
+      });
+      setHasHistoryMap((prev) => ({
+        ...prev,
+        [testId]: false,
+      }));
+      setConfirmResetTestId(null);
+
+      // 7. Notify parent component
+      if (onResetTest) {
+        onResetTest(testId);
+      }
+    } catch (e) {
+      console.error('Error resetting test history', e);
+    }
+  };
 
   // Handle escape key to close
   useEffect(() => {
@@ -303,8 +403,56 @@ export function TestSelectorModal({
                       />
                     </div>
 
-                    {/* Action button */}
-                    <div className="flex items-center justify-end">
+                    {/* Action button row */}
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      {/* Left: Reset button or Confirmation */}
+                      {confirmResetTestId === test.id ? (
+                        <div
+                          className="flex items-center gap-1.5 p-1 px-2 rounded-xl bg-rose-50 border border-rose-200"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className="text-[11px] font-black text-rose-800">
+                            Xóa dữ liệu {test.shortTitle}?
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              executeResetTest(test.id);
+                            }}
+                            className="px-2 py-1 rounded-lg text-[11px] font-black bg-rose-600 hover:bg-rose-700 text-white shadow-2xs cursor-pointer active:scale-95 transition-all"
+                          >
+                            Xác nhận
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmResetTestId(null);
+                            }}
+                            className="px-2 py-1 rounded-lg text-[11px] font-bold bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 cursor-pointer active:scale-95 transition-all"
+                          >
+                            Hủy
+                          </button>
+                        </div>
+                      ) : hasHistoryMap[test.id] ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmResetTestId(test.id);
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer group/reset shadow-2xs active:scale-95"
+                          title={`Xóa lịch sử làm bài của ${test.title} để bắt đầu lại từ đầu`}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5 text-rose-500 group-hover/reset:-rotate-90 transition-transform" />
+                          <span>Làm lại từ đầu</span>
+                        </button>
+                      ) : (
+                        <div />
+                      )}
+
+                      {/* Right: Enter test button */}
                       <button
                         type="button"
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all ${
