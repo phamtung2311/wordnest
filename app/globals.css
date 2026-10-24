@@ -2193,16 +2193,170 @@ a {
   font-size: 0.78rem;
   font-weight: 700;
 }
+.task-item-group {
+  margin-top: 0.55rem;
+}
 .task-edit-row {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 26px;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.55rem;
   border: 1px solid #213a3415;
   border-radius: 11px;
   background: #fff;
-  padding: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  transition: all 0.2s ease;
+}
+.task-item-group .task-edit-row {
+  margin-top: 0;
+}
+.task-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+  background: #fff5e5;
+  color: #9a4f00;
+  border: 1px solid #f8d467;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.task-time-badge:hover {
+  background: #ffeec7;
+  transform: translateY(-1px);
+}
+.task-edit-row.done .task-time-badge {
+  background: #f1f3f2;
+  color: #8c9793;
+  border-color: #d1d8d5;
+}
+.task-add-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 7px;
+  background: #f7f9f8;
+  color: #71817b;
+  border: 1px dashed #213a3430;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.task-add-time-badge:hover {
+  background: #edf5f1;
+  color: #213a34;
+  border-color: #213a3460;
+}
+.task-time-inline-picker {
+  margin-top: 0.35rem;
+  margin-left: 2rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: #fffdf8;
+  border: 1.5px solid #f8d467;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  box-shadow: 0 4px 12px rgba(33, 58, 52, 0.05);
+}
+.task-time-inline-picker .time-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.task-time-inline-picker .time-picker-label {
+  font-weight: 800;
+  color: #71817b;
+  font-size: 0.75rem;
+}
+.task-time-inline-picker .time-picker-row input {
+  padding: 0.25rem 0.45rem;
+  border: 1px solid #213a3425;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #213a34;
+  outline: none;
+}
+.task-time-inline-picker .time-picker-row input:focus {
+  border-color: #213a34;
+}
+.task-time-inline-picker .time-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  padding-top: 0.2rem;
+}
+.task-time-inline-picker .preset-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #71817b;
+}
+.task-time-inline-picker .time-presets button {
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: #f5f0e6;
+  border: 1px solid #213a3415;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #213a34;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.task-time-inline-picker .time-presets button:hover {
+  background: #f8d467;
+}
+.task-time-inline-picker .time-presets button.clear-time {
+  background: transparent;
+  border: 0;
+  color: #cb483d;
+  margin-left: auto;
+  font-weight: 800;
+}
+.task-time-inline-picker .time-presets button.clear-time:hover {
+  text-decoration: underline;
+}
+.task-time-inline-picker .time-presets button.done-time {
+  background: #213a34;
+  color: #fff;
+  border: 0;
+  padding: 0.2rem 0.65rem;
+  font-weight: 900;
+  border-radius: 7px;
+}
+.task-time-inline-picker .time-presets button.done-time:hover {
+  background: #2d4f47;
+}
+.history-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+.history-time-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  background: #fff5e5;
+  color: #9a4f00;
+  border: 1px solid #f8d467;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 .task-toggle {
   display: grid;

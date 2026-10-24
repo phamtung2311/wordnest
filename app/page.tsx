@@ -51,6 +51,7 @@ import {
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { auth, db, googleProvider } from '@/lib/firebase';
+import { formatTaskTime } from '@/lib/lifeService';
 
 type Level = 'new' | 'learning' | 'known';
 type Language = 'en' | 'zh';
@@ -101,7 +102,14 @@ type Income = {
   date: string;
 };
 type Budget = { id: string; name: string; limit: number };
-type LifeTask = { id: string; text: string; done: boolean };
+type LifeTask = {
+  id: string;
+  text: string;
+  done: boolean;
+  startTime?: string;
+  endTime?: string;
+  timeRange?: string;
+};
 type Note = {
   id: string;
   title: string;
@@ -659,6 +667,18 @@ export default function Home() {
       );
     setLoaded(true);
   }, []);
+  useEffect(() => {
+    const handleLifeUpdate = (e: Event) => {
+      const custom = e as CustomEvent<LifeData>;
+      if (custom.detail) {
+        setLifeData(custom.detail);
+      }
+    };
+    window.addEventListener('wordnest-life-updated', handleLifeUpdate);
+    return () => {
+      window.removeEventListener('wordnest-life-updated', handleLifeUpdate);
+    };
+  }, []);
   useEffect(
     () =>
       onAuthStateChanged(auth, (nextUser) => {
@@ -785,6 +805,9 @@ export default function Home() {
     localStorage.setItem('wordnest-decks', JSON.stringify(decks));
     localStorage.setItem('wordnest-progress', JSON.stringify(progress));
     localStorage.setItem('wordnest-life', JSON.stringify(lifeData));
+    window.dispatchEvent(
+      new CustomEvent('wordnest-life-updated', { detail: lifeData }),
+    );
     if (!user || !cloudReady) return;
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
@@ -2576,6 +2599,7 @@ function LifeDashboard({
       year: 'numeric',
     }).format(new Date(`${date}T12:00:00`));
   const [planDate, setPlanDate] = useState(today);
+  const [editingTaskTimeId, setEditingTaskTimeId] = useState<string | null>(null);
   const [habitMonthOffset, setHabitMonthOffset] = useState(0);
   const [newHabitName, setNewHabitName] = useState('');
   const [newHabitEmoji, setNewHabitEmoji] = useState('✨');
@@ -2625,57 +2649,189 @@ function LifeDashboard({
     tasks: LifeTask[],
     save: (next: LifeTask[]) => void,
     placeholder: string,
+    withTime = false,
   ) => (
     <div className="task-editor">
-      {tasks.map((task) => (
-        <div
-          className={`task-edit-row ${task.done ? 'done' : ''}`}
-          key={task.id}
-        >
-          <button
-            type="button"
-            className="task-toggle"
-            aria-label={
-              task.done ? 'Đánh dấu chưa hoàn thành' : 'Đánh dấu hoàn thành'
-            }
-            onClick={() =>
-              save(
-                tasks.map((item) =>
-                  item.id === task.id ? { ...item, done: !item.done } : item,
-                ),
-              )
-            }
-          >
-            {task.done && <Check size={15} />}
-          </button>
-          <input
-            value={task.text}
-            placeholder={placeholder}
-            onChange={(event) =>
-              save(
-                tasks.map((item) =>
-                  item.id === task.id
-                    ? { ...item, text: event.target.value }
-                    : item,
-                ),
-              )
-            }
-          />
-          <button
-            type="button"
-            className="task-remove"
-            aria-label="Xóa việc"
-            onClick={() => save(tasks.filter((item) => item.id !== task.id))}
-          >
-            ×
-          </button>
-        </div>
-      ))}
+      {tasks.map((task) => {
+        const formattedTime = formatTaskTime(task);
+        const isEditingTime = editingTaskTimeId === task.id;
+        return (
+          <div key={task.id} className="task-item-group">
+            <div className={`task-edit-row ${task.done ? 'done' : ''}`}>
+              <button
+                type="button"
+                className="task-toggle"
+                aria-label={
+                  task.done ? 'Đánh dấu chưa hoàn thành' : 'Đánh dấu hoàn thành'
+                }
+                onClick={() =>
+                  save(
+                    tasks.map((item) =>
+                      item.id === task.id ? { ...item, done: !item.done } : item,
+                    ),
+                  )
+                }
+              >
+                {task.done && <Check size={15} />}
+              </button>
+              <input
+                value={task.text}
+                placeholder={placeholder}
+                onChange={(event) =>
+                  save(
+                    tasks.map((item) =>
+                      item.id === task.id
+                        ? { ...item, text: event.target.value }
+                        : item,
+                    ),
+                  )
+                }
+              />
+              {withTime &&
+                (formattedTime ? (
+                  <button
+                    type="button"
+                    className="task-time-badge"
+                    onClick={() =>
+                      setEditingTaskTimeId(isEditingTime ? null : task.id)
+                    }
+                    title="Bấm để đổi giờ làm"
+                  >
+                    <Clock3 size={12} />
+                    <span>{formattedTime}</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="task-add-time-badge"
+                    onClick={() =>
+                      setEditingTaskTimeId(isEditingTime ? null : task.id)
+                    }
+                    title="Đặt giờ làm việc (ví dụ 22h-23h)"
+                  >
+                    <Clock3 size={12} />
+                    <span>+ Giờ</span>
+                  </button>
+                ))}
+              <button
+                type="button"
+                className="task-remove"
+                aria-label="Xóa việc"
+                onClick={() => save(tasks.filter((item) => item.id !== task.id))}
+              >
+                ×
+              </button>
+            </div>
+            {withTime && isEditingTime && (
+              <div className="task-time-inline-picker">
+                <div className="time-picker-row">
+                  <span className="time-picker-label">Từ:</span>
+                  <input
+                    type="time"
+                    value={task.startTime ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      save(
+                        tasks.map((item) => {
+                          if (item.id !== task.id) return item;
+                          const next = { ...item, startTime: val };
+                          if (val && next.endTime)
+                            next.timeRange = `${val} - ${next.endTime}`;
+                          return next;
+                        }),
+                      );
+                    }}
+                  />
+                  <span className="time-picker-label">Đến:</span>
+                  <input
+                    type="time"
+                    value={task.endTime ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      save(
+                        tasks.map((item) => {
+                          if (item.id !== task.id) return item;
+                          const next = { ...item, endTime: val };
+                          if (next.startTime && val)
+                            next.timeRange = `${next.startTime} - ${val}`;
+                          return next;
+                        }),
+                      );
+                    }}
+                  />
+                </div>
+                <div className="time-presets">
+                  <span className="preset-label">Mẫu:</span>
+                  {[
+                    { s: '22:00', e: '23:00', label: '22h-23h' },
+                    { s: '20:00', e: '22:00', label: '20h-22h' },
+                    { s: '14:00', e: '17:00', label: '14h-17h' },
+                    { s: '08:00', e: '11:30', label: '8h-11h30' },
+                  ].map((preset) => (
+                    <button
+                      type="button"
+                      key={preset.label}
+                      onClick={() => {
+                        save(
+                          tasks.map((item) =>
+                            item.id === task.id
+                              ? {
+                                  ...item,
+                                  startTime: preset.s,
+                                  endTime: preset.e,
+                                  timeRange: preset.label,
+                                }
+                              : item,
+                          ),
+                        );
+                      }}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                  {(task.timeRange || task.startTime || task.endTime) && (
+                    <button
+                      type="button"
+                      className="clear-time"
+                      onClick={() => {
+                        save(
+                          tasks.map((item) =>
+                            item.id === task.id
+                              ? {
+                                  ...item,
+                                  startTime: undefined,
+                                  endTime: undefined,
+                                  timeRange: undefined,
+                                }
+                              : item,
+                          ),
+                        );
+                      }}
+                    >
+                      Bỏ giờ
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="done-time"
+                    onClick={() => setEditingTaskTimeId(null)}
+                  >
+                    Xong
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
       <button
         type="button"
         className="add-task"
         onClick={() =>
-          save([...tasks, { id: String(new Date().getTime()), text: '', done: false }])
+          save([
+            ...tasks,
+            { id: String(new Date().getTime()), text: '', done: false },
+          ])
         }
       >
         <Plus size={16} /> Thêm việc
@@ -2745,6 +2901,7 @@ function LifeDashboard({
                   plannedTasks,
                   (next) => updateTasks(planDate, next),
                   'Việc mới cần làm',
+                  true,
                 )}
               </article>
               <article id="life-habits" className="life-card life-anchor">
@@ -3072,7 +3229,14 @@ function LifeDashboard({
                       </span>
                       <div>
                         <b>{task.text}</b>
-                        <small>{dateLabel(task.date)}</small>
+                        <div className="history-meta">
+                          <small>{dateLabel(task.date)}</small>
+                          {(task.timeRange || task.startTime) && (
+                            <span className="history-time-tag">
+                              <Clock3 size={11} /> {formatTaskTime(task)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <em>{task.done ? 'Đã xong' : 'Chưa xong'}</em>
                     </article>
