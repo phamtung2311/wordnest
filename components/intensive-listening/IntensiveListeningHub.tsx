@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  test1IntensiveData,
-  getIntensiveItemById,
-} from '@/data/intensive_listening_test1';
+  availableIntensiveTests,
+  getIntensiveDataByTestId,
+} from '@/data/intensive_listening_index';
+import type { IntensiveListeningItem } from '@/data/intensive_listening_index';
 import type { PracticeTab } from './types';
 import { IntensiveSidebar } from './IntensiveSidebar';
 import { IntensiveAudioPlayer } from './IntensiveAudioPlayer';
@@ -25,14 +26,19 @@ import {
   ChevronRight,
   Sparkles,
   Trophy,
+  Layers,
 } from 'lucide-react';
 
 export function IntensiveListeningHub() {
   const router = useRouter();
 
-  // State
+  // Test Selection state (Test 1, Test 2, Test 3)
+  const [currentTestId, setCurrentTestId] = useState<number>(1);
+  const currentTestData = getIntensiveDataByTestId(currentTestId);
+
+  // Item & practice State
   const [currentItemId, setCurrentItemId] = useState<string>(
-    test1IntensiveData[0]?.id || 'part1-1'
+    currentTestData[0]?.id || 'part1-1'
   );
   const [activeTab, setActiveTab] = useState<PracticeTab>('quiz');
   const [isLooping, setIsLooping] = useState<boolean>(false);
@@ -41,20 +47,44 @@ export function IntensiveListeningHub() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
 
-  // Load saved preferences from localStorage
+  // Load saved preferences and current test from localStorage on initial mount
   useEffect(() => {
     setMounted(true);
     try {
-      const savedLastItem = localStorage.getItem('toeic_intensive_last_item');
-      if (savedLastItem && getIntensiveItemById(savedLastItem)) {
-        setCurrentItemId(savedLastItem);
+      // 1. Load active test
+      const savedTest = localStorage.getItem('toeic_intensive_current_test');
+      let initialTestId = 1;
+      if (savedTest) {
+        const parsedTest = parseInt(savedTest, 10);
+        if ([1, 2, 3].includes(parsedTest)) {
+          initialTestId = parsedTest;
+          setCurrentTestId(parsedTest);
+        }
       }
 
-      const savedCompleted = localStorage.getItem('toeic_intensive_completed');
+      const activeData = getIntensiveDataByTestId(initialTestId);
+
+      // 2. Load last active item for that test
+      const savedLastItem = localStorage.getItem(`toeic_intensive_last_item_t${initialTestId}`) 
+        || (initialTestId === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
+
+      if (savedLastItem && activeData.some((i) => i.id === savedLastItem)) {
+        setCurrentItemId(savedLastItem);
+      } else if (activeData.length > 0) {
+        setCurrentItemId(activeData[0].id);
+      }
+
+      // 3. Load completed items for that test
+      const savedCompleted = localStorage.getItem(`toeic_intensive_completed_t${initialTestId}`)
+        || (initialTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
+
       if (savedCompleted) {
         setCompletedItems(JSON.parse(savedCompleted));
+      } else {
+        setCompletedItems({});
       }
 
+      // 4. Other playback settings
       const savedLoop = localStorage.getItem('toeic_intensive_loop');
       if (savedLoop !== null) {
         setIsLooping(savedLoop === 'true');
@@ -69,11 +99,43 @@ export function IntensiveListeningHub() {
     }
   }, []);
 
-  // Save current item
+  // Handler: Change Test
+  const handleSelectTest = (testId: number) => {
+    if (testId === currentTestId) return;
+    setCurrentTestId(testId);
+    const newTestData = getIntensiveDataByTestId(testId);
+
+    try {
+      localStorage.setItem('toeic_intensive_current_test', String(testId));
+
+      // Load saved item for the new test
+      const savedItemForTest = localStorage.getItem(`toeic_intensive_last_item_t${testId}`);
+      if (savedItemForTest && newTestData.some((i) => i.id === savedItemForTest)) {
+        setCurrentItemId(savedItemForTest);
+      } else if (newTestData.length > 0) {
+        setCurrentItemId(newTestData[0].id);
+      }
+
+      // Load completed items for the new test
+      const savedCompleted = localStorage.getItem(`toeic_intensive_completed_t${testId}`);
+      if (savedCompleted) {
+        setCompletedItems(JSON.parse(savedCompleted));
+      } else {
+        setCompletedItems({});
+      }
+    } catch (e) {
+      console.error('Error switching test', e);
+    }
+  };
+
+  // Handler: Select an item in current test
   const handleSelectItem = (id: string) => {
     setCurrentItemId(id);
     try {
-      localStorage.setItem('toeic_intensive_last_item', id);
+      localStorage.setItem(`toeic_intensive_last_item_t${currentTestId}`, id);
+      if (currentTestId === 1) {
+        localStorage.setItem('toeic_intensive_last_item', id);
+      }
     } catch (e) {}
   };
 
@@ -97,34 +159,42 @@ export function IntensiveListeningHub() {
     setCompletedItems((prev) => {
       const updated = { ...prev, [id]: true };
       try {
-        localStorage.setItem('toeic_intensive_completed', JSON.stringify(updated));
+        localStorage.setItem(
+          `toeic_intensive_completed_t${currentTestId}`,
+          JSON.stringify(updated)
+        );
+        if (currentTestId === 1) {
+          localStorage.setItem('toeic_intensive_completed', JSON.stringify(updated));
+        }
       } catch (e) {}
       return updated;
     });
   };
 
-  // Find current item and indices
-  const currentItemIndex = test1IntensiveData.findIndex((i) => i.id === currentItemId);
-  const currentItem = test1IntensiveData[currentItemIndex] || test1IntensiveData[0];
+  // Find current item and indices within active test
+  const currentItemIndex = currentTestData.findIndex((i) => i.id === currentItemId);
+  const currentItem: IntensiveListeningItem =
+    currentTestData[currentItemIndex >= 0 ? currentItemIndex : 0] || currentTestData[0];
 
-  const hasNext = currentItemIndex < test1IntensiveData.length - 1;
+  const hasNext = currentItemIndex < currentTestData.length - 1;
   const hasPrev = currentItemIndex > 0;
 
   const handleNextItem = () => {
     if (hasNext) {
-      handleSelectItem(test1IntensiveData[currentItemIndex + 1].id);
+      handleSelectItem(currentTestData[currentItemIndex + 1].id);
     }
   };
 
   const handlePrevItem = () => {
     if (hasPrev) {
-      handleSelectItem(test1IntensiveData[currentItemIndex - 1].id);
+      handleSelectItem(currentTestData[currentItemIndex - 1].id);
     }
   };
 
   const completedCount = Object.keys(completedItems).length;
-  const totalCount = test1IntensiveData.length;
-  const completionPercentage = Math.round((completedCount / totalCount) * 100);
+  const totalCount = currentTestData.length;
+  const completionPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const activeTestInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
 
   return (
     <div className="min-h-screen bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
@@ -143,16 +213,35 @@ export function IntensiveListeningHub() {
 
             <div className="h-5 w-[1px] bg-gray-200 hidden sm:block shrink-0" />
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-black text-sm sm:text-base text-[#213a34] truncate">
-                  Luyện nghe chi tiết
-                </span>
-                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#eb6a52] text-white">
-                  STUDY4 Style
-                </span>
-              </div>
+            <div className="min-w-0 flex items-center gap-2">
+              <span className="font-black text-sm sm:text-base text-[#213a34] truncate">
+                Luyện nghe chi tiết
+              </span>
+              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#eb6a52] text-white">
+                STUDY4 Style
+              </span>
             </div>
+          </div>
+
+          {/* Center / Header Test Selector Pills */}
+          <div className="flex items-center gap-1 bg-[#e9f2ed] p-1 rounded-full border border-[#213a34]/10">
+            {availableIntensiveTests.map((t) => {
+              const isSelected = t.id === currentTestId;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => handleSelectTest(t.id)}
+                  className={`px-3 py-1 rounded-full text-xs font-black transition-all ${
+                    isSelected
+                      ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                      : 'text-gray-600 hover:text-[#213a34]'
+                  }`}
+                >
+                  {t.shortTitle}
+                </button>
+              );
+            })}
           </div>
 
           {/* Right: Progress & Mobile Menu Toggle */}
@@ -172,7 +261,7 @@ export function IntensiveListeningHub() {
               className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#213a34] text-white text-xs font-black shadow-xs active:scale-95 transition-all"
             >
               <Menu className="w-4 h-4 text-[#f8d467]" />
-              <span>Danh sách ({completedCount}/{totalCount})</span>
+              <span>{activeTestInfo?.shortTitle} ({completedCount}/{totalCount})</span>
             </button>
           </div>
         </div>
@@ -182,12 +271,15 @@ export function IntensiveListeningHub() {
       <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex gap-6">
         {/* Left Sidebar */}
         <IntensiveSidebar
-          items={test1IntensiveData}
-          currentItemId={currentItemId}
+          items={currentTestData}
+          currentItemId={currentItem.id}
           onSelectItem={handleSelectItem}
           completedItems={completedItems}
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          currentTestId={currentTestId}
+          onSelectTest={handleSelectTest}
+          availableTests={availableIntensiveTests}
         />
 
         {/* Right Study Area */}
@@ -253,7 +345,7 @@ export function IntensiveListeningHub() {
           <div className="min-h-[400px]">
             {activeTab === 'quiz' && (
               <QuizTab
-                key={`quiz-${currentItem.id}`}
+                key={`quiz-${currentTestId}-${currentItem.id}`}
                 itemId={currentItem.id}
                 part={currentItem.part}
                 imageUrl={currentItem.imageUrl}
@@ -269,7 +361,7 @@ export function IntensiveListeningHub() {
 
             {activeTab === 'transcript' && (
               <TranscriptTab
-                key={`trans-${currentItem.id}`}
+                key={`trans-${currentTestId}-${currentItem.id}`}
                 imageUrl={currentItem.imageUrl}
                 transcript={currentItem.transcript}
                 vocabulary={currentItem.vocabulary}
@@ -278,7 +370,7 @@ export function IntensiveListeningHub() {
 
             {activeTab === 'dictation' && (
               <DictationTab
-                key={`dict-${currentItem.id}`}
+                key={`dict-${currentTestId}-${currentItem.id}`}
                 imageUrl={currentItem.imageUrl}
                 transcript={currentItem.transcript}
                 onCompleteItem={() => markItemCompleted(currentItem.id)}
@@ -299,7 +391,7 @@ export function IntensiveListeningHub() {
             </button>
 
             <div className="text-xs font-bold text-gray-500">
-              Bài {currentItemIndex + 1} / {totalCount}
+              {activeTestInfo?.shortTitle} · Bài {currentItemIndex + 1} / {totalCount}
             </div>
 
             <button

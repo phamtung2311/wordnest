@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { IntensiveListeningItem } from '@/data/intensive_listening_test1';
+import type { IntensiveListeningItem, IntensiveTestOption } from '@/data/intensive_listening_index';
 import type { PartFilter } from './types';
 import {
   Search,
@@ -20,6 +20,9 @@ interface IntensiveSidebarProps {
   completedItems: Record<string, boolean>;
   isOpenMobile: boolean;
   onCloseMobile: () => void;
+  currentTestId?: number;
+  onSelectTest?: (testId: number) => void;
+  availableTests?: IntensiveTestOption[];
 }
 
 export function IntensiveSidebar({
@@ -29,6 +32,9 @@ export function IntensiveSidebar({
   completedItems,
   isOpenMobile,
   onCloseMobile,
+  currentTestId = 1,
+  onSelectTest,
+  availableTests,
 }: IntensiveSidebarProps) {
   const [selectedPart, setSelectedPart] = useState<PartFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +77,7 @@ export function IntensiveSidebar({
   };
 
   const completedCount = Object.keys(completedItems).length;
+  const currentTest = availableTests?.find((t) => t.id === currentTestId);
 
   const content = (
     <div className="flex flex-col h-full bg-white sm:rounded-3xl border-2 border-[#213a34]/10 shadow-sm overflow-hidden">
@@ -83,7 +90,7 @@ export function IntensiveSidebar({
             </span>
             <div>
               <h2 className="font-black text-[#213a34] text-sm sm:text-base leading-tight">
-                ETS 2026 - Test 1
+                {currentTest ? currentTest.title : `ETS 2026 - Test ${currentTestId}`}
               </h2>
               <span className="text-[11px] text-gray-500 font-bold">
                 Luyện nghe chi tiết ({completedCount}/{items.length} bài)
@@ -100,6 +107,29 @@ export function IntensiveSidebar({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Test Selector Tabs */}
+        {availableTests && onSelectTest && availableTests.length > 1 && (
+          <div className="flex items-center gap-1.5 p-1 bg-[#213a34]/5 rounded-xl mt-3">
+            {availableTests.map((t) => {
+              const isSelected = t.id === currentTestId;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => onSelectTest(t.id)}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-black transition-all ${
+                    isSelected
+                      ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                      : 'text-gray-600 hover:text-[#213a34] hover:bg-white/60'
+                  }`}
+                >
+                  {t.shortTitle}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Search Input */}
         <div className="relative mt-3">
@@ -122,8 +152,8 @@ export function IntensiveSidebar({
           )}
         </div>
 
-        {/* Part Filter Tabs */}
-        <div className="flex items-center gap-1 mt-3 overflow-x-auto pb-0.5 scrollbar-none">
+        {/* Part Filters Pills */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 mt-3 scrollbar-none">
           {parts.map((p) => {
             const isSelected = selectedPart === p.key;
             return (
@@ -131,29 +161,29 @@ export function IntensiveSidebar({
                 key={p.key}
                 type="button"
                 onClick={() => setSelectedPart(p.key as PartFilter)}
-                className={`shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-black transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-black whitespace-nowrap transition-all ${
                   isSelected
                     ? 'bg-[#213a34] text-white shadow-xs'
-                    : 'bg-white text-gray-600 hover:bg-[#e9f2ed] border border-[#213a34]/10'
+                    : 'bg-white/80 text-gray-600 hover:bg-[#e9f2ed] hover:text-[#213a34]'
                 }`}
               >
-                {p.label} ({p.count})
+                {p.label} <span className="opacity-70 text-[10px]">({p.count})</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Item List Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-2.5 sm:p-3 space-y-1.5 divide-y-0">
+      {/* List of items */}
+      <div className="flex-1 overflow-y-auto divide-y divide-gray-100 p-2 space-y-1">
         {filteredItems.length === 0 ? (
-          <div className="text-center py-8 text-xs text-gray-400 font-bold">
+          <div className="p-8 text-center text-xs text-gray-400 font-bold">
             Không tìm thấy bài nghe phù hợp.
           </div>
         ) : (
-          filteredItems.map((item) => {
-            const isCurrent = item.id === currentItemId;
-            const isCompleted = completedItems[item.id];
+          filteredItems.map((item, index) => {
+            const isSelected = item.id === currentItemId;
+            const isDone = completedItems[item.id];
 
             return (
               <button
@@ -163,18 +193,36 @@ export function IntensiveSidebar({
                   onSelectItem(item.id);
                   onCloseMobile();
                 }}
-                className={`w-full text-left p-3 rounded-2xl border-2 transition-all flex items-start justify-between gap-2.5 group ${
-                  isCurrent
-                    ? 'bg-[#213a34] text-white border-[#213a34] shadow-sm'
-                    : 'bg-white text-[#213a34] border-[#213a34]/10 hover:border-[#f29f77] hover:bg-[#f5f0e6]/40'
+                className={`w-full text-left p-3 rounded-2xl transition-all flex items-start gap-3 ${
+                  isSelected
+                    ? 'bg-[#213a34] text-white shadow-md'
+                    : 'hover:bg-[#f5f0e6]/70 text-[#213a34]'
                 }`}
               >
-                <div className="min-w-0 flex-1">
+                {/* Status Icon */}
+                <div className="pt-0.5 shrink-0">
+                  {isDone ? (
+                    <CheckCircle2
+                      className={`w-4 h-4 ${
+                        isSelected ? 'text-[#f8d467]' : 'text-emerald-500'
+                      }`}
+                    />
+                  ) : (
+                    <div
+                      className={`w-4 h-4 rounded-full border-2 ${
+                        isSelected ? 'border-white/40' : 'border-gray-300'
+                      }`}
+                    />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
                     <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase border ${
-                        isCurrent
-                          ? 'bg-[#f8d467] text-[#213a34] border-[#f8d467]'
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
+                        isSelected
+                          ? 'bg-white/20 text-[#f8d467] border-white/20'
                           : getPartBadge(item.part)
                       }`}
                     >
@@ -182,7 +230,7 @@ export function IntensiveSidebar({
                     </span>
                     <span
                       className={`text-xs font-black truncate ${
-                        isCurrent ? 'text-[#f8d467]' : 'text-[#213a34]'
+                        isSelected ? 'text-white' : 'text-[#213a34]'
                       }`}
                     >
                       {item.questionRange}
@@ -190,29 +238,12 @@ export function IntensiveSidebar({
                   </div>
 
                   <p
-                    className={`text-xs font-bold leading-snug line-clamp-1 ${
-                      isCurrent ? 'text-white/90' : 'text-gray-600 group-hover:text-[#213a34]'
+                    className={`text-xs font-medium line-clamp-1 ${
+                      isSelected ? 'text-white/80' : 'text-gray-500'
                     }`}
                   >
-                    {item.title.replace(/^Part \d - Câu [\d-]+:\s*/, '')}
+                    {item.title.replace(/^Part \d - (Câu [^:]+: )?/, '')}
                   </p>
-                </div>
-
-                {/* Completed Badge */}
-                <div className="shrink-0 pt-0.5">
-                  {isCompleted ? (
-                    <CheckCircle2
-                      className={`w-4 h-4 ${
-                        isCurrent ? 'text-green-300' : 'text-green-600'
-                      }`}
-                    />
-                  ) : (
-                    <span
-                      className={`w-2 h-2 rounded-full block ${
-                        isCurrent ? 'bg-[#f8d467]' : 'bg-gray-300'
-                      }`}
-                    />
-                  )}
                 </div>
               </button>
             );
@@ -225,26 +256,25 @@ export function IntensiveSidebar({
   return (
     <>
       {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:block w-80 h-[calc(100vh-6rem)] sticky top-20 shrink-0">
+      <aside className="hidden lg:block w-80 shrink-0 h-[calc(100vh-6.5rem)] sticky top-20">
         {content}
-      </div>
-
-      {/* Mobile Drawer Backdrop */}
-      {isOpenMobile && (
-        <div
-          onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
-        />
-      )}
+      </aside>
 
       {/* Mobile Slide-over Drawer */}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 lg:hidden ${
-          isOpenMobile ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        {content}
-      </div>
+      {isOpenMobile && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+            onClick={onCloseMobile}
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative ml-auto w-full max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-200">
+            {content}
+          </div>
+        </div>
+      )}
     </>
   );
 }

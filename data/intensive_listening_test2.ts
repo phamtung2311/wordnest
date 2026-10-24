@@ -1,0 +1,5659 @@
+// Dữ liệu luyện nghe chi tiết (Intensive Listening) - ETS TOEIC 2026 Test 2
+// Nguồn Audio: Audio cut ETS 2026 Test 2
+// Nguồn Transcript & Lời giải: Cuốn sách TRANSCRIPT2026.pdf
+
+import type { IntensiveListeningItem } from './intensive_listening_test1';
+
+export const test2IntensiveData: IntensiveListeningItem[] = [
+  {
+    "id": "part1-1",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q1.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 1",
+    "title": "Part 1 - Câu 1: Người đàn ông đi bộ trên đường lát đá",
+    "audioSrc": "/audio/cuts/test2/E26-T02-01.mp3",
+    "transcript": [
+      {
+        "id": "p1-1-a",
+        "speaker": "Speaker",
+        "text": "(A) A man is closing a metal gate.",
+        "vietnamese": "(A) Một người đàn ông đang đóng cổng kim loại."
+      },
+      {
+        "id": "p1-1-b",
+        "speaker": "Speaker",
+        "text": "(B) A man is walking down a stone path.",
+        "vietnamese": "(B) Một người đàn ông đang đi bộ dọc theo con đường lát đá."
+      },
+      {
+        "id": "p1-1-c",
+        "speaker": "Speaker",
+        "text": "(C) Some potted plants line a walkway.",
+        "vietnamese": "(C) Một số chậu cây xếp thành hàng dọc lối đi."
+      },
+      {
+        "id": "p1-1-d",
+        "speaker": "Speaker",
+        "text": "(D) Some flags are hanging from balconies.",
+        "vietnamese": "(D) Một số lá cờ đang treo từ các ban công."
+      }
+    ],
+    "questions": [
+      {
+        "num": 1,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "A man is closing a metal gate.",
+            "vietnamese": "Một người đàn ông đang đóng cổng kim loại."
+          },
+          {
+            "key": "B",
+            "text": "A man is walking down a stone path.",
+            "vietnamese": "Một người đàn ông đang đi bộ dọc theo con đường lát đá."
+          },
+          {
+            "key": "C",
+            "text": "Some potted plants line a walkway.",
+            "vietnamese": "Một số chậu cây xếp thành hàng dọc lối đi."
+          },
+          {
+            "key": "D",
+            "text": "Some flags are hanging from balconies.",
+            "vietnamese": "Một số lá cờ đang treo từ ban công."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Trong bức ảnh, người đàn ông đang đi bộ dọc theo con đường đá hẹp (is walking down a stone path)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "metal gate",
+        "meaning": "cổng kim loại",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "walk down",
+        "meaning": "đi bộ dọc theo",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "stone path",
+        "meaning": "con đường lát đá",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "potted plant",
+        "meaning": "cây trồng trong chậu",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "line",
+        "meaning": "xếp thành hàng dọc theo",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "balcony",
+        "meaning": "ban công",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part1-2",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q2.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 2",
+    "title": "Part 1 - Câu 2: Người đàn ông tựa vào lan can",
+    "audioSrc": "/audio/cuts/test2/E26-T02-02.mp3",
+    "transcript": [
+      {
+        "id": "p1-2-a",
+        "speaker": "Speaker",
+        "text": "(A) Some shopping bags have been placed on a train platform.",
+        "vietnamese": "(A) Một số túi mua sắm được đặt trên sân ga."
+      },
+      {
+        "id": "p1-2-b",
+        "speaker": "Speaker",
+        "text": "(B) Some people are lined up to buy train tickets.",
+        "vietnamese": "(B) Một số người đang xếp hàng để mua vé tàu."
+      },
+      {
+        "id": "p1-2-c",
+        "speaker": "Speaker",
+        "text": "(C) A woman is pulling her luggage behind her.",
+        "vietnamese": "(C) Một người phụ nữ đang kéo hành lý phía sau mình."
+      },
+      {
+        "id": "p1-2-d",
+        "speaker": "Speaker",
+        "text": "(D) A man is leaning against a railing.",
+        "vietnamese": "(D) Một người đàn ông đang tựa vào lan can."
+      }
+    ],
+    "questions": [
+      {
+        "num": 2,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "Some shopping bags have been placed on a train platform.",
+            "vietnamese": "Một số túi mua sắm được đặt trên sân ga."
+          },
+          {
+            "key": "B",
+            "text": "Some people are lined up to buy train tickets.",
+            "vietnamese": "Một số người đang xếp hàng để mua vé tàu."
+          },
+          {
+            "key": "C",
+            "text": "A woman is pulling her luggage behind her.",
+            "vietnamese": "Một người phụ nữ đang kéo hành lý sau mình."
+          },
+          {
+            "key": "D",
+            "text": "A man is leaning against a railing.",
+            "vietnamese": "Một người đàn ông đang tựa vào lan can."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Ở bên trái khung hình, một người đàn ông mặc áo khoác đang tựa lưng vào lan can ga tàu (is leaning against a railing)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "platform",
+        "meaning": "sân ga, thềm ga",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "lined up",
+        "meaning": "xếp thành hàng",
+        "partOfSpeech": "adj"
+      },
+      {
+        "word": "luggage",
+        "meaning": "hành lý",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "lean against",
+        "meaning": "tựa vào, chống vào",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "railing",
+        "meaning": "lan can, rào chắn",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part1-3",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q3.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 3",
+    "title": "Part 1 - Câu 3: Xe ô tô đỗ cạnh tòa nhà",
+    "audioSrc": "/audio/cuts/test2/E26-T02-03.mp3",
+    "transcript": [
+      {
+        "id": "p1-3-a",
+        "speaker": "Speaker",
+        "text": "(A) Some wooden planks are leaning against a wall.",
+        "vietnamese": "(A) Một số tấm ván gỗ đang tựa vào tường."
+      },
+      {
+        "id": "p1-3-b",
+        "speaker": "Speaker",
+        "text": "(B) A vehicle is parked next to a building.",
+        "vietnamese": "(B) Một chiếc xe ô tô đang đỗ cạnh tòa nhà."
+      },
+      {
+        "id": "p1-3-c",
+        "speaker": "Speaker",
+        "text": "(C) Some stones have been stacked on a pallet.",
+        "vietnamese": "(C) Một số tảng đá được xếp chồng lên tấm pallet."
+      },
+      {
+        "id": "p1-3-d",
+        "speaker": "Speaker",
+        "text": "(D) A package has been left near a door.",
+        "vietnamese": "(D) Một gói hàng bị để lại gần cửa ra vào."
+      }
+    ],
+    "questions": [
+      {
+        "num": 3,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "Some wooden planks are leaning against a wall.",
+            "vietnamese": "Một số tấm ván gỗ đang tựa vào tường."
+          },
+          {
+            "key": "B",
+            "text": "A vehicle is parked next to a building.",
+            "vietnamese": "Một chiếc xe đang đỗ cạnh tòa nhà."
+          },
+          {
+            "key": "C",
+            "text": "Some stones have been stacked on a pallet.",
+            "vietnamese": "Một số tảng đá được xếp chồng lên pallet."
+          },
+          {
+            "key": "D",
+            "text": "A package has been left near a door.",
+            "vietnamese": "Một kiện hàng bị để gần cửa."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Trong bức ảnh, có một chiếc xe ô tô đỗ ở góc giữa hai tòa nhà (A vehicle is parked next to a building)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "wooden plank",
+        "meaning": "tấm ván gỗ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "vehicle",
+        "meaning": "phương tiện, xe cộ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "stack",
+        "meaning": "chất chồng, xếp chồng",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "pallet",
+        "meaning": "tấm pallet (kê hàng)",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part1-4",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q4.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 4",
+    "title": "Part 1 - Câu 4: Người đàn ông giơ điện thoại chụp",
+    "audioSrc": "/audio/cuts/test2/E26-T02-04.mp3",
+    "transcript": [
+      {
+        "id": "p1-4-a",
+        "speaker": "Speaker",
+        "text": "(A) A man is holding up his phone.",
+        "vietnamese": "(A) Một người đàn ông đang giơ điện thoại lên."
+      },
+      {
+        "id": "p1-4-b",
+        "speaker": "Speaker",
+        "text": "(B) A man is pinning a note to a bulletin board.",
+        "vietnamese": "(B) Một người đàn ông đang ghim một mẩu ghi chú lên bảng thông báo."
+      },
+      {
+        "id": "p1-4-c",
+        "speaker": "Speaker",
+        "text": "(C) A man is dropping an item into a bin.",
+        "vietnamese": "(C) Một người đàn ông đang thả một món đồ vào thùng rác."
+      },
+      {
+        "id": "p1-4-d",
+        "speaker": "Speaker",
+        "text": "(D) A man is washing some windows.",
+        "vietnamese": "(D) Một người đàn ông đang lau một số cửa sổ."
+      }
+    ],
+    "questions": [
+      {
+        "num": 4,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "A man is holding up his phone.",
+            "vietnamese": "Một người đàn ông đang giơ điện thoại lên."
+          },
+          {
+            "key": "B",
+            "text": "A man is pinning a note to a bulletin board.",
+            "vietnamese": "Một người đàn ông đang ghim ghi chú lên bảng thông báo."
+          },
+          {
+            "key": "C",
+            "text": "A man is dropping an item into a bin.",
+            "vietnamese": "Một người đàn ông đang vứt đồ vào thùng rác."
+          },
+          {
+            "key": "D",
+            "text": "A man is washing some windows.",
+            "vietnamese": "Một người đàn ông đang lau cửa sổ."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông đang cầm điện thoại giơ lên chụp mẩu thông báo trên bảng (is holding up his phone)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "hold up",
+        "meaning": "giơ lên, đưa lên",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "pin",
+        "meaning": "ghim chặt, cài",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "bulletin board",
+        "meaning": "bảng thông báo",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "drop",
+        "meaning": "thả, đánh rơi",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "bin",
+        "meaning": "thùng rác, thùng chứa",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part1-5",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q5.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 5",
+    "title": "Part 1 - Câu 5: Người phụ nữ làm việc tại quầy bếp",
+    "audioSrc": "/audio/cuts/test2/E26-T02-05.mp3",
+    "transcript": [
+      {
+        "id": "p1-5-a",
+        "speaker": "Speaker",
+        "text": "(A) She's tying the back of her apron.",
+        "vietnamese": "(A) Cô ấy đang buộc dây tạp dề phía sau lưng."
+      },
+      {
+        "id": "p1-5-b",
+        "speaker": "Speaker",
+        "text": "(B) She's reaching for food on a shelf.",
+        "vietnamese": "(B) Cô ấy đang với lấy đồ ăn trên kệ."
+      },
+      {
+        "id": "p1-5-c",
+        "speaker": "Speaker",
+        "text": "(C) She's working at a counter.",
+        "vietnamese": "(C) Cô ấy đang làm việc tại quầy bếp."
+      },
+      {
+        "id": "p1-5-d",
+        "speaker": "Speaker",
+        "text": "(D) She's putting food into a refrigerator.",
+        "vietnamese": "(D) Cô ấy đang cất thức ăn vào tủ lạnh."
+      }
+    ],
+    "questions": [
+      {
+        "num": 5,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "She's tying the back of her apron.",
+            "vietnamese": "Cô ấy đang buộc dây tạp dề sau lưng."
+          },
+          {
+            "key": "B",
+            "text": "She's reaching for food on a shelf.",
+            "vietnamese": "Cô ấy đang với lấy thức ăn trên kệ."
+          },
+          {
+            "key": "C",
+            "text": "She's working at a counter.",
+            "vietnamese": "Cô ấy đang làm việc tại quầy bếp."
+          },
+          {
+            "key": "D",
+            "text": "She's putting food into a refrigerator.",
+            "vietnamese": "Cô ấy đang cho đồ ăn vào tủ lạnh."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người phụ nữ mặc tạp dề đang đứng chuẩn bị thức ăn tại bàn bếp/quầy bếp inox (is working at a counter)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "tie",
+        "meaning": "buộc, cột",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "apron",
+        "meaning": "tạp dề",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "reach for",
+        "meaning": "với tay lấy",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "counter",
+        "meaning": "quầy hàng, bàn bếp",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "refrigerator",
+        "meaning": "tủ lạnh",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part1-6",
+    "part": 1,
+    "imageUrl": "/images/intensive/test2/q6.png",
+    "partTitle": "Part 1: Mô tả hình ảnh",
+    "questionRange": "Câu 6",
+    "title": "Part 1 - Câu 6: Người đàn ông chuẩn bị bàn tiệc buffet",
+    "audioSrc": "/audio/cuts/test2/E26-T02-06.mp3",
+    "transcript": [
+      {
+        "id": "p1-6-a",
+        "speaker": "Speaker",
+        "text": "(A) He's setting up a buffet.",
+        "vietnamese": "(A) Anh ấy đang chuẩn bị bàn tiệc buffet."
+      },
+      {
+        "id": "p1-6-b",
+        "speaker": "Speaker",
+        "text": "(B) He's putting plates on dining tables.",
+        "vietnamese": "(B) Anh ấy đang đặt đĩa lên các bàn ăn."
+      },
+      {
+        "id": "p1-6-c",
+        "speaker": "Speaker",
+        "text": "(C) He's watering some plants in a garden.",
+        "vietnamese": "(C) Anh ấy đang tưới một số cây trong vườn."
+      },
+      {
+        "id": "p1-6-d",
+        "speaker": "Speaker",
+        "text": "(D) He's carrying food up a stairway.",
+        "vietnamese": "(D) Anh ấy đang mang đồ ăn lên cầu thang."
+      }
+    ],
+    "questions": [
+      {
+        "num": 6,
+        "question": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "vietnameseQuestion": "Chọn câu mô tả đúng nhất về bức tranh:",
+        "options": [
+          {
+            "key": "A",
+            "text": "He's setting up a buffet.",
+            "vietnamese": "Anh ấy đang chuẩn bị tiệc buffet."
+          },
+          {
+            "key": "B",
+            "text": "He's putting plates on dining tables.",
+            "vietnamese": "Anh ấy đang đặt đĩa lên các bàn ăn."
+          },
+          {
+            "key": "C",
+            "text": "He's watering some plants in a garden.",
+            "vietnamese": "Anh ấy đang tưới cây trong vườn."
+          },
+          {
+            "key": "D",
+            "text": "He's carrying food up a stairway.",
+            "vietnamese": "Anh ấy đang bưng đồ ăn lên cầu thang."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông đang đứng bên bàn tiệc có các khay giữ nhiệt buffet bằng kim loại để sắp xếp món ăn (is setting up a buffet)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "set up",
+        "meaning": "chuẩn bị, sắp đặt",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "buffet",
+        "meaning": "tiệc đứng, quầy buffet",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "dining table",
+        "meaning": "bàn ăn",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "stairway",
+        "meaning": "cầu thang bộ",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-7",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 7",
+    "title": "Part 2 - Câu 7: Bạn sẽ gọi món mì hay gà?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-07.mp3",
+    "transcript": [
+      {
+        "id": "p2-7-q",
+        "speaker": "M-Cn",
+        "text": "Will you order the pasta or the chicken?",
+        "vietnamese": "Bạn sẽ gọi món mì ý hay thịt gà?"
+      },
+      {
+        "id": "p2-7-a",
+        "speaker": "W-Br",
+        "text": "(A) I'll have the pasta.",
+        "vietnamese": "(A) Tôi sẽ dùng món mì ý."
+      },
+      {
+        "id": "p2-7-b",
+        "speaker": "W-Br",
+        "text": "(B) Yes, I studied Italian.",
+        "vietnamese": "(B) Vâng, tôi đã học tiếng Ý."
+      },
+      {
+        "id": "p2-7-c",
+        "speaker": "W-Br",
+        "text": "(C) I think we should paint the kitchen.",
+        "vietnamese": "(C) Tôi nghĩ chúng ta nên sơn lại căn bếp."
+      }
+    ],
+    "questions": [
+      {
+        "num": 7,
+        "question": "Will you order the pasta or the chicken?",
+        "vietnameseQuestion": "Bạn sẽ gọi món mì ý hay món gà?",
+        "options": [
+          {
+            "key": "A",
+            "text": "I'll have the pasta.",
+            "vietnamese": "Tôi sẽ dùng món mì ý."
+          },
+          {
+            "key": "B",
+            "text": "Yes, I studied Italian.",
+            "vietnamese": "Vâng, tôi đã từng học tiếng Ý."
+          },
+          {
+            "key": "C",
+            "text": "I think we should paint the kitchen.",
+            "vietnamese": "Tôi nghĩ chúng ta nên sơn nhà bếp."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Câu hỏi lựa chọn (A or B). Phương án (A) đưa ra sự lựa chọn rõ ràng: 'I'll have the pasta'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "order",
+        "meaning": "gọi món, đặt hàng",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "pasta",
+        "meaning": "mì Ý, mì ống",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-8",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 8",
+    "title": "Part 2 - Câu 8: Tôi nên hỏi ai để mua vé đi Bangkok?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-08.mp3",
+    "transcript": [
+      {
+        "id": "p2-8-q",
+        "speaker": "W-Am",
+        "text": "Who should I talk to about getting a ticket to Bangkok?",
+        "vietnamese": "Tôi nên liên hệ với ai để mua vé đi Bangkok?"
+      },
+      {
+        "id": "p2-8-a",
+        "speaker": "W-Br",
+        "text": "(A) How about after the conference?",
+        "vietnamese": "(A) Sau hội nghị thì sao?"
+      },
+      {
+        "id": "p2-8-b",
+        "speaker": "W-Br",
+        "text": "(B) The agent at the ticket counter.",
+        "vietnamese": "(B) Nhân viên ở quầy bán vé ấy."
+      },
+      {
+        "id": "p2-8-c",
+        "speaker": "W-Br",
+        "text": "(C) In front of the theater.",
+        "vietnamese": "(C) Ở phía trước nhà hát."
+      }
+    ],
+    "questions": [
+      {
+        "num": 8,
+        "question": "Who should I talk to about getting a ticket to Bangkok?",
+        "vietnameseQuestion": "Tôi nên nói chuyện với ai để mua vé đi Bangkok?",
+        "options": [
+          {
+            "key": "A",
+            "text": "How about after the conference?",
+            "vietnamese": "Sau hội nghị thì thế nào?"
+          },
+          {
+            "key": "B",
+            "text": "The agent at the ticket counter.",
+            "vietnamese": "Nhân viên tại quầy bán vé."
+          },
+          {
+            "key": "C",
+            "text": "In front of the theater.",
+            "vietnamese": "Ở phía trước nhà hát."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Câu hỏi bắt đầu bằng 'Who' (Hỏi về người). (B) chỉ đích danh đối tượng cần gặp: nhân viên tại quầy vé (The agent at the ticket counter)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "agent",
+        "meaning": "nhân viên, đại lý",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "ticket counter",
+        "meaning": "quầy bán vé",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-9",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 9",
+    "title": "Part 2 - Câu 9: Báo cáo gửi email hay in ra?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-09.mp3",
+    "transcript": [
+      {
+        "id": "p2-9-q",
+        "speaker": "M-Au",
+        "text": "Would you like the report to be e-mailed or printed out?",
+        "vietnamese": "Bạn muốn nhận báo cáo qua email hay in ra giấy?"
+      },
+      {
+        "id": "p2-9-a",
+        "speaker": "W-Br",
+        "text": "(A) An electric heater.",
+        "vietnamese": "(A) Một chiếc máy sưởi điện."
+      },
+      {
+        "id": "p2-9-b",
+        "speaker": "W-Br",
+        "text": "(B) Page 25.",
+        "vietnamese": "(B) Trang 25."
+      },
+      {
+        "id": "p2-9-c",
+        "speaker": "W-Br",
+        "text": "(C) Either way is fine.",
+        "vietnamese": "(C) Cách nào cũng được ạ."
+      }
+    ],
+    "questions": [
+      {
+        "num": 9,
+        "question": "Would you like the report to be e-mailed or printed out?",
+        "vietnameseQuestion": "Bạn muốn báo cáo được gửi qua email hay in ra?",
+        "options": [
+          {
+            "key": "A",
+            "text": "An electric heater.",
+            "vietnamese": "Một máy sưởi điện."
+          },
+          {
+            "key": "B",
+            "text": "Page 25.",
+            "vietnamese": "Trang 25."
+          },
+          {
+            "key": "C",
+            "text": "Either way is fine.",
+            "vietnamese": "Cách nào cũng được."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi lựa chọn giữa email hoặc in ra. (C) 'Either way is fine' (Cách nào cũng được) là câu trả lời kinh điển và chuẩn xác."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "print out",
+        "meaning": "in ra",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "either way",
+        "meaning": "cách nào cũng được",
+        "partOfSpeech": "phrase"
+      }
+    ]
+  },
+  {
+    "id": "part2-10",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 10",
+    "title": "Part 2 - Câu 10: Đã quyết định giá vé hòa nhạc chưa?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-10.mp3",
+    "transcript": [
+      {
+        "id": "p2-10-q",
+        "speaker": "W-Am",
+        "text": "Have you decided how much to charge for your concert tickets?",
+        "vietnamese": "Bạn đã quyết định thu giá bao nhiêu cho vé buổi hòa nhạc chưa?"
+      },
+      {
+        "id": "p2-10-a",
+        "speaker": "W-Br",
+        "text": "(A) Yes—fifteen dollars each.",
+        "vietnamese": "(A) Rồi—mười lăm đô la mỗi vé."
+      },
+      {
+        "id": "p2-10-b",
+        "speaker": "W-Br",
+        "text": "(B) I've read about that.",
+        "vietnamese": "(B) Tôi đã đọc về điều đó."
+      },
+      {
+        "id": "p2-10-c",
+        "speaker": "W-Br",
+        "text": "(C) A jazz band.",
+        "vietnamese": "(C) Một ban nhạc jazz."
+      }
+    ],
+    "questions": [
+      {
+        "num": 10,
+        "question": "Have you decided how much to charge for your concert tickets?",
+        "vietnameseQuestion": "Bạn đã quyết định sẽ tính giá vé hòa nhạc bao nhiêu chưa?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Yes—fifteen dollars each.",
+            "vietnamese": "Rồi—15 đô la một vé."
+          },
+          {
+            "key": "B",
+            "text": "I've read about that.",
+            "vietnamese": "Tôi đã đọc về việc đó."
+          },
+          {
+            "key": "C",
+            "text": "A jazz band.",
+            "vietnamese": "Một ban nhạc jazz."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Câu hỏi Yes/No kết hợp hỏi giá cả (how much to charge). (A) trả lời 'Yes' và kèm theo mức giá cụ thể 15 USD/vé."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "charge",
+        "meaning": "tính giá, thu phí",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "concert ticket",
+        "meaning": "vé hòa nhạc",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-11",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 11",
+    "title": "Part 2 - Câu 11: Cửa hàng bao lâu thì khuyến mãi một lần?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-11.mp3",
+    "transcript": [
+      {
+        "id": "p2-11-q",
+        "speaker": "M-Au",
+        "text": "How often does the store offer a sales promotion?",
+        "vietnamese": "Cửa hàng bao lâu lại có một đợt khuyến mãi?"
+      },
+      {
+        "id": "p2-11-a",
+        "speaker": "W-Am",
+        "text": "(A) A discount on appliances.",
+        "vietnamese": "(A) Giảm giá cho đồ gia dụng."
+      },
+      {
+        "id": "p2-11-b",
+        "speaker": "W-Am",
+        "text": "(B) Sure, I can buy some.",
+        "vietnamese": "(B) Chắc chắn rồi, tôi có thể mua vài món."
+      },
+      {
+        "id": "p2-11-c",
+        "speaker": "W-Am",
+        "text": "(C) Every three months.",
+        "vietnamese": "(C) Cứ ba tháng một lần."
+      }
+    ],
+    "questions": [
+      {
+        "num": 11,
+        "question": "How often does the store offer a sales promotion?",
+        "vietnameseQuestion": "Cửa hàng có chương trình khuyến mãi thường xuyên như thế nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A discount on appliances.",
+            "vietnamese": "Giảm giá các thiết bị gia dụng."
+          },
+          {
+            "key": "B",
+            "text": "Sure, I can buy some.",
+            "vietnamese": "Chắc chắn rồi, tôi có thể mua vài món."
+          },
+          {
+            "key": "C",
+            "text": "Every three months.",
+            "vietnamese": "Cứ ba tháng một lần."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi tần suất 'How often'. (C) trả lời chính xác tần suất thời gian: 'Every three months' (3 tháng một lần)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "sales promotion",
+        "meaning": "chương trình khuyến mãi, kích cầu",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "appliance",
+        "meaning": "thiết bị gia dụng",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-12",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 12",
+    "title": "Part 2 - Câu 12: Chuyến tham quan bắt đầu lúc trưa nay đúng không?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-12.mp3",
+    "transcript": [
+      {
+        "id": "p2-12-q",
+        "speaker": "W-Am",
+        "text": "The tour starts at noon today, doesn't it?",
+        "vietnamese": "Chuyến tham quan bắt đầu lúc giữa trưa hôm nay phải không?"
+      },
+      {
+        "id": "p2-12-a",
+        "speaker": "W-Br",
+        "text": "(A) Please start this washing machine.",
+        "vietnamese": "(A) Xin hãy khởi động máy giặt này."
+      },
+      {
+        "id": "p2-12-b",
+        "speaker": "W-Br",
+        "text": "(B) He's playing a folk tune.",
+        "vietnamese": "(B) Anh ấy đang chơi một giai điệu dân ca."
+      },
+      {
+        "id": "p2-12-c",
+        "speaker": "W-Br",
+        "text": "(C) No—it's been postponed an hour.",
+        "vietnamese": "(C) Không—nó bị hoãn lại một tiếng rồi."
+      }
+    ],
+    "questions": [
+      {
+        "num": 12,
+        "question": "The tour starts at noon today, doesn't it?",
+        "vietnameseQuestion": "Chuyến tham quan bắt đầu lúc giữa trưa nay, đúng không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Please start this washing machine.",
+            "vietnamese": "Xin hãy bật máy giặt này lên."
+          },
+          {
+            "key": "B",
+            "text": "He's playing a folk tune.",
+            "vietnamese": "Anh ấy đang chơi một bản nhạc dân gian."
+          },
+          {
+            "key": "C",
+            "text": "No—it's been postponed an hour.",
+            "vietnamese": "Không—nó đã bị lùi lại một tiếng."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi đuôi xác nhận thời gian. (C) phủ nhận và cung cấp thông tin chuyến đi đã bị hoãn lại 1 tiếng."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "noon",
+        "meaning": "buổi trưa (12h trưa)",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "postpone",
+        "meaning": "trì hoãn, lùi lại",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part2-13",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 13",
+    "title": "Part 2 - Câu 13: Hãy bắt đầu cuộc họp về dự án Taylor",
+    "audioSrc": "/audio/cuts/test2/E26-T02-13.mp3",
+    "transcript": [
+      {
+        "id": "p2-13-q",
+        "speaker": "W-Am",
+        "text": "Let's begin our meeting about the Taylor project.",
+        "vietnamese": "Chúng ta hãy bắt đầu cuộc họp về dự án Taylor nhé."
+      },
+      {
+        "id": "p2-13-a",
+        "speaker": "M-Au",
+        "text": "(A) Good idea—we have a lot to get through.",
+        "vietnamese": "(A) Ý hay đấy—chúng ta có rất nhiều việc phải giải quyết."
+      },
+      {
+        "id": "p2-13-b",
+        "speaker": "M-Au",
+        "text": "(B) Some project proposals.",
+        "vietnamese": "(B) Một số đề xuất dự án."
+      },
+      {
+        "id": "p2-13-c",
+        "speaker": "M-Au",
+        "text": "(C) No, in room 725.",
+        "vietnamese": "(C) Không, ở phòng 725."
+      }
+    ],
+    "questions": [
+      {
+        "num": 13,
+        "question": "Let's begin our meeting about the Taylor project.",
+        "vietnameseQuestion": "Hãy bắt đầu cuộc họp về dự án Taylor nhé.",
+        "options": [
+          {
+            "key": "A",
+            "text": "Good idea—we have a lot to get through.",
+            "vietnamese": "Ý kiến hay đấy—chúng ta có nhiều nội dung cần xử lý."
+          },
+          {
+            "key": "B",
+            "text": "Some project proposals.",
+            "vietnamese": "Một số bản đề xuất dự án."
+          },
+          {
+            "key": "C",
+            "text": "No, in room 725.",
+            "vietnamese": "Không, ở phòng 725."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Lời đề nghị 'Let's begin...'. (A) đồng tình với đề nghị: 'Good idea—we have a lot to get through'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "get through",
+        "meaning": "hoàn thành, xử lý hết",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "proposal",
+        "meaning": "đề xuất, bản kế hoạch",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-14",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 14",
+    "title": "Part 2 - Câu 14: Có phòng khám nha khoa trên phố Main phải không?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-14.mp3",
+    "transcript": [
+      {
+        "id": "p2-14-q",
+        "speaker": "M-Cn",
+        "text": "There's a dental clinic on Main Street, isn't there?",
+        "vietnamese": "Có một phòng khám nha khoa trên đường Main phải không?"
+      },
+      {
+        "id": "p2-14-a",
+        "speaker": "W-Br",
+        "text": "(A) Yes, it's very convenient.",
+        "vietnamese": "(A) Đúng vậy, nó rất thuận tiện."
+      },
+      {
+        "id": "p2-14-b",
+        "speaker": "W-Br",
+        "text": "(B) A toothbrush and toothpaste.",
+        "vietnamese": "(B) Một bàn chải và kem đánh răng."
+      },
+      {
+        "id": "p2-14-c",
+        "speaker": "W-Br",
+        "text": "(C) I'll have the main dish, thanks.",
+        "vietnamese": "(C) Tôi sẽ dùng món chính, cảm ơn."
+      }
+    ],
+    "questions": [
+      {
+        "num": 14,
+        "question": "There's a dental clinic on Main Street, isn't there?",
+        "vietnameseQuestion": "Có một phòng khám nha khoa trên đường Main, đúng không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Yes, it's very convenient.",
+            "vietnamese": "Vâng, nó rất thuận tiện."
+          },
+          {
+            "key": "B",
+            "text": "A toothbrush and toothpaste.",
+            "vietnamese": "Bàn chải và kem đánh răng."
+          },
+          {
+            "key": "C",
+            "text": "I'll have the main dish, thanks.",
+            "vietnamese": "Tôi sẽ ăn món chính, cảm ơn."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Câu hỏi đuôi xác nhận sự tồn tại của phòng khám. (A) xác nhận 'Yes' và khen ngợi phòng khám này rất thuận tiện."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "dental clinic",
+        "meaning": "phòng khám nha khoa",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "convenient",
+        "meaning": "tiện lợi, thuận tiện",
+        "partOfSpeech": "adj"
+      }
+    ]
+  },
+  {
+    "id": "part2-15",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 15",
+    "title": "Part 2 - Câu 15: Buổi đọc sách sẽ diễn ra ở đâu?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-15.mp3",
+    "transcript": [
+      {
+        "id": "p2-15-q",
+        "speaker": "W-Am",
+        "text": "Where is the book reading going to take place?",
+        "vietnamese": "Buổi đọc sách sẽ diễn ra ở đâu?"
+      },
+      {
+        "id": "p2-15-a",
+        "speaker": "M-Au",
+        "text": "(A) Sure—I can give you a tour later.",
+        "vietnamese": "(A) Chắc chắn rồi—tôi có thể dẫn bạn đi tham quan sau."
+      },
+      {
+        "id": "p2-15-b",
+        "speaker": "M-Au",
+        "text": "(B) At the library.",
+        "vietnamese": "(B) Ở thư viện."
+      },
+      {
+        "id": "p2-15-c",
+        "speaker": "M-Au",
+        "text": "(C) It lasts a while.",
+        "vietnamese": "(C) Nó kéo dài một lúc."
+      }
+    ],
+    "questions": [
+      {
+        "num": 15,
+        "question": "Where is the book reading going to take place?",
+        "vietnameseQuestion": "Buổi đọc sách sẽ diễn ra ở địa điểm nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Sure—I can give you a tour later.",
+            "vietnamese": "Được chứ—tôi có thể dẫn bạn tham quan sau."
+          },
+          {
+            "key": "B",
+            "text": "At the library.",
+            "vietnamese": "Ở thư viện."
+          },
+          {
+            "key": "C",
+            "text": "It lasts a while.",
+            "vietnamese": "Nó kéo dài một thời gian."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Câu hỏi 'Where' (Ở đâu). (B) chỉ rõ địa điểm: 'At the library' (Ở thư viện)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "take place",
+        "meaning": "diễn ra, tổ chức",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "reading",
+        "meaning": "buổi đọc sách, buổi ngâm thơ",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-16",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 16",
+    "title": "Part 2 - Câu 16: Khi nào xe buýt sẽ tới đây?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-16.mp3",
+    "transcript": [
+      {
+        "id": "p2-16-q",
+        "speaker": "M-Cn",
+        "text": "When's the bus going to be here?",
+        "vietnamese": "Khi nào thì xe buýt tới đây?"
+      },
+      {
+        "id": "p2-16-a",
+        "speaker": "M-Au",
+        "text": "(A) A round-trip ticket.",
+        "vietnamese": "(A) Một vé khứ hồi."
+      },
+      {
+        "id": "p2-16-b",
+        "speaker": "M-Au",
+        "text": "(B) Let's break for lunch.",
+        "vietnamese": "(B) Hãy nghỉ ăn trưa thôi."
+      },
+      {
+        "id": "p2-16-c",
+        "speaker": "M-Au",
+        "text": "(C) At 3:30 P.M.",
+        "vietnamese": "(C) Lúc 3 giờ 30 chiều."
+      }
+    ],
+    "questions": [
+      {
+        "num": 16,
+        "question": "When's the bus going to be here?",
+        "vietnameseQuestion": "Khi nào xe buýt sẽ đến nơi?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A round-trip ticket.",
+            "vietnamese": "Một vé khứ hồi."
+          },
+          {
+            "key": "B",
+            "text": "Let's break for lunch.",
+            "vietnamese": "Nghỉ tay ăn trưa nào."
+          },
+          {
+            "key": "C",
+            "text": "At 3:30 P.M.",
+            "vietnamese": "Lúc 3:30 chiều."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi 'When' (Khi nào). (C) chỉ mốc thời gian rõ ràng: 'At 3:30 P.M.'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "round-trip",
+        "meaning": "khứ hồi, hai chiều",
+        "partOfSpeech": "adj"
+      },
+      {
+        "word": "break for",
+        "meaning": "nghỉ giải lao để làm gì",
+        "partOfSpeech": "phr v"
+      }
+    ]
+  },
+  {
+    "id": "part2-17",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 17",
+    "title": "Part 2 - Câu 17: Giá bảo hiểm ô tô ước tính cao hơn dự kiến",
+    "audioSrc": "/audio/cuts/test2/E26-T02-17.mp3",
+    "transcript": [
+      {
+        "id": "p2-17-q",
+        "speaker": "M-Cn",
+        "text": "The estimated price for this car insurance is higher than we expected.",
+        "vietnamese": "Mức giá ước tính cho gói bảo hiểm xe ô tô này cao hơn chúng ta kỳ vọng."
+      },
+      {
+        "id": "p2-17-a",
+        "speaker": "W-Am",
+        "text": "(A) We'll check to see if there's a cheaper rate.",
+        "vietnamese": "(A) Chúng tôi sẽ kiểm tra xem có mức giá nào rẻ hơn không."
+      },
+      {
+        "id": "p2-17-b",
+        "speaker": "W-Am",
+        "text": "(B) There's another filling station nearby.",
+        "vietnamese": "(B) Có một cây xăng khác ở gần đây."
+      },
+      {
+        "id": "p2-17-c",
+        "speaker": "W-Am",
+        "text": "(C) The parking garage on the corner.",
+        "vietnamese": "(C) Nhà để xe ở góc đường."
+      }
+    ],
+    "questions": [
+      {
+        "num": 17,
+        "question": "The estimated price for this car insurance is higher than we expected.",
+        "vietnameseQuestion": "Giá ước tính cho bảo hiểm ô tô này cao hơn chúng ta dự kiến.",
+        "options": [
+          {
+            "key": "A",
+            "text": "We'll check to see if there's a cheaper rate.",
+            "vietnamese": "Chúng tôi sẽ xem có mức phí nào rẻ hơn không."
+          },
+          {
+            "key": "B",
+            "text": "There's another filling station nearby.",
+            "vietnamese": "Có một trạm xăng khác gần đây."
+          },
+          {
+            "key": "C",
+            "text": "The parking garage on the corner.",
+            "vietnamese": "Nhà để xe ở góc phố."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Câu trần thuật than phiền giá bảo hiểm cao. (A) đưa ra hướng giải quyết hợp lý: tìm mức giá rẻ hơn (cheaper rate)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "estimated price",
+        "meaning": "mức giá ước tính",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "insurance",
+        "meaning": "bảo hiểm",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "rate",
+        "meaning": "mức giá, tỉ lệ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "filling station",
+        "meaning": "trạm xăng",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-18",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 18",
+    "title": "Part 2 - Câu 18: Sao việc tu sửa vẫn chưa xong?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-18.mp3",
+    "transcript": [
+      {
+        "id": "p2-18-q",
+        "speaker": "W-Am",
+        "text": "Why haven't the renovations been completed yet?",
+        "vietnamese": "Tại sao việc tu sửa vẫn chưa được hoàn thành?"
+      },
+      {
+        "id": "p2-18-a",
+        "speaker": "M-Au",
+        "text": "(A) It's on the top shelf.",
+        "vietnamese": "(A) Nó ở trên giá trên cùng."
+      },
+      {
+        "id": "p2-18-b",
+        "speaker": "M-Au",
+        "text": "(B) Because some materials were delayed.",
+        "vietnamese": "(B) Bởi vì một số vật liệu đã bị chậm trễ."
+      },
+      {
+        "id": "p2-18-c",
+        "speaker": "M-Au",
+        "text": "(C) Some guests haven't received an invitation.",
+        "vietnamese": "(C) Một số khách vẫn chưa nhận được thư mời."
+      }
+    ],
+    "questions": [
+      {
+        "num": 18,
+        "question": "Why haven't the renovations been completed yet?",
+        "vietnameseQuestion": "Tại sao công tác sửa chữa vẫn chưa hoàn tất?",
+        "options": [
+          {
+            "key": "A",
+            "text": "It's on the top shelf.",
+            "vietnamese": "Nó ở trên kệ trên cùng."
+          },
+          {
+            "key": "B",
+            "text": "Because some materials were delayed.",
+            "vietnamese": "Vì một số vật tư bị giao trễ."
+          },
+          {
+            "key": "C",
+            "text": "Some guests haven't received an invitation.",
+            "vietnamese": "Một số khách vẫn chưa nhận được giấy mời."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Câu hỏi lý do 'Why'. (B) giải thích trực tiếp bằng 'Because some materials were delayed'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "renovation",
+        "meaning": "sự cải tạo, tu sửa",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "material",
+        "meaning": "vật liệu, vật tư",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "delay",
+        "meaning": "làm chậm trễ, hoãn",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part2-19",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 19",
+    "title": "Part 2 - Câu 19: Tôi sẽ cho bạn số điện thoại văn phòng",
+    "audioSrc": "/audio/cuts/test2/E26-T02-19.mp3",
+    "transcript": [
+      {
+        "id": "p2-19-q",
+        "speaker": "M-Au",
+        "text": "I'll give you my office number in case you have questions about the data.",
+        "vietnamese": "Tôi sẽ đưa bạn số văn phòng phòng khi bạn có câu hỏi về dữ liệu."
+      },
+      {
+        "id": "p2-19-a",
+        "speaker": "W-Br",
+        "text": "(A) The theater is reserved for that date.",
+        "vietnamese": "(A) Nhà hát đã được đặt trước cho ngày đó."
+      },
+      {
+        "id": "p2-19-b",
+        "speaker": "W-Br",
+        "text": "(B) The file cabinet needs to be moved.",
+        "vietnamese": "(B) Tủ hồ sơ cần phải được di chuyển."
+      },
+      {
+        "id": "p2-19-c",
+        "speaker": "W-Br",
+        "text": "(C) Thanks—I appreciate that.",
+        "vietnamese": "(C) Cảm ơn—tôi rất trân trọng điều đó."
+      }
+    ],
+    "questions": [
+      {
+        "num": 19,
+        "question": "I'll give you my office number in case you have questions about the data.",
+        "vietnameseQuestion": "Tôi sẽ đưa số văn phòng cho bạn phòng khi có thắc mắc về dữ liệu.",
+        "options": [
+          {
+            "key": "A",
+            "text": "The theater is reserved for that date.",
+            "vietnamese": "Nhà hát đã được đặt trước vào ngày đó."
+          },
+          {
+            "key": "B",
+            "text": "The file cabinet needs to be moved.",
+            "vietnamese": "Cần phải chuyển tủ tài liệu."
+          },
+          {
+            "key": "C",
+            "text": "Thanks—I appreciate that.",
+            "vietnamese": "Cảm ơn—tôi rất ghi nhận điều đó."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Đáp lại lời đề nghị giúp đỡ/cho số liên lạc, câu cảm ơn lịch sự 'Thanks—I appreciate that' là phù hợp nhất."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "in case",
+        "meaning": "phòng khi, trong trường hợp",
+        "partOfSpeech": "conj"
+      },
+      {
+        "word": "appreciate",
+        "meaning": "trân trọng, cảm kích",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part2-20",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 20",
+    "title": "Part 2 - Câu 20: Chúng ta nên đỗ xe ở khu vực nào?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-20.mp3",
+    "transcript": [
+      {
+        "id": "p2-20-q",
+        "speaker": "M-Au",
+        "text": "Which parking area should we use?",
+        "vietnamese": "Chúng ta nên sử dụng bãi đỗ xe nào?"
+      },
+      {
+        "id": "p2-20-a",
+        "speaker": "M-Cn",
+        "text": "(A) The fee is fifteen dollars.",
+        "vietnamese": "(A) Mức phí là mười lăm đô la."
+      },
+      {
+        "id": "p2-20-b",
+        "speaker": "M-Cn",
+        "text": "(B) About a twenty-minute delay.",
+        "vietnamese": "(B) Chậm khoảng hai mươi phút."
+      },
+      {
+        "id": "p2-20-c",
+        "speaker": "M-Cn",
+        "text": "(C) The one by Smith's Pharmacy.",
+        "vietnamese": "(C) Bãi xe bên cạnh hiệu thuốc Smith."
+      }
+    ],
+    "questions": [
+      {
+        "num": 20,
+        "question": "Which parking area should we use?",
+        "vietnameseQuestion": "Chúng ta nên dùng khu vực đỗ xe nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "The fee is fifteen dollars.",
+            "vietnamese": "Phí là 15 đô la."
+          },
+          {
+            "key": "B",
+            "text": "About a twenty-minute delay.",
+            "vietnamese": "Khoảng 20 phút chậm trễ."
+          },
+          {
+            "key": "C",
+            "text": "The one by Smith's Pharmacy.",
+            "vietnamese": "Khu bên cạnh hiệu thuốc Smith."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi lựa chọn 'Which parking area'. (C) dùng đại từ 'The one' để chỉ bãi đỗ xe cạnh hiệu thuốc Smith."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "parking area",
+        "meaning": "khu vực đỗ xe, bãi xe",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "pharmacy",
+        "meaning": "hiệu thuốc",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-21",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 21",
+    "title": "Part 2 - Câu 21: Hãy đi taxi ra sân bay",
+    "audioSrc": "/audio/cuts/test2/E26-T02-21.mp3",
+    "transcript": [
+      {
+        "id": "p2-21-q",
+        "speaker": "W-Am",
+        "text": "Let's take a taxi to the airport.",
+        "vietnamese": "Chúng ta hãy đi taxi đến sân bay đi."
+      },
+      {
+        "id": "p2-21-a",
+        "speaker": "W-Br",
+        "text": "(A) My seats are in section 21.",
+        "vietnamese": "(A) Ghế của tôi ở khu vực 21."
+      },
+      {
+        "id": "p2-21-b",
+        "speaker": "W-Br",
+        "text": "(B) Sure, that will be the easiest.",
+        "vietnamese": "(B) Được thôi, cách đó sẽ là dễ dàng nhất."
+      },
+      {
+        "id": "p2-21-c",
+        "speaker": "W-Br",
+        "text": "(C) The café is a few blocks away.",
+        "vietnamese": "(C) Quán cà phê cách đây vài dãy nhà."
+      }
+    ],
+    "questions": [
+      {
+        "num": 21,
+        "question": "Let's take a taxi to the airport.",
+        "vietnameseQuestion": "Hãy bắt taxi tới sân bay nhé.",
+        "options": [
+          {
+            "key": "A",
+            "text": "My seats are in section 21.",
+            "vietnamese": "Chỗ ngồi của tôi ở khu 21."
+          },
+          {
+            "key": "B",
+            "text": "Sure, that will be the easiest.",
+            "vietnamese": "Được chứ, thế là tiện nhất rồi."
+          },
+          {
+            "key": "C",
+            "text": "The café is a few blocks away.",
+            "vietnamese": "Quán cà phê cách đây vài dãy nhà."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Lời đề nghị 'Let's...'. (B) đồng thuận 'Sure' và giải thích đó là phương án thuận tiện nhất (the easiest)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "airport",
+        "meaning": "sân bay",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "block",
+        "meaning": "dãy nhà, khối nhà",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-22",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 22",
+    "title": "Part 2 - Câu 22: Buổi đào tạo của nhóm đông người tham gia nhỉ?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-22.mp3",
+    "transcript": [
+      {
+        "id": "p2-22-q",
+        "speaker": "M-Au",
+        "text": "Our team training session was well attended, wasn't it?",
+        "vietnamese": "Buổi đào tạo nhóm của chúng ta có nhiều người tham dự đúng không?"
+      },
+      {
+        "id": "p2-22-a",
+        "speaker": "M-Cn",
+        "text": "(A) They were delivered yesterday.",
+        "vietnamese": "(A) Chúng đã được giao ngày hôm qua."
+      },
+      {
+        "id": "p2-22-b",
+        "speaker": "M-Cn",
+        "text": "(B) No, just down the hall.",
+        "vietnamese": "(B) Không, ngay cuối hành lang thôi."
+      },
+      {
+        "id": "p2-22-c",
+        "speaker": "M-Cn",
+        "text": "(C) Actually, not everyone was there.",
+        "vietnamese": "(C) Thật ra, không phải ai cũng có mặt đâu."
+      }
+    ],
+    "questions": [
+      {
+        "num": 22,
+        "question": "Our team training session was well attended, wasn't it?",
+        "vietnameseQuestion": "Buổi đào tạo nhóm có đông người đi đúng không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "They were delivered yesterday.",
+            "vietnamese": "Chúng đã được giao hôm qua."
+          },
+          {
+            "key": "B",
+            "text": "No, just down the hall.",
+            "vietnamese": "Không, chỉ ở cuối hành lang."
+          },
+          {
+            "key": "C",
+            "text": "Actually, not everyone was there.",
+            "vietnamese": "Thực ra không phải ai cũng có mặt."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Câu hỏi xác nhận mức độ đông đúc. (C) đính chính khéo léo: 'Actually, not everyone was there' (không đông như bạn nghĩ)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "training session",
+        "meaning": "buổi đào tạo, tập huấn",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "well attended",
+        "meaning": "có đông người tham dự",
+        "partOfSpeech": "adj"
+      }
+    ]
+  },
+  {
+    "id": "part2-23",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 23",
+    "title": "Part 2 - Câu 23: Sao công ty lại ngừng xuất bản bản tin?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-23.mp3",
+    "transcript": [
+      {
+        "id": "p2-23-q",
+        "speaker": "M-Cn",
+        "text": "Why's the company discontinuing its newsletter?",
+        "vietnamese": "Tại sao công ty lại dừng phát hành bản tin nội bộ?"
+      },
+      {
+        "id": "p2-23-a",
+        "speaker": "W-Am",
+        "text": "(A) Only the print version.",
+        "vietnamese": "(A) Chỉ dừng phiên bản in thôi."
+      },
+      {
+        "id": "p2-23-b",
+        "speaker": "W-Am",
+        "text": "(B) Two to three times per week.",
+        "vietnamese": "(B) Hai đến ba lần mỗi tuần."
+      },
+      {
+        "id": "p2-23-c",
+        "speaker": "W-Am",
+        "text": "(C) How far is the main office building?",
+        "vietnamese": "(C) Tòa nhà văn phòng chính cách bao xa?"
+      }
+    ],
+    "questions": [
+      {
+        "num": 23,
+        "question": "Why's the company discontinuing its newsletter?",
+        "vietnameseQuestion": "Tại sao công ty lại ngừng phát hành bản tin?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Only the print version.",
+            "vietnamese": "Chỉ dừng phiên bản in giấy thôi."
+          },
+          {
+            "key": "B",
+            "text": "Two to three times per week.",
+            "vietnamese": "2 đến 3 lần mỗi tuần."
+          },
+          {
+            "key": "C",
+            "text": "How far is the main office building?",
+            "vietnamese": "Tòa nhà văn phòng chính cách đây bao xa?"
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Hỏi tại sao lại dừng bản tin. (A) đính chính lại thông tin: Không phải dừng hẳn mà 'Only the print version' (chỉ dừng bản in, chuyển sang bản điện tử)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "discontinue",
+        "meaning": "ngừng lại, đình chỉ",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "newsletter",
+        "meaning": "bản tin nội bộ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "print version",
+        "meaning": "ấn bản in giấy",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-24",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 24",
+    "title": "Part 2 - Câu 24: Bạn đã định nghỉ chiều nay phải không?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-24.mp3",
+    "transcript": [
+      {
+        "id": "p2-24-q",
+        "speaker": "M-Au",
+        "text": "Weren't you planning to take the afternoon off?",
+        "vietnamese": "Không phải bạn đã lên kế hoạch nghỉ buổi chiều nay sao?"
+      },
+      {
+        "id": "p2-24-a",
+        "speaker": "W-Am",
+        "text": "(A) The clients wanted to meet today.",
+        "vietnamese": "(A) Khách hàng muốn gặp mặt vào hôm nay."
+      },
+      {
+        "id": "p2-24-b",
+        "speaker": "W-Am",
+        "text": "(B) I took it off the middle shelf.",
+        "vietnamese": "(B) Tôi lấy nó ra khỏi kệ ở giữa."
+      },
+      {
+        "id": "p2-24-c",
+        "speaker": "W-Am",
+        "text": "(C) He created a great project plan.",
+        "vietnamese": "(C) Anh ấy đã tạo một kế hoạch dự án tuyệt vời."
+      }
+    ],
+    "questions": [
+      {
+        "num": 24,
+        "question": "Weren't you planning to take the afternoon off?",
+        "vietnameseQuestion": "Có phải bạn định xin nghỉ buổi chiều nay không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "The clients wanted to meet today.",
+            "vietnamese": "Khách hàng muốn gặp hôm nay."
+          },
+          {
+            "key": "B",
+            "text": "I took it off the middle shelf.",
+            "vietnamese": "Tôi lấy nó từ kệ giữa."
+          },
+          {
+            "key": "C",
+            "text": "He created a great project plan.",
+            "vietnamese": "Anh ấy đã tạo bản kế hoạch rất tốt."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Câu hỏi gián tiếp tại sao vẫn ở văn phòng. (A) giải thích lý do không thể nghỉ: 'The clients wanted to meet today'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "take the afternoon off",
+        "meaning": "nghỉ làm buổi chiều",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "client",
+        "meaning": "khách hàng, đối tác",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-25",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 25",
+    "title": "Part 2 - Câu 25: Bác sĩ Molina khám bệnh tại phòng khám Middleville",
+    "audioSrc": "/audio/cuts/test2/E26-T02-25.mp3",
+    "transcript": [
+      {
+        "id": "p2-25-q",
+        "speaker": "M-Cn",
+        "text": "Dr. Molina sees patients in her Middleville office.",
+        "vietnamese": "Bác sĩ Molina khám cho các bệnh nhân tại văn phòng Middleville của cô ấy."
+      },
+      {
+        "id": "p2-25-a",
+        "speaker": "W-Am",
+        "text": "(A) The instructor was so patient with the students.",
+        "vietnamese": "(A) Người hướng dẫn rất kiên nhẫn với các học viên."
+      },
+      {
+        "id": "p2-25-b",
+        "speaker": "W-Am",
+        "text": "(B) Oh, that's only two kilometers from my house.",
+        "vietnamese": "(B) Ồ, chỗ đó chỉ cách nhà tôi hai cây số thôi."
+      },
+      {
+        "id": "p2-25-c",
+        "speaker": "W-Am",
+        "text": "(C) We have some digital thermometers in stock.",
+        "vietnamese": "(C) Chúng tôi có sẵn vài chiếc nhiệt kế điện tử trong kho."
+      }
+    ],
+    "questions": [
+      {
+        "num": 25,
+        "question": "Dr. Molina sees patients in her Middleville office.",
+        "vietnameseQuestion": "Bác sĩ Molina khám bệnh tại văn phòng ở Middleville.",
+        "options": [
+          {
+            "key": "A",
+            "text": "The instructor was so patient with the students.",
+            "vietnamese": "Giảng viên rất kiên nhẫn với học viên."
+          },
+          {
+            "key": "B",
+            "text": "Oh, that's only two kilometers from my house.",
+            "vietnamese": "Ồ, chỗ đó chỉ cách nhà tôi có 2 km thôi."
+          },
+          {
+            "key": "C",
+            "text": "We have some digital thermometers in stock.",
+            "vietnamese": "Chúng tôi có nhiệt kế điện tử trong kho."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Câu cung cấp thông tin về địa điểm khám bệnh. (B) phản hồi tự nhiên thể hiện sự vui mừng vì địa điểm đó rất gần nhà mình."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "patient",
+        "meaning": "bệnh nhân (n), kiên nhẫn (adj)",
+        "partOfSpeech": "n/adj"
+      },
+      {
+        "word": "see patients",
+        "meaning": "khám bệnh cho bệnh nhân",
+        "partOfSpeech": "phrase"
+      }
+    ]
+  },
+  {
+    "id": "part2-26",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 26",
+    "title": "Part 2 - Câu 26: Ai sẽ đi ra ngoài ăn trưa?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-26.mp3",
+    "transcript": [
+      {
+        "id": "p2-26-q",
+        "speaker": "W-Am",
+        "text": "Who's going out for lunch?",
+        "vietnamese": "Ai sẽ ra ngoài ăn trưa thế?"
+      },
+      {
+        "id": "p2-26-a",
+        "speaker": "W-Br",
+        "text": "(A) I enjoyed that book too.",
+        "vietnamese": "(A) Tôi cũng rất thích cuốn sách đó."
+      },
+      {
+        "id": "p2-26-b",
+        "speaker": "W-Br",
+        "text": "(B) I'll be leaving work before then.",
+        "vietnamese": "(B) Tôi sẽ rời chỗ làm trước lúc đó rồi."
+      },
+      {
+        "id": "p2-26-c",
+        "speaker": "W-Br",
+        "text": "(C) What are you doing this weekend?",
+        "vietnamese": "(C) Bạn dự định làm gì vào cuối tuần này?"
+      }
+    ],
+    "questions": [
+      {
+        "num": 26,
+        "question": "Who's going out for lunch?",
+        "vietnameseQuestion": "Ai sẽ ra ngoài ăn trưa nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "I enjoyed that book too.",
+            "vietnamese": "Tôi cũng thích cuốn sách đó."
+          },
+          {
+            "key": "B",
+            "text": "I'll be leaving work before then.",
+            "vietnamese": "Tôi sẽ về trước giờ đó rồi."
+          },
+          {
+            "key": "C",
+            "text": "What are you doing this weekend?",
+            "vietnamese": "Cuối tuần này bạn làm gì?"
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Hỏi ai đi ăn trưa. (B) gián tiếp từ chối tham gia vì phải về trước giờ ăn trưa (before then)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "go out",
+        "meaning": "ra ngoài",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "leave work",
+        "meaning": "tan làm, rời cơ quan",
+        "partOfSpeech": "phrase"
+      }
+    ]
+  },
+  {
+    "id": "part2-27",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 27",
+    "title": "Part 2 - Câu 27: Vé mở bán tuần này hay tuần sau?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-27.mp3",
+    "transcript": [
+      {
+        "id": "p2-27-q",
+        "speaker": "W-Am",
+        "text": "Do the tickets go on sale this week or next?",
+        "vietnamese": "Vé sẽ được mở bán trong tuần này hay tuần sau?"
+      },
+      {
+        "id": "p2-27-a",
+        "speaker": "M-Au",
+        "text": "(A) The cafeteria downstairs.",
+        "vietnamese": "(A) Nhà ăn ở tầng dưới."
+      },
+      {
+        "id": "p2-27-b",
+        "speaker": "M-Au",
+        "text": "(B) They're already sold out.",
+        "vietnamese": "(B) Chúng đã được bán hết sạch rồi."
+      },
+      {
+        "id": "p2-27-c",
+        "speaker": "M-Au",
+        "text": "(C) Sure, no problem.",
+        "vietnamese": "(C) Chắc chắn rồi, không vấn đề gì."
+      }
+    ],
+    "questions": [
+      {
+        "num": 27,
+        "question": "Do the tickets go on sale this week or next?",
+        "vietnameseQuestion": "Vé sẽ bán tuần này hay tuần tới?",
+        "options": [
+          {
+            "key": "A",
+            "text": "The cafeteria downstairs.",
+            "vietnamese": "Quán ăn tự phục vụ ở tầng dưới."
+          },
+          {
+            "key": "B",
+            "text": "They're already sold out.",
+            "vietnamese": "Chúng đã bán hết vé rồi."
+          },
+          {
+            "key": "C",
+            "text": "Sure, no problem.",
+            "vietnamese": "Chắc chắn rồi, không vấn đề gì."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Hỏi vé bán tuần này hay tuần sau. (B) cung cấp thông tin bất ngờ nhưng thực tế: vé đã bán hết sạch từ trước rồi (already sold out)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "go on sale",
+        "meaning": "bắt đầu mở bán",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "sold out",
+        "meaning": "hết hàng, cháy vé",
+        "partOfSpeech": "adj"
+      }
+    ]
+  },
+  {
+    "id": "part2-28",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 28",
+    "title": "Part 2 - Câu 28: Khi nào bạn cập nhật xong dữ liệu bán hàng?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-28.mp3",
+    "transcript": [
+      {
+        "id": "p2-28-q",
+        "speaker": "M-Au",
+        "text": "When will you finish updating the sales data?",
+        "vietnamese": "Khi nào bạn sẽ cập nhật xong dữ liệu bán hàng?"
+      },
+      {
+        "id": "p2-28-a",
+        "speaker": "M-Cn",
+        "text": "(A) I'm waiting for information from one more store.",
+        "vietnamese": "(A) Tôi đang đợi thêm thông tin từ một cửa hàng nữa."
+      },
+      {
+        "id": "p2-28-b",
+        "speaker": "M-Cn",
+        "text": "(B) In the top drawer.",
+        "vietnamese": "(B) Ở ngăn kéo trên cùng."
+      },
+      {
+        "id": "p2-28-c",
+        "speaker": "M-Cn",
+        "text": "(C) Sales increased by five percent.",
+        "vietnamese": "(C) Doanh số bán hàng tăng năm phần trăm."
+      }
+    ],
+    "questions": [
+      {
+        "num": 28,
+        "question": "When will you finish updating the sales data?",
+        "vietnameseQuestion": "Khi nào bạn sẽ cập nhật xong số liệu bán hàng?",
+        "options": [
+          {
+            "key": "A",
+            "text": "I'm waiting for information from one more store.",
+            "vietnamese": "Tôi đang đợi thông tin từ một cửa hàng nữa."
+          },
+          {
+            "key": "B",
+            "text": "In the top drawer.",
+            "vietnamese": "Ở ngăn kéo trên cùng."
+          },
+          {
+            "key": "C",
+            "text": "Sales increased by five percent.",
+            "vietnamese": "Doanh số tăng 5%."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Hỏi thời điểm hoàn thành. (A) giải thích điều kiện hoàn thành: còn phụ thuộc vào dữ liệu của một cửa hàng nữa gửi đến."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "update",
+        "meaning": "cập nhật",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "drawer",
+        "meaning": "ngăn kéo",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-29",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 29",
+    "title": "Part 2 - Câu 29: Ai sẽ chủ trì phiên họp lập kế hoạch ngày mai?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-29.mp3",
+    "transcript": [
+      {
+        "id": "p2-29-q",
+        "speaker": "W-Am",
+        "text": "Who's leading the planning session tomorrow?",
+        "vietnamese": "Ai sẽ chủ trì phiên lập kế hoạch ngày mai vậy?"
+      },
+      {
+        "id": "p2-29-a",
+        "speaker": "M-Cn",
+        "text": "(A) Leadership strategies.",
+        "vietnamese": "(A) Các chiến lược lãnh đạo."
+      },
+      {
+        "id": "p2-29-b",
+        "speaker": "M-Cn",
+        "text": "(B) I'll be out of the office.",
+        "vietnamese": "(B) Ngày mai tôi sẽ không có mặt ở văn phòng đâu."
+      },
+      {
+        "id": "p2-29-c",
+        "speaker": "M-Cn",
+        "text": "(C) Just a few hours.",
+        "vietnamese": "(C) Chỉ vài tiếng thôi."
+      }
+    ],
+    "questions": [
+      {
+        "num": 29,
+        "question": "Who's leading the planning session tomorrow?",
+        "vietnameseQuestion": "Ai sẽ chủ trì phiên lập kế hoạch ngày mai?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Leadership strategies.",
+            "vietnamese": "Chiến lược lãnh đạo."
+          },
+          {
+            "key": "B",
+            "text": "I'll be out of the office.",
+            "vietnamese": "Ngày mai tôi vắng mặt ở văn phòng."
+          },
+          {
+            "key": "C",
+            "text": "Just a few hours.",
+            "vietnamese": "Chỉ vài giờ thôi."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Hỏi ai phụ trách. (B) ngụ ý không phải là mình vì mai mình vắng mặt (I'll be out of the office)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "lead",
+        "meaning": "dẫn dắt, chủ trì",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "out of the office",
+        "meaning": "vắng mặt ở văn phòng",
+        "partOfSpeech": "phrase"
+      }
+    ]
+  },
+  {
+    "id": "part2-30",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 30",
+    "title": "Part 2 - Câu 30: Tối nay chúng ta gặp gỡ khách hàng phải không?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-30.mp3",
+    "transcript": [
+      {
+        "id": "p2-30-q",
+        "speaker": "M-Cn",
+        "text": "Aren't we meeting with the clients this evening?",
+        "vietnamese": "Tối nay chúng ta có hẹn gặp khách hàng đúng không?"
+      },
+      {
+        "id": "p2-30-a",
+        "speaker": "W-Br",
+        "text": "(A) No, it's on the opposite side.",
+        "vietnamese": "(A) Không, nó ở phía đối diện."
+      },
+      {
+        "id": "p2-30-b",
+        "speaker": "W-Br",
+        "text": "(B) The television was fixed.",
+        "vietnamese": "(B) Chiếc TV đã được sửa rồi."
+      },
+      {
+        "id": "p2-30-c",
+        "speaker": "W-Br",
+        "text": "(C) My flight to Japan leaves at six.",
+        "vietnamese": "(C) Chuyến bay đến Nhật của tôi cất cánh lúc sáu giờ rồi."
+      }
+    ],
+    "questions": [
+      {
+        "num": 30,
+        "question": "Aren't we meeting with the clients this evening?",
+        "vietnameseQuestion": "Tối nay chúng ta gặp khách hàng mà, phải không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "No, it's on the opposite side.",
+            "vietnamese": "Không, nó ở phía đối diện."
+          },
+          {
+            "key": "B",
+            "text": "The television was fixed.",
+            "vietnamese": "Chiếc ti vi đã được sửa."
+          },
+          {
+            "key": "C",
+            "text": "My flight to Japan leaves at six.",
+            "vietnamese": "Chuyến bay sang Nhật của tôi khởi hành lúc 6 giờ."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Hỏi về kế hoạch gặp khách hàng tối nay. (C) ngụ ý không thể tham gia vì có chuyến bay đi Nhật lúc 6 giờ tối."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "flight",
+        "meaning": "chuyến bay",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "opposite side",
+        "meaning": "phía đối diện",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part2-31",
+    "part": 2,
+    "partTitle": "Part 2: Hỏi & Đáp",
+    "questionRange": "Câu 31",
+    "title": "Part 2 - Câu 31: Họ đã mời tôi đến buổi khai trương đúng không?",
+    "audioSrc": "/audio/cuts/test2/E26-T02-31.mp3",
+    "transcript": [
+      {
+        "id": "p2-31-q",
+        "speaker": "W-Am",
+        "text": "They invited me to the opening, didn't they?",
+        "vietnamese": "Họ đã mời tôi tới buổi lễ khai trương, đúng không nhỉ?"
+      },
+      {
+        "id": "p2-31-a",
+        "speaker": "M-Cn",
+        "text": "(A) I plan to submit my application.",
+        "vietnamese": "(A) Tôi dự định nộp đơn đăng ký."
+      },
+      {
+        "id": "p2-31-b",
+        "speaker": "M-Cn",
+        "text": "(B) A membership fee.",
+        "vietnamese": "(B) Phí hội viên."
+      },
+      {
+        "id": "p2-31-c",
+        "speaker": "M-Cn",
+        "text": "(C) Check your inbox.",
+        "vietnamese": "(C) Hãy kiểm tra hộp thư đến của bạn xem."
+      }
+    ],
+    "questions": [
+      {
+        "num": 31,
+        "question": "They invited me to the opening, didn't they?",
+        "vietnameseQuestion": "Họ đã mời tôi tham dự lễ khai trương đúng không?",
+        "options": [
+          {
+            "key": "A",
+            "text": "I plan to submit my application.",
+            "vietnamese": "Tôi định nộp đơn ứng tuyển."
+          },
+          {
+            "key": "B",
+            "text": "A membership fee.",
+            "vietnamese": "Phí thành viên."
+          },
+          {
+            "key": "C",
+            "text": "Check your inbox.",
+            "vietnamese": "Hãy kiểm tra hộp thư đến của bạn xem."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Hỏi xem mình đã được mời chưa. (C) khuyên hãy kiểm tra hòm thư email (inbox) để biết chính xác."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "opening",
+        "meaning": "buổi khai trương, lễ mở cửa",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "inbox",
+        "meaning": "hộp thư đến",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-32-34",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 32 - 34",
+    "title": "Part 3 - Câu 32-34: Giao đồ ăn và sự cố chuông cửa tòa nhà",
+    "audioSrc": "/audio/cuts/test2/E26-T02-32-34.mp3",
+    "transcript": [
+      {
+        "id": "p3-32-1",
+        "speaker": "W-Am",
+        "text": "How were your deliveries?",
+        "vietnamese": "Các đơn giao hàng của anh thế nào rồi?"
+      },
+      {
+        "id": "p3-32-2",
+        "speaker": "M-Cn",
+        "text": "Not bad, except at that new residential building on South Street. I had to call them on my phone to come pick up their food. At first, I tried to call on the building intercom, but it's still broken.",
+        "vietnamese": "Không tệ, ngoại trừ ở tòa nhà dân cư mới trên phố South. Tôi đã phải dùng điện thoại gọi họ xuống lấy thức ăn. Ban đầu, tôi đã thử gọi bằng chuông liên lạc nội bộ của tòa nhà, nhưng nó vẫn bị hỏng."
+      },
+      {
+        "id": "p3-32-3",
+        "speaker": "W-Am",
+        "text": "You're not the first to say that. Last week, a customer called to complain that their food was cold by the time they found it.",
+        "vietnamese": "Anh không phải người đầu tiên nói vậy đâu. Tuần trước, một khách hàng đã gọi điện phàn nàn rằng đồ ăn của họ bị nguội ngắt khi họ tìm thấy."
+      },
+      {
+        "id": "p3-32-4",
+        "speaker": "M-Cn",
+        "text": "Maybe we just can't make deliveries there until the landlord fixes the intercom system.",
+        "vietnamese": "Có lẽ chúng ta không thể giao hàng đến đó cho đến khi chủ nhà sửa xong hệ thống chuông nội bộ."
+      },
+      {
+        "id": "p3-32-5",
+        "speaker": "W-Am",
+        "text": "I'm going to update the instructions on our mobile app telling customers to meet us at the building's front door. Let's see if that helps.",
+        "vietnamese": "Tôi sẽ cập nhật hướng dẫn trên ứng dụng di động yêu cầu khách hàng ra gặp chúng ta ngay trước cửa chính tòa nhà. Để xem cách đó có hiệu quả không."
+      }
+    ],
+    "questions": [
+      {
+        "num": 32,
+        "question": "What kind of work does the man do?",
+        "vietnameseQuestion": "Người đàn ông làm công việc gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "He is a tour guide.",
+            "vietnamese": "Anh ấy là hướng dẫn viên du lịch."
+          },
+          {
+            "key": "B",
+            "text": "He is a landlord.",
+            "vietnamese": "Anh ấy là chủ nhà trọ."
+          },
+          {
+            "key": "C",
+            "text": "He repairs appliances.",
+            "vietnamese": "Anh ấy sửa chữa thiết bị gia dụng."
+          },
+          {
+            "key": "D",
+            "text": "He delivers food.",
+            "vietnamese": "Anh ấy giao đồ ăn."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người phụ nữ hỏi 'How were your deliveries?' và người đàn ông nói về việc gọi khách ra lấy đồ ăn (pick up their food), cho thấy anh ấy là người giao đồ ăn."
+      },
+      {
+        "num": 33,
+        "question": "What has caused problems for the speakers' business?",
+        "vietnameseQuestion": "Điều gì đã gây ra vấn đề cho công việc kinh doanh của người nói?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Road construction",
+            "vietnamese": "Thi công đường xá."
+          },
+          {
+            "key": "B",
+            "text": "Cold weather",
+            "vietnamese": "Thời tiết lạnh giá."
+          },
+          {
+            "key": "C",
+            "text": "An expired permit",
+            "vietnamese": "Giấy phép hết hạn."
+          },
+          {
+            "key": "D",
+            "text": "A broken intercom",
+            "vietnamese": "Hệ thống chuông cửa nội bộ bị hỏng."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người đàn ông nói hệ thống chuông cửa nội bộ tòa nhà vẫn bị hỏng: 'the building intercom, but it's still broken'."
+      },
+      {
+        "num": 34,
+        "question": "What will the woman update on a mobile application?",
+        "vietnameseQuestion": "Người phụ nữ sẽ cập nhật nội dung gì trên ứng dụng di động?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Instructions",
+            "vietnamese": "Các chỉ dẫn, hướng dẫn."
+          },
+          {
+            "key": "B",
+            "text": "Prices",
+            "vietnamese": "Bảng giá."
+          },
+          {
+            "key": "C",
+            "text": "Photographs",
+            "vietnamese": "Hình ảnh."
+          },
+          {
+            "key": "D",
+            "text": "Hours of operation",
+            "vietnamese": "Giờ hoạt động."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người phụ nữ nói 'I'm going to update the instructions on our mobile app' (Tôi sẽ cập nhật các hướng dẫn trên ứng dụng di động)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "delivery",
+        "meaning": "sự giao hàng, đơn giao hàng",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "residential building",
+        "meaning": "tòa nhà dân cư, chung cư",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "intercom",
+        "meaning": "hệ thống chuông đàm thoại nội bộ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "landlord",
+        "meaning": "chủ nhà, chủ tòa nhà",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-35-37",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 35 - 37",
+    "title": "Part 3 - Câu 35-37: Lên kế hoạch chuỗi kịch Nhà hát trong Công viên",
+    "audioSrc": "/audio/cuts/test2/E26-T02-35-37.mp3",
+    "transcript": [
+      {
+        "id": "p3-35-1",
+        "speaker": "W-Br",
+        "text": "We're getting close to the time of year when we need to begin planning our Theater in the Park series for the summer. We have lots of decisions to make about shows, dates, and performers.",
+        "vietnamese": "Đang đến gần thời điểm trong năm mà chúng ta cần bắt đầu lên kế hoạch cho chuỗi chương trình Nhà hát trong Công viên cho mùa hè rồi. Chúng ta có rất nhiều quyết định cần đưa ra về các buổi biểu diễn, ngày diễn và nghệ sĩ."
+      },
+      {
+        "id": "p3-35-2",
+        "speaker": "M-Au",
+        "text": "You're right. I'll set up a meeting for this month. You know, I had an idea. Why don't we invite community residents to volunteer to help with building sets, painting, and setting up the stage?",
+        "vietnamese": "Chị nói đúng. Tôi sẽ sắp xếp một cuộc họp trong tháng này. Chị biết đấy, tôi có một ý tưởng. Tại sao chúng ta không mời cư dân địa phương tham gia tình nguyện giúp dựng bối cảnh, sơn quét và lắp đặt sân khấu nhỉ?"
+      },
+      {
+        "id": "p3-35-3",
+        "speaker": "W-Br",
+        "text": "We could, but I don't know if we'll be able to use volunteers this year. We'll need approval to start that kind of program. It'll take time. Let's check into that for next year.",
+        "vietnamese": "Chúng ta có thể làm thế, nhưng tôi không biết liệu năm nay chúng ta có thể sử dụng tình nguyện viên hay không. Chúng ta sẽ cần được phê duyệt để bắt đầu chương trình kiểu đó. Sẽ mất thời gian đấy. Hãy tìm hiểu điều đó cho năm sau nhé."
+      }
+    ],
+    "questions": [
+      {
+        "num": 35,
+        "question": "What industry do the speakers most likely work in?",
+        "vietnameseQuestion": "Những người nói có khả năng cao làm việc trong ngành nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Fitness",
+            "vietnamese": "Thể hình, thể thao."
+          },
+          {
+            "key": "B",
+            "text": "Entertainment",
+            "vietnamese": "Giải trí, nghệ thuật."
+          },
+          {
+            "key": "C",
+            "text": "Landscaping",
+            "vietnamese": "Thiết kế cảnh quan."
+          },
+          {
+            "key": "D",
+            "text": "Travel",
+            "vietnamese": "Du lịch."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Họ bàn về việc lên kế hoạch 'Theater in the Park series', 'shows, dates, and performers' nên thuộc ngành giải trí (Entertainment)."
+      },
+      {
+        "num": 36,
+        "question": "What does the man suggest?",
+        "vietnameseQuestion": "Người đàn ông đề xuất điều gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Providing online access to videos",
+            "vietnamese": "Cung cấp quyền truy cập video trực tuyến."
+          },
+          {
+            "key": "B",
+            "text": "Creating volunteer opportunities",
+            "vietnamese": "Tạo ra các cơ hội tình nguyện."
+          },
+          {
+            "key": "C",
+            "text": "Offering free transportation",
+            "vietnamese": "Cung cấp phương tiện di chuyển miễn phí."
+          },
+          {
+            "key": "D",
+            "text": "Adding additional time slots",
+            "vietnamese": "Bổ sung thêm khung giờ."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người đàn ông đề nghị mời cư dân tham gia tình nguyện hỗ trợ dựng sân khấu: 'invite community residents to volunteer'."
+      },
+      {
+        "num": 37,
+        "question": "Why do the speakers need to wait?",
+        "vietnameseQuestion": "Tại sao những người nói cần phải chờ đợi?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Promotional items have not been ordered.",
+            "vietnamese": "Vật phẩm quảng bá chưa được đặt."
+          },
+          {
+            "key": "B",
+            "text": "A facility is not available.",
+            "vietnamese": "Cơ sở vật chất chưa sẵn sàng."
+          },
+          {
+            "key": "C",
+            "text": "A budget is too small.",
+            "vietnamese": "Ngân sách quá nhỏ."
+          },
+          {
+            "key": "D",
+            "text": "A program has not been approved.",
+            "vietnamese": "Chương trình chưa được phê duyệt."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người phụ nữ nói 'We'll need approval to start that kind of program' (cần sự phê duyệt để bắt đầu chương trình đó)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "performer",
+        "meaning": "người biểu diễn, nghệ sĩ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "volunteer",
+        "meaning": "tình nguyện viên, làm tình nguyện",
+        "partOfSpeech": "n/v"
+      },
+      {
+        "word": "approval",
+        "meaning": "sự phê duyệt, chấp thuận",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-38-40",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 38 - 40",
+    "title": "Part 3 - Câu 38-40: Giải pháp cho các cửa hàng truyền thống ở khu trung tâm",
+    "audioSrc": "/audio/cuts/test2/E26-T02-38-40.mp3",
+    "transcript": [
+      {
+        "id": "p3-38-1",
+        "speaker": "M-Cn",
+        "text": "Back to our podcast with special guest Kimberly Stuart, who's currently advising our city on business development projects. Before the break, we promised to address the decline of shopping downtown.",
+        "vietnamese": "Chào mừng quý vị trở lại với chương trình podcast cùng vị khách mời đặc biệt Kimberly Stuart, người hiện đang tư vấn cho thành phố của chúng ta về các dự án phát triển kinh doanh. Trước giờ giải lao, chúng tôi đã hứa sẽ bàn về sự sụt giảm mua sắm tại khu vực trung tâm."
+      },
+      {
+        "id": "p3-38-2",
+        "speaker": "W-Am",
+        "text": "Yes—and it's been the worst at the kind of stores that sell unique items like antiques and jewelry. These items have always been purchased at brick-and-mortar stores but are now being purchased mostly online.",
+        "vietnamese": "Vâng—và tình trạng này tồi tệ nhất tại các cửa hàng bán những mặt hàng độc đáo như đồ cổ và trang sức. Những mặt hàng này trước đây luôn được mua tại các cửa hàng vật lý truyền thống nhưng giờ đây hầu hết được mua qua mạng."
+      },
+      {
+        "id": "p3-38-3",
+        "speaker": "M-Cn",
+        "text": "So, do those stores have a future?",
+        "vietnamese": "Vậy thì những cửa hàng đó liệu có tương lai không?"
+      },
+      {
+        "id": "p3-38-4",
+        "speaker": "W-Am",
+        "text": "I think they do, especially if we make a point of organizing live community activities downtown, such as concerts or festivals. When people walk around town, they are likely to browse at stores—and make purchases.",
+        "vietnamese": "Tôi nghĩ là có, đặc biệt nếu chúng ta chú trọng tổ chức các hoạt động cộng đồng trực tiếp ở trung tâm thành phố, chẳng hạn như hòa nhạc hoặc lễ hội. Khi mọi người đi dạo quanh thị trấn, họ sẽ có xu hướng ghé xem các cửa hàng—và mua sắm."
+      }
+    ],
+    "questions": [
+      {
+        "num": 38,
+        "question": "Who is the woman?",
+        "vietnameseQuestion": "Người phụ nữ là ai?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A store owner",
+            "vietnamese": "Chủ một cửa hàng."
+          },
+          {
+            "key": "B",
+            "text": "A television celebrity",
+            "vietnamese": "Người nổi tiếng trên truyền hình."
+          },
+          {
+            "key": "C",
+            "text": "A business consultant",
+            "vietnamese": "Cố vấn/tư vấn viên kinh doanh."
+          },
+          {
+            "key": "D",
+            "text": "An event sponsor",
+            "vietnamese": "Nhà tài trợ sự kiện."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người dẫn chương trình giới thiệu người phụ nữ là 'currently advising our city on business development projects' (chuyên gia tư vấn kinh doanh - A business consultant)."
+      },
+      {
+        "num": 39,
+        "question": "What does the woman say about online shopping?",
+        "vietnameseQuestion": "Người phụ nữ nói gì về việc mua sắm trực tuyến?",
+        "options": [
+          {
+            "key": "A",
+            "text": "It is cheaper than buying in person.",
+            "vietnamese": "Rẻ hơn so với việc mua trực tiếp."
+          },
+          {
+            "key": "B",
+            "text": "It makes shopping a social experience.",
+            "vietnamese": "Biến mua sắm thành trải nghiệm xã hội."
+          },
+          {
+            "key": "C",
+            "text": "It is reducing traffic problems in the city.",
+            "vietnamese": "Làm giảm các vấn đề giao thông thành phố."
+          },
+          {
+            "key": "D",
+            "text": "It is affecting specialty shops.",
+            "vietnamese": "Đang ảnh hưởng đến các cửa hàng chuyên doanh."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người phụ nữ nói mua sắm online ảnh hưởng nặng nề nhất tới các cửa hàng bán đồ độc đáo như đồ cổ, trang sức ('stores that sell unique items like antiques and jewelry' -> specialty shops)."
+      },
+      {
+        "num": 40,
+        "question": "What does the woman suggest doing?",
+        "vietnameseQuestion": "Người phụ nữ đề xuất làm gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Offering clearance sales",
+            "vietnamese": "Tổ chức các đợt bán hàng xả kho."
+          },
+          {
+            "key": "B",
+            "text": "Holding live events",
+            "vietnamese": "Tổ chức các sự kiện trực tiếp."
+          },
+          {
+            "key": "C",
+            "text": "Meeting with store owners",
+            "vietnamese": "Gặp gỡ các chủ cửa hàng."
+          },
+          {
+            "key": "D",
+            "text": "Retraining store staff",
+            "vietnamese": "Đào tạo lại nhân viên cửa hàng."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người phụ nữ đề xuất tổ chức các hoạt động cộng đồng trực tiếp ở trung tâm: 'organizing live community activities downtown, such as concerts or festivals'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "decline",
+        "meaning": "sự suy giảm, sụt giảm",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "brick-and-mortar store",
+        "meaning": "cửa hàng truyền thống (có mặt bằng vật lý)",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "browse",
+        "meaning": "xem lướt qua, ngắm đồ",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part3-41-43",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 41 - 43",
+    "title": "Part 3 - Câu 41-43: Chương trình hoàn tiền lắp đặt pin năng lượng mặt trời",
+    "audioSrc": "/audio/cuts/test2/E26-T02-41-43.mp3",
+    "transcript": [
+      {
+        "id": "p3-41-1",
+        "speaker": "M-Au",
+        "text": "Our company has seen a huge spike in sales ever since it launched the rebate program for customers. With the rebate, customers get money back. And they're telling their friends, increasing our sales.",
+        "vietnamese": "Công ty chúng ta đã ghi nhận sự tăng vọt lớn về doanh số kể từ khi tung ra chương trình hoàn tiền cho khách hàng. Nhờ chính sách hoàn tiền, khách hàng nhận lại được tiền. Và họ đang giới thiệu cho bạn bè của họ, làm tăng doanh số bán hàng của chúng ta."
+      },
+      {
+        "id": "p3-41-2",
+        "speaker": "W-Br",
+        "text": "Yes. The rebate's been great for our company because now more homeowners have an incentive to install solar panels on their properties, since they're rewarded for the electricity their solar panels produce. But our technicians can't keep up with the high demand.",
+        "vietnamese": "Đúng vậy. Chương trình hoàn tiền đã mang lại lợi ích tuyệt vời cho công ty chúng ta vì giờ đây nhiều chủ nhà có động lực lắp đặt tấm pin năng lượng mặt trời trên khu đất của họ, do họ được thưởng cho lượng điện mà pin mặt trời tạo ra. Nhưng các kỹ thuật viên của chúng ta không thể đáp ứng kịp nhu cầu cao như vậy."
+      },
+      {
+        "id": "p3-41-3",
+        "speaker": "M-Au",
+        "text": "You're right. I'm planning to hire more technicians. I've already received some résumés from potential candidates.",
+        "vietnamese": "Chị nói đúng. Tôi đang dự định tuyển thêm kỹ thuật viên. Tôi đã nhận được một số hồ sơ xin việc từ các ứng viên tiềm năng rồi."
+      }
+    ],
+    "questions": [
+      {
+        "num": 41,
+        "question": "Why have a company's sales increased?",
+        "vietnameseQuestion": "Tại sao doanh số của công ty lại tăng?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A rebate program was started.",
+            "vietnamese": "Một chương trình hoàn tiền đã được triển khai."
+          },
+          {
+            "key": "B",
+            "text": "A competitor went out of business.",
+            "vietnamese": "Một đối thủ cạnh tranh đã phá sản."
+          },
+          {
+            "key": "C",
+            "text": "A celebrity endorsed the company.",
+            "vietnamese": "Một người nổi tiếng đã quảng bá công ty."
+          },
+          {
+            "key": "D",
+            "text": "A product won an award.",
+            "vietnamese": "Sản phẩm đã đạt được giải thưởng."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông giải thích doanh số tăng vọt kể từ khi 'launched the rebate program for customers'."
+      },
+      {
+        "num": 42,
+        "question": "What industry do the speakers most likely work in?",
+        "vietnameseQuestion": "Những người nói có khả năng cao làm việc trong ngành nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Banking",
+            "vietnamese": "Ngân hàng."
+          },
+          {
+            "key": "B",
+            "text": "Telecommunications",
+            "vietnamese": "Viễn thông."
+          },
+          {
+            "key": "C",
+            "text": "Solar energy",
+            "vietnamese": "Năng lượng mặt trời."
+          },
+          {
+            "key": "D",
+            "text": "Music",
+            "vietnamese": "Âm nhạc."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người phụ nữ nhắc đến việc khách hàng lắp đặt 'solar panels on their properties' (tấm pin năng lượng mặt trời)."
+      },
+      {
+        "num": 43,
+        "question": "What does the man say he is planning to do?",
+        "vietnameseQuestion": "Người đàn ông nói anh ấy dự định làm gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Hire new employees",
+            "vietnamese": "Tuyển thêm nhân viên mới."
+          },
+          {
+            "key": "B",
+            "text": "Provide additional training",
+            "vietnamese": "Cung cấp thêm khóa đào tạo."
+          },
+          {
+            "key": "C",
+            "text": "Upgrade some equipment",
+            "vietnamese": "Nâng cấp một số trang thiết bị."
+          },
+          {
+            "key": "D",
+            "text": "Open another location",
+            "vietnamese": "Mở thêm một địa điểm khác."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông dự định tuyển thêm kỹ thuật viên: 'I'm planning to hire more technicians'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "spike",
+        "meaning": "sự tăng vọt đột biến",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "rebate",
+        "meaning": "khoản hoàn tiền, giảm giá sau mua",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "solar panel",
+        "meaning": "tấm pin năng lượng mặt trời",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "incentive",
+        "meaning": "động lực, sự khích lệ",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-44-46",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 44 - 46",
+    "title": "Part 3 - Câu 44-46: Lựa chọn người đại diện tại hội chợ điện tử",
+    "audioSrc": "/audio/cuts/test2/E26-T02-44-46.mp3",
+    "transcript": [
+      {
+        "id": "p3-44-1",
+        "speaker": "M-Cn",
+        "text": "Fernanda, I was just looking at the company calendar, and I noticed that the national electronics trade show is coming up soon.",
+        "vietnamese": "Fernanda, tôi vừa xem lịch làm việc của công ty và thấy triển lãm thương mại điện tử quốc gia sắp diễn ra rồi."
+      },
+      {
+        "id": "p3-44-2",
+        "speaker": "W-Br",
+        "text": "Oh, that's right! It'll be a great opportunity for us to showcase the product that we've been developing—our new robotic vacuum cleaner.",
+        "vietnamese": "Ồ, đúng rồi! Đó sẽ là cơ hội tuyệt vời để chúng ta trưng bày sản phẩm mà chúng ta đang phát triển—máy hút bụi robot mới của chúng ta."
+      },
+      {
+        "id": "p3-44-3",
+        "speaker": "M-Cn",
+        "text": "We'll need to decide who we want to send to represent our company at the trade show.",
+        "vietnamese": "Chúng ta cần phải quyết định xem ai sẽ đại diện cho công ty chúng ta tại triển lãm thương mại này."
+      },
+      {
+        "id": "p3-44-4",
+        "speaker": "W-Br",
+        "text": "Well, I know just the right person—Kavi. Kavi does a good job of clearly explaining highly technical concepts in a way that everyone can understand.",
+        "vietnamese": "À, tôi biết một người hoàn hảo cho vị trí này—Kavi. Kavi rất giỏi trong việc giải thích rõ ràng các khái niệm kỹ thuật phức tạp theo cách mà ai cũng có thể hiểu được."
+      }
+    ],
+    "questions": [
+      {
+        "num": 44,
+        "question": "What upcoming event are the speakers discussing?",
+        "vietnameseQuestion": "Những người nói đang thảo luận về sự kiện sắp tới nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A trade show",
+            "vietnamese": "Một triển lãm thương mại."
+          },
+          {
+            "key": "B",
+            "text": "A client meeting",
+            "vietnamese": "Một cuộc họp với khách hàng."
+          },
+          {
+            "key": "C",
+            "text": "An awards ceremony",
+            "vietnamese": "Một lễ trao giải."
+          },
+          {
+            "key": "D",
+            "text": "A press conference",
+            "vietnamese": "Một buổi họp báo."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông đề cập đến 'national electronics trade show is coming up soon'."
+      },
+      {
+        "num": 45,
+        "question": "What product has the speakers' company recently developed?",
+        "vietnameseQuestion": "Công ty của những người nói gần đây đã phát triển sản phẩm nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A video game",
+            "vietnamese": "Trò chơi điện tử."
+          },
+          {
+            "key": "B",
+            "text": "A mobile phone",
+            "vietnamese": "Điện thoại di động."
+          },
+          {
+            "key": "C",
+            "text": "A lawn mower",
+            "vietnamese": "Máy cắt cỏ."
+          },
+          {
+            "key": "D",
+            "text": "A vacuum cleaner",
+            "vietnamese": "Máy hút bụi."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người phụ nữ nhắc đến sản phẩm 'our new robotic vacuum cleaner' (máy hút bụi robot)."
+      },
+      {
+        "num": 46,
+        "question": "Why does the woman recommend Kavi?",
+        "vietnameseQuestion": "Tại sao người phụ nữ lại tiến cử Kavi?",
+        "options": [
+          {
+            "key": "A",
+            "text": "He is a good communicator.",
+            "vietnamese": "Anh ấy là người giao tiếp giỏi."
+          },
+          {
+            "key": "B",
+            "text": "He enjoys traveling.",
+            "vietnamese": "Anh ấy thích đi du lịch."
+          },
+          {
+            "key": "C",
+            "text": "He leads a product development team.",
+            "vietnamese": "Anh ấy dẫn dắt đội phát triển sản phẩm."
+          },
+          {
+            "key": "D",
+            "text": "He lives near the event venue.",
+            "vietnamese": "Anh ấy sống gần địa điểm tổ chức."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người phụ nữ khen ngợi Kavi giỏi giải thích các khái niệm kỹ thuật rõ ràng để ai cũng hiểu được ('does a good job of clearly explaining...' -> good communicator)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "trade show",
+        "meaning": "triển lãm thương mại, hội chợ thương mại",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "showcase",
+        "meaning": "trưng bày, giới thiệu",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "robotic vacuum cleaner",
+        "meaning": "máy hút bụi robot thông minh",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-47-49",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 47 - 49",
+    "title": "Part 3 - Câu 47-49: Giới thiệu ứng viên lễ tân cho phòng khám",
+    "audioSrc": "/audio/cuts/test2/E26-T02-47-49.mp3",
+    "transcript": [
+      {
+        "id": "p3-47-1",
+        "speaker": "M-Au",
+        "text": "Dr. Fuentes, sorry to interrupt. Do you have a minute?",
+        "vietnamese": "Bác sĩ Fuentes, xin lỗi vì đã làm phiền. Bác sĩ có rảnh một phút không?"
+      },
+      {
+        "id": "p3-47-2",
+        "speaker": "W-Br",
+        "text": "Yes. My nine o'clock dental cleaning patient just canceled.",
+        "vietnamese": "Có chứ. Bệnh nhân lấy cao răng lúc 9 giờ của tôi vừa mới hủy hẹn rồi."
+      },
+      {
+        "id": "p3-47-3",
+        "speaker": "M-Au",
+        "text": "I know you're looking for a new receptionist. I'd like to recommend someone for the position.",
+        "vietnamese": "Tôi biết bác sĩ đang tìm một nhân viên lễ tân mới. Tôi muốn giới thiệu một người cho vị trí này."
+      },
+      {
+        "id": "p3-47-4",
+        "speaker": "W-Br",
+        "text": "Oh. Who do you have in mind?",
+        "vietnamese": "Ồ. Anh đang nghĩ đến ai thế?"
+      },
+      {
+        "id": "p3-47-5",
+        "speaker": "M-Au",
+        "text": "Well, a former colleague of mine has just moved back to town. Her name's Kelly Graham, and she has several years of experience.",
+        "vietnamese": "À, một đồng nghiệp cũ của tôi vừa chuyển về thị trấn này. Tên cô ấy là Kelly Graham, và cô ấy đã có vài năm kinh nghiệm."
+      },
+      {
+        "id": "p3-47-6",
+        "speaker": "W-Br",
+        "text": "OK. Could you tell Kelly to send me her résumé? I'd be happy to look it over.",
+        "vietnamese": "Được rồi. Anh có thể bảo Kelly gửi hồ sơ xin việc cho tôi không? Tôi sẽ rất vui lòng xem qua nó."
+      }
+    ],
+    "questions": [
+      {
+        "num": 47,
+        "question": "Where do the speakers most likely work?",
+        "vietnameseQuestion": "Những người nói có khả năng cao làm việc ở đâu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "At a publishing house",
+            "vietnamese": "Tại một nhà xuất bản."
+          },
+          {
+            "key": "B",
+            "text": "At a dental clinic",
+            "vietnamese": "Tại một phòng khám nha khoa."
+          },
+          {
+            "key": "C",
+            "text": "At a financial firm",
+            "vietnamese": "Tại một công ty tài chính."
+          },
+          {
+            "key": "D",
+            "text": "At a real estate agency",
+            "vietnamese": "Tại một văn phòng bất động sản."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Bác sĩ Fuentes nhắc đến 'dental cleaning patient' (bệnh nhân lấy cao răng/vệ sinh răng miệng)."
+      },
+      {
+        "num": 48,
+        "question": "What does the man tell the woman about?",
+        "vietnameseQuestion": "Người đàn ông nói với người phụ nữ về điều gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A new product",
+            "vietnamese": "Một sản phẩm mới."
+          },
+          {
+            "key": "B",
+            "text": "A schedule change",
+            "vietnamese": "Một sự thay đổi lịch trình."
+          },
+          {
+            "key": "C",
+            "text": "A policy update",
+            "vietnamese": "Một cập nhật chính sách."
+          },
+          {
+            "key": "D",
+            "text": "A job candidate",
+            "vietnamese": "Một ứng viên xin việc."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người đàn ông muốn giới thiệu một ứng viên cho vị trí lễ tân: 'recommend someone for the position' -> A job candidate."
+      },
+      {
+        "num": 49,
+        "question": "Why will the man most likely contact Kelly Graham?",
+        "vietnameseQuestion": "Tại sao người đàn ông có khả năng cao sẽ liên lạc với Kelly Graham?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To plan an office celebration",
+            "vietnamese": "Để lên kế hoạch liên hoan văn phòng."
+          },
+          {
+            "key": "B",
+            "text": "To arrange a training session",
+            "vietnamese": "Để sắp xếp một buổi đào tạo."
+          },
+          {
+            "key": "C",
+            "text": "To request a document",
+            "vietnamese": "Để yêu cầu một tài liệu (hồ sơ xin việc)."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Bác sĩ yêu cầu bảo Kelly gửi CV: 'Could you tell Kelly to send me her résumé?' (hồ sơ xin việc là một loại tài liệu - a document)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "dental cleaning",
+        "meaning": "vệ sinh răng miệng, lấy cao răng",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "receptionist",
+        "meaning": "nhân viên lễ tân",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "résumé",
+        "meaning": "hồ sơ xin việc, CV",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-50-52",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 50 - 52",
+    "title": "Part 3 - Câu 50-52: Khảo sát địa điểm quay video đào tạo cho nhà máy",
+    "audioSrc": "/audio/cuts/test2/E26-T02-50-52.mp3",
+    "transcript": [
+      {
+        "id": "p3-50-1",
+        "speaker": "M1-Cn",
+        "text": "Ms. Gao? I'm Hector, and this is my colleague Sergey. Thanks for meeting with us.",
+        "vietnamese": "Cô Gao phải không? Tôi là Hector, và đây là đồng nghiệp của tôi Sergey. Cảm ơn cô đã gặp chúng tôi."
+      },
+      {
+        "id": "p3-50-2",
+        "speaker": "W-Br",
+        "text": "It's a pleasure to meet you both. How can I help you?",
+        "vietnamese": "Rất hân hạnh được gặp hai anh. Tôi có thể giúp gì cho hai anh?"
+      },
+      {
+        "id": "p3-50-3",
+        "speaker": "M2-Au",
+        "text": "We're making some training videos for our client, FiveStar Industries.",
+        "vietnamese": "Chúng tôi đang sản xuất một số video đào tạo cho khách hàng của mình, công ty FiveStar Industries."
+      },
+      {
+        "id": "p3-50-4",
+        "speaker": "M1-Cn",
+        "text": "We found your advertisement in a trade publication. We need someone to choose appropriate filming sites at FiveStar's factories, and it said you have lots of experience scouting for industrial locations.",
+        "vietnamese": "Chúng tôi thấy quảng cáo của cô trên một ấn phẩm chuyên ngành. Chúng tôi cần ai đó chọn các địa điểm quay phim thích hợp tại các nhà máy của FiveStar, và quảng cáo có nói cô có nhiều kinh nghiệm khảo sát các địa điểm công nghiệp."
+      },
+      {
+        "id": "p3-50-5",
+        "speaker": "W-Br",
+        "text": "Sure. I'd want to start by touring their factories. Can you schedule a time for me to do that next week?",
+        "vietnamese": "Chắc chắn rồi. Tôi muốn bắt đầu bằng việc đi tham quan các nhà máy của họ. Hai anh có thể sắp xếp thời gian để tôi thực hiện việc đó vào tuần tới không?"
+      },
+      {
+        "id": "p3-50-6",
+        "speaker": "M2-Au",
+        "text": "Yes, I'll call them today to arrange it.",
+        "vietnamese": "Vâng, hôm nay tôi sẽ gọi cho họ để sắp xếp việc này."
+      }
+    ],
+    "questions": [
+      {
+        "num": 50,
+        "question": "What industry do the men work in?",
+        "vietnameseQuestion": "Hai người đàn ông làm việc trong ngành nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Travel",
+            "vietnamese": "Du lịch."
+          },
+          {
+            "key": "B",
+            "text": "Manufacturing",
+            "vietnamese": "Sản xuất chế tạo."
+          },
+          {
+            "key": "C",
+            "text": "Video production",
+            "vietnamese": "Sản xuất video."
+          },
+          {
+            "key": "D",
+            "text": "Construction",
+            "vietnamese": "Xây dựng."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người đàn ông nói 'We're making some training videos for our client' (Chúng tôi đang làm video đào tạo)."
+      },
+      {
+        "num": 51,
+        "question": "How did the men learn about the woman?",
+        "vietnameseQuestion": "Hai người đàn ông biết về người phụ nữ bằng cách nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "From her Web site",
+            "vietnamese": "Từ trang web của cô ấy."
+          },
+          {
+            "key": "B",
+            "text": "From a trade publication",
+            "vietnamese": "Từ một ấn phẩm/tạp chí chuyên ngành."
+          },
+          {
+            "key": "C",
+            "text": "From a colleague",
+            "vietnamese": "Từ một đồng nghiệp."
+          },
+          {
+            "key": "D",
+            "text": "From a recruitment agency",
+            "vietnamese": "Từ một công ty tuyển dụng."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người đàn ông nói 'We found your advertisement in a trade publication'."
+      },
+      {
+        "num": 52,
+        "question": "What does the woman want to do next week?",
+        "vietnameseQuestion": "Người phụ nữ muốn làm gì vào tuần tới?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Attend an orientation session",
+            "vietnamese": "Tham dự một buổi định hướng."
+          },
+          {
+            "key": "B",
+            "text": "Visit some facilities",
+            "vietnamese": "Đến thăm/khảo sát các cơ sở."
+          },
+          {
+            "key": "C",
+            "text": "Interview some applicants",
+            "vietnamese": "Phỏng vấn các ứng viên."
+          },
+          {
+            "key": "D",
+            "text": "Finalize a contract",
+            "vietnamese": "Hoàn tất hợp đồng."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người phụ nữ muốn bắt đầu bằng việc đi tham quan nhà máy: 'touring their factories' -> Visit some facilities."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "trade publication",
+        "meaning": "ấn phẩm/tạp chí chuyên ngành",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "filming site",
+        "meaning": "địa điểm quay phim",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "scout",
+        "meaning": "tìm kiếm, khảo sát địa điểm",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part3-53-55",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 53 - 55",
+    "title": "Part 3 - Câu 53-55: Cắt giảm ngân sách công tác tại công ty kỹ thuật",
+    "audioSrc": "/audio/cuts/test2/E26-T02-53-55.mp3",
+    "transcript": [
+      {
+        "id": "p3-53-1",
+        "speaker": "M-Au",
+        "text": "Our engineering firm has been asked to cut the corporate travel budget by twenty percent, but it won't be easy. The engineering consultants have to travel to meet with clients.",
+        "vietnamese": "Công ty kỹ thuật của chúng ta đã được yêu cầu cắt giảm 20% ngân sách công tác của doanh nghiệp, nhưng điều đó sẽ không dễ dàng đâu. Các chuyên gia tư vấn kỹ thuật phải đi công tác để gặp gỡ khách hàng."
+      },
+      {
+        "id": "p3-53-2",
+        "speaker": "W-Br",
+        "text": "Right, and they often travel on short notice. Flight arrangements made at the last minute are expensive, especially for nonstop flights. It would be cheaper if they took connecting flights.",
+        "vietnamese": "Đúng thế, và họ thường phải đi công tác gấp mà không báo trước nhiều. Việc thu xếp chuyến bay vào phút chót rất tốn kém, đặc biệt là các chuyến bay thẳng. Sẽ rẻ hơn nếu họ đi các chuyến bay chuyển tiếp (quá cảnh)."
+      },
+      {
+        "id": "p3-53-3",
+        "speaker": "M-Au",
+        "text": "Yes, but that can take a lot of time.",
+        "vietnamese": "Đúng, nhưng việc đó có thể mất rất nhiều thời gian."
+      },
+      {
+        "id": "p3-53-4",
+        "speaker": "W-Br",
+        "text": "True. Maybe we can make up for the cost of the flights by economizing on hotels. Let's look into that.",
+        "vietnamese": "Đúng vậy. Có lẽ chúng ta có thể bù đắp chi phí máy bay bằng cách tiết kiệm tiền khách sạn. Chúng ta hãy tìm hiểu xem sao."
+      }
+    ],
+    "questions": [
+      {
+        "num": 53,
+        "question": "What type of business do the speakers work for?",
+        "vietnameseQuestion": "Những người nói làm việc cho loại hình doanh nghiệp nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A law firm",
+            "vietnamese": "Một công ty luật."
+          },
+          {
+            "key": "B",
+            "text": "An advertising agency",
+            "vietnamese": "Một công ty quảng cáo."
+          },
+          {
+            "key": "C",
+            "text": "An engineering firm",
+            "vietnamese": "Một công ty kỹ thuật."
+          },
+          {
+            "key": "D",
+            "text": "An event-planning company",
+            "vietnamese": "Một công ty tổ chức sự kiện."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người đàn ông mở đầu câu: 'Our engineering firm has been asked to cut the corporate travel budget'."
+      },
+      {
+        "num": 54,
+        "question": "Why does the man say, \"that can take a lot of time\"?",
+        "vietnameseQuestion": "Tại sao người đàn ông lại nói: \"điều đó có thể mất rất nhiều thời gian\"?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To reject a suggestion",
+            "vietnamese": "Để từ chối một lời đề xuất."
+          },
+          {
+            "key": "B",
+            "text": "To express sympathy",
+            "vietnamese": "Để bày tỏ sự đồng cảm."
+          },
+          {
+            "key": "C",
+            "text": "To request additional pay",
+            "vietnamese": "Để yêu cầu thêm thù lao."
+          },
+          {
+            "key": "D",
+            "text": "To offer assistance",
+            "vietnamese": "Để đề nghị giúp đỡ."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Khi người phụ nữ đề xuất chọn chuyến bay quá cảnh (connecting flights) cho rẻ, người đàn ông phản bác lại rằng cách đó mất thời gian (To reject a suggestion)."
+      },
+      {
+        "num": 55,
+        "question": "What does the woman suggest?",
+        "vietnameseQuestion": "Người phụ nữ đề xuất điều gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Contacting some former clients",
+            "vietnamese": "Liên hệ với một số khách hàng cũ."
+          },
+          {
+            "key": "B",
+            "text": "Making reservations early",
+            "vietnamese": "Đặt chỗ sớm hơn."
+          },
+          {
+            "key": "C",
+            "text": "Staying at affordable hotels",
+            "vietnamese": "Ở các khách sạn có giá cả phải chăng."
+          },
+          {
+            "key": "D",
+            "text": "Consulting with an expert",
+            "vietnamese": "Tham vấn ý kiến chuyên gia."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người phụ nữ đề xuất 'economizing on hotels' (tiết kiệm chi phí khách sạn -> Staying at affordable hotels)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "connecting flight",
+        "meaning": "chuyến bay chuyển tiếp, quá cảnh",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "on short notice",
+        "meaning": "gấp gáp, thông báo trong thời gian ngắn",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "economize",
+        "meaning": "tiết kiệm, chi tiêu dè xẻn",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part3-56-58",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 56 - 58",
+    "title": "Part 3 - Câu 56-58: Mời nhà thiết kế đồ trang sức hợp tác thiết kế đồng hồ thông minh",
+    "audioSrc": "/audio/cuts/test2/E26-T02-56-58.mp3",
+    "transcript": [
+      {
+        "id": "p3-56-1",
+        "speaker": "M1-Cn",
+        "text": "Thanks for meeting with us, Ms. Azuma. This is Scott Ajibade, one of our senior project managers.",
+        "vietnamese": "Cảm ơn cô đã gặp chúng tôi, cô Azuma. Đây là Scott Ajibade, một trong những giám đốc dự án cấp cao của chúng tôi."
+      },
+      {
+        "id": "p3-56-2",
+        "speaker": "M2-Au",
+        "text": "I admire your work, Ms. Azuma.",
+        "vietnamese": "Tôi rất ngưỡng mộ các tác phẩm của cô, cô Azuma."
+      },
+      {
+        "id": "p3-56-3",
+        "speaker": "W-Br",
+        "text": "Thank you. I was surprised by your invitation. I typically design jewelry, but your company's known for making computers and mobile phones.",
+        "vietnamese": "Cảm ơn hai anh. Tôi đã khá bất ngờ trước lời mời của các anh. Tôi thường thiết kế đồ trang sức, trong khi công ty của các anh lại nổi tiếng về sản xuất máy tính và điện thoại di động."
+      },
+      {
+        "id": "p3-56-4",
+        "speaker": "M1-Cn",
+        "text": "Scott's team is currently working on a smartwatch. But there's a lot of competition, as you know.",
+        "vietnamese": "Đội ngũ của Scott hiện đang phát triển một chiếc đồng hồ thông minh. Nhưng như cô biết đấy, cạnh tranh là rất khốc liệt."
+      },
+      {
+        "id": "p3-56-5",
+        "speaker": "M2-Au",
+        "text": "We're hoping you can create a fresh design that will help our product stand out.",
+        "vietnamese": "Chúng tôi hy vọng cô có thể tạo ra một thiết kế mới mẻ giúp sản phẩm của chúng tôi nổi bật."
+      },
+      {
+        "id": "p3-56-6",
+        "speaker": "W-Br",
+        "text": "Do you already have an idea of what the watch should look like, or are we starting from scratch?",
+        "vietnamese": "Các anh đã có ý tưởng chiếc đồng hồ trông như thế nào chưa, hay chúng ta bắt đầu từ con số không?"
+      },
+      {
+        "id": "p3-56-7",
+        "speaker": "M2-Au",
+        "text": "I have some preliminary sketches we can look at, but none of them seem quite right.",
+        "vietnamese": "Tôi có một số bản phác thảo sơ bộ chúng ta có thể xem qua, nhưng dường như chưa có bản nào thực sự ưng ý cả."
+      }
+    ],
+    "questions": [
+      {
+        "num": 56,
+        "question": "What industry do the men most likely work in?",
+        "vietnameseQuestion": "Hai người đàn ông có khả năng cao làm việc trong ngành nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Fashion",
+            "vietnamese": "Thời trang."
+          },
+          {
+            "key": "B",
+            "text": "Cosmetics",
+            "vietnamese": "Mỹ phẩm."
+          },
+          {
+            "key": "C",
+            "text": "Advertising",
+            "vietnamese": "Quảng cáo."
+          },
+          {
+            "key": "D",
+            "text": "Technology",
+            "vietnamese": "Công nghệ."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Cô Azuma nhắc đến công ty sản xuất máy tính và điện thoại ('computers and mobile phones', 'smartwatch') nên đây là ngành công nghệ (Technology)."
+      },
+      {
+        "num": 57,
+        "question": "Why did the men request a meeting?",
+        "vietnameseQuestion": "Tại sao những người đàn ông lại yêu cầu một cuộc họp?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To negotiate a merger",
+            "vietnamese": "Để đàm phán sáp nhập."
+          },
+          {
+            "key": "B",
+            "text": "To ask for funding",
+            "vietnamese": "Để xin vốn tài trợ."
+          },
+          {
+            "key": "C",
+            "text": "To discuss a product design",
+            "vietnamese": "Để thảo luận về thiết kế sản phẩm."
+          },
+          {
+            "key": "D",
+            "text": "To suggest a marketing strategy",
+            "vietnamese": "Để đề xuất chiến lược tiếp thị."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Họ muốn cô ấy thiết kế kiểu dáng mới cho smartwatch: 'create a fresh design that will help our product stand out'."
+      },
+      {
+        "num": 58,
+        "question": "What will the speakers most likely do next?",
+        "vietnameseQuestion": "Những người nói có khả năng cao sẽ làm gì tiếp theo?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Set a release date",
+            "vietnamese": "Ấn định ngày phát hành."
+          },
+          {
+            "key": "B",
+            "text": "Sign a contract",
+            "vietnamese": "Ký kết hợp đồng."
+          },
+          {
+            "key": "C",
+            "text": "Collect customer feedback",
+            "vietnamese": "Thu thập phản hồi khách hàng."
+          },
+          {
+            "key": "D",
+            "text": "Review some drawings",
+            "vietnamese": "Xem qua các bản phác thảo/bản vẽ."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người đàn ông nói 'I have some preliminary sketches we can look at' (Tôi có vài bản phác thảo sơ bộ chúng ta có thể xem qua -> Review some drawings)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "smartwatch",
+        "meaning": "đồng hồ thông minh",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "stand out",
+        "meaning": "nổi bật, tạo khác biệt",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "from scratch",
+        "meaning": "từ đầu, từ con số không",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "preliminary sketch",
+        "meaning": "bản phác thảo sơ bộ",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-59-61",
+    "part": 3,
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 59 - 61",
+    "title": "Part 3 - Câu 59-61: Mua thảm trải sàn cho tiệm làm tóc",
+    "audioSrc": "/audio/cuts/test2/E26-T02-59-61.mp3",
+    "transcript": [
+      {
+        "id": "p3-59-1",
+        "speaker": "W-Am",
+        "text": "Hi. I'd like to purchase some new carpeting. It's for the waiting room at my hair salon.",
+        "vietnamese": "Xin chào. Tôi muốn mua một số thảm trải sàn mới. Thảm này dùng cho phòng chờ tại tiệm làm tóc của tôi."
+      },
+      {
+        "id": "p3-59-2",
+        "speaker": "M-Cn",
+        "text": "We have many different styles. Are you looking for something different?",
+        "vietnamese": "Chúng tôi có nhiều mẫu mã khác nhau. Chị có đang tìm kiếm điều gì khác biệt không?"
+      },
+      {
+        "id": "p3-59-3",
+        "speaker": "W-Am",
+        "text": "Well, we get a lot of customers walking through, and our current carpeting is a light color.",
+        "vietnamese": "À, chúng tôi có rất nhiều khách hàng đi qua lại, và tấm thảm hiện tại của chúng tôi lại có màu sáng."
+      },
+      {
+        "id": "p3-59-4",
+        "speaker": "M-Cn",
+        "text": "No matter what color you get, all our carpets are durable and can take high amounts of foot traffic. For businesses like yours, I recommend placing a protective mat near the door.",
+        "vietnamese": "Bất kể chị chọn màu gì, tất cả thảm của chúng tôi đều rất bền và chịu được lượng người qua lại lớn. Đối với các doanh nghiệp như của chị, tôi khuyên nên đặt một tấm thảm bảo vệ gần cửa ra vào."
+      },
+      {
+        "id": "p3-59-5",
+        "speaker": "W-Am",
+        "text": "That's a good idea.",
+        "vietnamese": "Đó là một ý kiến hay."
+      },
+      {
+        "id": "p3-59-6",
+        "speaker": "M-Cn",
+        "text": "Also, I offer free cleaning services for a year for all purchases.",
+        "vietnamese": "Ngoài ra, tôi còn tặng kèm dịch vụ giặt thảm miễn phí trong vòng một năm cho mọi đơn mua."
+      }
+    ],
+    "questions": [
+      {
+        "num": 59,
+        "question": "What type of business does the woman work in?",
+        "vietnameseQuestion": "Người phụ nữ làm việc trong loại hình kinh doanh nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A hair salon",
+            "vietnamese": "Một tiệm làm tóc."
+          },
+          {
+            "key": "B",
+            "text": "A real estate agency",
+            "vietnamese": "Một văn phòng bất động sản."
+          },
+          {
+            "key": "C",
+            "text": "An interior design firm",
+            "vietnamese": "Một công ty thiết kế nội thất."
+          },
+          {
+            "key": "D",
+            "text": "A car rental company",
+            "vietnamese": "Một công ty cho thuê xe."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người phụ nữ nói thảm mua cho 'waiting room at my hair salon' (phòng chờ tiệm làm tóc)."
+      },
+      {
+        "num": 60,
+        "question": "Why does the woman say, \"our current carpeting is a light color\"?",
+        "vietnameseQuestion": "Tại sao người phụ nữ lại nói: \"thảm hiện tại của chúng tôi có màu sáng\"?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To suggest an expense was not justified",
+            "vietnamese": "Để ngụ ý một khoản chi là không hợp lý."
+          },
+          {
+            "key": "B",
+            "text": "To express surprise about a decision",
+            "vietnamese": "Để bày tỏ sự ngạc nhiên về một quyết định."
+          },
+          {
+            "key": "C",
+            "text": "To describe a problem with an order",
+            "vietnamese": "Để miêu tả một vấn đề với đơn đặt hàng."
+          },
+          {
+            "key": "D",
+            "text": "To indicate the need to make a change",
+            "vietnamese": "Để chỉ ra nhu cầu cần phải thay đổi."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Khách đi lại nhiều mà thảm màu sáng dễ bám bẩn, nên bà ấy nói câu này để bày tỏ nhu cầu đổi sang loại thảm khác/màu khác phù hợp hơn."
+      },
+      {
+        "num": 61,
+        "question": "What does the man's business offer?",
+        "vietnameseQuestion": "Cửa hàng của người đàn ông cung cấp ưu đãi gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A bulk discount",
+            "vietnamese": "Chiết khấu khi mua số lượng lớn."
+          },
+          {
+            "key": "B",
+            "text": "Same-day delivery",
+            "vietnamese": "Giao hàng ngay trong ngày."
+          },
+          {
+            "key": "C",
+            "text": "Free cleaning services",
+            "vietnamese": "Dịch vụ vệ sinh/giặt miễn phí."
+          },
+          {
+            "key": "D",
+            "text": "Monthly inspections",
+            "vietnamese": "Kiểm tra định kỳ hàng tháng."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người đàn ông nói 'I offer free cleaning services for a year for all purchases' (miễn phí dịch vụ vệ sinh trong một năm)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "carpeting",
+        "meaning": "thảm trải sàn",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "durable",
+        "meaning": "bền bỉ, lâu hỏng",
+        "partOfSpeech": "adj"
+      },
+      {
+        "word": "foot traffic",
+        "meaning": "lượng người đi bộ qua lại",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part3-62-64",
+    "part": 3,
+    "imageUrl": "/images/intensive/test2/q62_64.png",
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 62 - 64",
+    "title": "Part 3 - Câu 62-64: Mua cà phê và tin tức về đồng nghiệp nghỉ hưu",
+    "audioSrc": "/audio/cuts/test2/E26-T02-62-64.mp3",
+    "transcript": [
+      {
+        "id": "p3-62-1",
+        "speaker": "M-Au",
+        "text": "I really need this coffee break. My morning meeting with my client was really challenging.",
+        "vietnamese": "Tôi thực sự cần giờ giải lao uống cà phê này. Cuộc họp buổi sáng với khách hàng của tôi thực sự rất căng thẳng."
+      },
+      {
+        "id": "p3-62-2",
+        "speaker": "W-Br",
+        "text": "What were you discussing?",
+        "vietnamese": "Hai người đã thảo luận điều gì vậy?"
+      },
+      {
+        "id": "p3-62-3",
+        "speaker": "M-Au",
+        "text": "The project schedule. They asked us to provide the prototype design to them three weeks earlier than originally planned.",
+        "vietnamese": "Tiến độ dự án. Họ yêu cầu chúng ta cung cấp bản thiết kế mẫu thử nghiệm cho họ sớm hơn ba tuần so với kế hoạch ban đầu."
+      },
+      {
+        "id": "p3-62-4",
+        "speaker": "W-Br",
+        "text": "Well, then today's cup is my treat. Which one would you like?",
+        "vietnamese": "Ồ, vậy thì cốc cà phê hôm nay là tôi đãi. Anh muốn uống loại nào?"
+      },
+      {
+        "id": "p3-62-5",
+        "speaker": "M-Au",
+        "text": "That's so nice of you! I'll go with the White Cloud Coffee. I like a little milk in mine.",
+        "vietnamese": "Chị thật tốt bụng! Tôi sẽ chọn món cà phê White Cloud. Tôi thích có một chút sữa trong cà phê của mình."
+      },
+      {
+        "id": "p3-62-6",
+        "speaker": "W-Br",
+        "text": "Good choice. So, I have some news to share with you. Did you hear about David?",
+        "vietnamese": "Lựa chọn tuyệt đấy. À, tôi có vài tin tức muốn chia sẻ với anh. Anh đã nghe tin gì về David chưa?"
+      },
+      {
+        "id": "p3-62-7",
+        "speaker": "M-Au",
+        "text": "No, what's going on?",
+        "vietnamese": "Chưa, có chuyện gì thế?"
+      },
+      {
+        "id": "p3-62-8",
+        "speaker": "W-Br",
+        "text": "Apparently, he's planning to retire next month.",
+        "vietnamese": "Nghe nói anh ấy dự định nghỉ hưu vào tháng sau rồi."
+      }
+    ],
+    "questions": [
+      {
+        "num": 62,
+        "question": "What did the man's client request?",
+        "vietnameseQuestion": "Khách hàng của người đàn ông đã yêu cầu điều gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A large shipment",
+            "vietnamese": "Một lô hàng lớn."
+          },
+          {
+            "key": "B",
+            "text": "A shortened timeline",
+            "vietnamese": "Rút ngắn thời gian tiến độ."
+          },
+          {
+            "key": "C",
+            "text": "A change in design",
+            "vietnamese": "Một sự thay đổi trong thiết kế."
+          },
+          {
+            "key": "D",
+            "text": "A more expensive material",
+            "vietnamese": "Một vật liệu đắt tiền hơn."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Khách hàng yêu cầu giao bản thiết kế mẫu sớm hơn 3 tuần ('three weeks earlier than originally planned' -> A shortened timeline)."
+      },
+      {
+        "num": 63,
+        "question": "Look at the graphic. How much does the man's coffee cost?",
+        "vietnameseQuestion": "Nhìn vào hình ảnh. Cốc cà phê của người đàn ông có giá bao nhiêu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "$2.00",
+            "vietnamese": "2.00 đô la."
+          },
+          {
+            "key": "B",
+            "text": "$3.25",
+            "vietnamese": "3.25 đô la."
+          },
+          {
+            "key": "C",
+            "text": "$3.75",
+            "vietnamese": "3.75 đô la."
+          },
+          {
+            "key": "D",
+            "text": "$4.25",
+            "vietnamese": "4.25 đô la."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người đàn ông chọn 'White Cloud Coffee'. Đối chiếu menu hình ảnh, White Cloud Coffee có giá là $3.75."
+      },
+      {
+        "num": 64,
+        "question": "What does the woman say about David?",
+        "vietnameseQuestion": "Người phụ nữ nói gì về David?",
+        "options": [
+          {
+            "key": "A",
+            "text": "He is retiring.",
+            "vietnamese": "Anh ấy chuẩn bị nghỉ hưu."
+          },
+          {
+            "key": "B",
+            "text": "He is organizing a party.",
+            "vietnamese": "Anh ấy đang tổ chức một bữa tiệc."
+          },
+          {
+            "key": "C",
+            "text": "He is on vacation.",
+            "vietnamese": "Anh ấy đang đi nghỉ mát."
+          },
+          {
+            "key": "D",
+            "text": "He accepted another position.",
+            "vietnamese": "Anh ấy đã nhận một vị trí công tác khác."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người phụ nữ nói 'he's planning to retire next month' (anh ấy định nghỉ hưu vào tháng tới)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "prototype",
+        "meaning": "nguyên mẫu, sản phẩm mẫu thử",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "treat",
+        "meaning": "sự thết đãi, bao chầu",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "retire",
+        "meaning": "nghỉ hưu",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part3-65-67",
+    "part": 3,
+    "imageUrl": "/images/intensive/test2/q65_67.png",
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 65 - 67",
+    "title": "Part 3 - Câu 65-67: Đặt lịch lắp lưới chống muỗi cửa sổ",
+    "audioSrc": "/audio/cuts/test2/E26-T02-65-67.mp3",
+    "transcript": [
+      {
+        "id": "p3-65-1",
+        "speaker": "M-Au",
+        "text": "This is Bradley from Windows Galore. How can I help you?",
+        "vietnamese": "Tôi là Bradley từ công ty Windows Galore đây ạ. Tôi có thể giúp gì cho chị?"
+      },
+      {
+        "id": "p3-65-2",
+        "speaker": "W-Am",
+        "text": "Hello! I'd like to have screens added to my windows at home. I was wondering if you would be available to stop by and take a look. I live at 42 West Third Street, by the way.",
+        "vietnamese": "Xin chào! Tôi muốn lắp thêm lưới chắn vào các cửa sổ ở nhà tôi. Không biết anh có thể ghé qua khảo sát xem được không. Nhân tiện, tôi sống ở số 42 phố West Third."
+      },
+      {
+        "id": "p3-65-3",
+        "speaker": "M-Au",
+        "text": "OK—that's not far. Let me see. I could come any morning this week.",
+        "vietnamese": "Được rồi—chỗ đó không xa. Để tôi xem nào. Tôi có thể đến vào bất kỳ buổi sáng nào trong tuần này."
+      },
+      {
+        "id": "p3-65-4",
+        "speaker": "W-Am",
+        "text": "How about in the afternoon?",
+        "vietnamese": "Thế còn vào buổi chiều thì sao?"
+      },
+      {
+        "id": "p3-65-5",
+        "speaker": "M-Au",
+        "text": "Hmm. I could reschedule my Tuesday afternoon appointment. I'll check and get back to you—I have your number now. And your name is?",
+        "vietnamese": "Hmm. Tôi có thể dời lại cuộc hẹn vào chiều thứ Ba của mình. Tôi sẽ kiểm tra lại và liên hệ lại với chị—tôi đã có số điện thoại của chị rồi. Tên của chị là gì ạ?"
+      },
+      {
+        "id": "p3-65-6",
+        "speaker": "W-Am",
+        "text": "Hoffman—Claudia Hoffman. Thank you. Talk to you soon.",
+        "vietnamese": "Hoffman—Claudia Hoffman. Cảm ơn anh. Nói chuyện với anh sau nhé."
+      }
+    ],
+    "questions": [
+      {
+        "num": 65,
+        "question": "What does the man most likely do?",
+        "vietnameseQuestion": "Người đàn ông có khả năng cao làm công việc gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Install windows",
+            "vietnamese": "Lắp đặt cửa sổ."
+          },
+          {
+            "key": "B",
+            "text": "Repair roofs",
+            "vietnamese": "Sửa chữa mái nhà."
+          },
+          {
+            "key": "C",
+            "text": "Remove trees",
+            "vietnamese": "Chặt tỉa cây xanh."
+          },
+          {
+            "key": "D",
+            "text": "Plant gardens",
+            "vietnamese": "Trồng vườn cây."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông đến từ công ty 'Windows Galore' và người phụ nữ gọi nhờ lắp lưới vào cửa sổ nhà mình ('screens added to my windows') -> Install windows."
+      },
+      {
+        "num": 66,
+        "question": "What does the woman provide?",
+        "vietnameseQuestion": "Người phụ nữ cung cấp thông tin gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A floor layout",
+            "vietnamese": "Sơ đồ mặt bằng sàn."
+          },
+          {
+            "key": "B",
+            "text": "An address",
+            "vietnamese": "Một địa chỉ nhà."
+          },
+          {
+            "key": "C",
+            "text": "A form of payment",
+            "vietnamese": "Hình thức thanh toán."
+          },
+          {
+            "key": "D",
+            "text": "Proof of insurance",
+            "vietnamese": "Bằng chứng bảo hiểm."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người phụ nữ nói 'I live at 42 West Third Street' (cung cấp địa chỉ nhà của mình)."
+      },
+      {
+        "num": 67,
+        "question": "Look at the graphic. Which appointment will the man try to reschedule?",
+        "vietnameseQuestion": "Nhìn vào hình ảnh. Người đàn ông sẽ cố gắng dời lại cuộc hẹn nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "The inspector's visit",
+            "vietnamese": "Chuyến thăm của thanh tra viên."
+          },
+          {
+            "key": "B",
+            "text": "The bank loan meeting",
+            "vietnamese": "Cuộc họp vay vốn ngân hàng."
+          },
+          {
+            "key": "C",
+            "text": "The dental cleaning",
+            "vietnamese": "Lấy cao răng tại nha khoa."
+          },
+          {
+            "key": "D",
+            "text": "The café project",
+            "vietnamese": "Dự án quán cà phê."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người đàn ông nói 'I could reschedule my Tuesday afternoon appointment'. Nhìn bảng lịch trình 'Tuesday (2-5 P.M.)', đó là 'Inspector's visit'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "screen",
+        "meaning": "lưới chắn cửa sổ, màng chắn",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "stop by",
+        "meaning": "ghé qua, tạt qua",
+        "partOfSpeech": "phr v"
+      },
+      {
+        "word": "reschedule",
+        "meaning": "dời lịch, sắp xếp lại lịch hẹn",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part3-68-70",
+    "part": 3,
+    "imageUrl": "/images/intensive/test2/q68_70.png",
+    "partTitle": "Part 3: Đoạn hội thoại",
+    "questionRange": "Câu 68 - 70",
+    "title": "Part 3 - Câu 68-70: Chuẩn bị tham dự hội nghị robot và danh thiếp",
+    "audioSrc": "/audio/cuts/test2/E26-T02-68-70.mp3",
+    "transcript": [
+      {
+        "id": "p3-68-1",
+        "speaker": "M-Au",
+        "text": "Ms. Kwon, thank you for sending me to the upcoming robotics conference. I didn't expect an opportunity like this so soon after being hired here.",
+        "vietnamese": "Chị Kwon, cảm ơn chị đã cử tôi tham dự hội nghị robot sắp tới. Tôi không ngờ mình lại có được cơ hội như thế này sớm như vậy ngay sau khi vừa được tuyển vào đây."
+      },
+      {
+        "id": "p3-68-2",
+        "speaker": "W-Br",
+        "text": "It's important for you to be familiar with current robot designs. There are always new trends and technologies coming out, and I want you to stay ahead of developments in our industry.",
+        "vietnamese": "Điều quan trọng là anh phải làm quen với các thiết kế robot hiện nay. Luôn có những xu hướng và công nghệ mới xuất hiện, và tôi muốn anh đón đầu các bước phát triển trong ngành của chúng ta."
+      },
+      {
+        "id": "p3-68-3",
+        "speaker": "M-Au",
+        "text": "I agree. Plus, it'll give me the chance to introduce myself to potential clients.",
+        "vietnamese": "Tôi đồng ý. Hơn nữa, nó sẽ cho tôi cơ hội tự giới thiệu bản thân với các khách hàng tiềm năng."
+      },
+      {
+        "id": "p3-68-4",
+        "speaker": "W-Br",
+        "text": "Oh, about that: here's a handout I provide to all new hires. It includes some helpful tips—especially this one. Do you have your business cards yet?",
+        "vietnamese": "Ồ, về việc đó: đây là tài liệu phát tay tôi dành cho tất cả nhân viên mới. Trong đó có một số mẹo hữu ích—đặc biệt là mẹo này. Anh đã có danh thiếp của mình chưa?"
+      },
+      {
+        "id": "p3-68-5",
+        "speaker": "M-Au",
+        "text": "Hmm. I haven't received them, but I'll call the printer today for an update.",
+        "vietnamese": "Hmm. Tôi vẫn chưa nhận được chúng, nhưng hôm nay tôi sẽ gọi cho nhà in để cập nhật tình hình."
+      }
+    ],
+    "questions": [
+      {
+        "num": 68,
+        "question": "What industry do the speakers most likely work in?",
+        "vietnameseQuestion": "Những người nói có khả năng cao làm việc trong ngành nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Legal",
+            "vietnamese": "Pháp lý."
+          },
+          {
+            "key": "B",
+            "text": "Construction",
+            "vietnamese": "Xây dựng."
+          },
+          {
+            "key": "C",
+            "text": "Agriculture",
+            "vietnamese": "Nông nghiệp."
+          },
+          {
+            "key": "D",
+            "text": "Robotics",
+            "vietnamese": "Chế tạo robot."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Họ nhắc đến 'robotics conference' và 'current robot designs' nên ngành nghề là Robotics."
+      },
+      {
+        "num": 69,
+        "question": "Why does the woman want the man to attend a conference?",
+        "vietnameseQuestion": "Tại sao người phụ nữ muốn người đàn ông tham dự hội nghị?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To learn more about the latest industry trends",
+            "vietnamese": "Để tìm hiểu thêm về các xu hướng mới nhất trong ngành."
+          },
+          {
+            "key": "B",
+            "text": "To accept a reward on behalf of the company",
+            "vietnamese": "Để thay mặt công ty nhận một phần thưởng."
+          },
+          {
+            "key": "C",
+            "text": "To host a panel discussion",
+            "vietnamese": "Để chủ trì một phiên thảo luận bàn tròn."
+          },
+          {
+            "key": "D",
+            "text": "To screen job candidates",
+            "vietnamese": "Để sàng lọc các ứng viên xin việc."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người phụ nữ nói 'It's important for you to be familiar with current robot designs... stay ahead of developments' -> To learn more about the latest industry trends."
+      },
+      {
+        "num": 70,
+        "question": "Look at the graphic. Which tip does the woman point out?",
+        "vietnameseQuestion": "Nhìn vào hình ảnh. Người phụ nữ chỉ ra mẹo nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Tip 1",
+            "vietnamese": "Mẹo 1."
+          },
+          {
+            "key": "B",
+            "text": "Tip 2",
+            "vietnamese": "Mẹo 2."
+          },
+          {
+            "key": "C",
+            "text": "Tip 3",
+            "vietnamese": "Mẹo 3."
+          },
+          {
+            "key": "D",
+            "text": "Tip 4",
+            "vietnamese": "Mẹo 4."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người phụ nữ hỏi 'Do you have your business cards yet?'. Đối chiếu hình ảnh, Tip 4 là 'Provide a business card'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "robotics",
+        "meaning": "ngành chế tạo robot",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "handout",
+        "meaning": "tài liệu phát tay",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "business card",
+        "meaning": "danh thiếp, card visit",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-71-73",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 71 - 73",
+    "title": "Part 4 - Câu 71-73: Thông báo tại xưởng sửa xe ô tô",
+    "audioSrc": "/audio/cuts/test2/E26-T02-71-73.mp3",
+    "transcript": [
+      {
+        "id": "p4-71-1",
+        "speaker": "M-Cn",
+        "text": "Crew, please stop working on that truck repair for a second. Many of you complained about how slow and hard it is to use the car lift, so I purchased a new one and it was delivered this morning!",
+        "vietnamese": "Các anh em trong đội, xin hãy tạm dừng công việc sửa xe tải một lát. Nhiều người trong số các bạn đã phàn nàn về việc kích nâng xe ô tô dùng vừa chậm vừa khó, nên tôi đã mua một chiếc mới và nó đã được giao tới vào sáng nay!"
+      },
+      {
+        "id": "p4-71-2",
+        "speaker": "M-Cn",
+        "text": "It can lift much heavier vehicles, and it's faster. The only problem is we're missing the bottles of hydraulic fluid that were supposed to be included in the shipment. So, we're stuck using the old car lift for a few more days.",
+        "vietnamese": "Nó có thể nâng các phương tiện nặng hơn nhiều, và tốc độ nhanh hơn. Vấn đề duy nhất là chúng ta bị thiếu các chai dầu thủy lực đáng lẽ phải đi kèm trong lô hàng. Vì vậy, chúng ta đành phải tiếp tục dùng kích nâng xe cũ thêm vài ngày nữa."
+      },
+      {
+        "id": "p4-71-3",
+        "speaker": "M-Cn",
+        "text": "Oh, and one more thing—when talking to customers, please remember to mention that we're now offering a discount on oil changes if they schedule a vehicle inspection with us.",
+        "vietnamese": "Ồ, và còn một điều nữa—khi nói chuyện với khách hàng, xin hãy nhớ nhắc rằng hiện chúng ta đang giảm giá dịch vụ thay dầu nếu họ đặt lịch kiểm định xe với chúng ta."
+      }
+    ],
+    "questions": [
+      {
+        "num": 71,
+        "question": "Where do the listeners most likely work?",
+        "vietnameseQuestion": "Những người nghe có khả năng cao làm việc ở đâu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "At a taxi service",
+            "vietnamese": "Tại một dịch vụ taxi."
+          },
+          {
+            "key": "B",
+            "text": "At a car repair shop",
+            "vietnamese": "Tại một xưởng sửa chữa xe ô tô."
+          },
+          {
+            "key": "C",
+            "text": "At a shipping company",
+            "vietnamese": "Tại một công ty vận chuyển."
+          },
+          {
+            "key": "D",
+            "text": "At a driving school",
+            "vietnamese": "Tại một trường dạy lái xe."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người nói nhắc đến 'truck repair', 'car lift', 'vehicle inspection' nên đây là xưởng sửa xe (car repair shop)."
+      },
+      {
+        "num": 72,
+        "question": "What problem does the speaker mention?",
+        "vietnameseQuestion": "Người nói đề cập đến vấn đề gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A training manual should be updated.",
+            "vietnamese": "Cần cập nhật sổ tay đào tạo."
+          },
+          {
+            "key": "B",
+            "text": "An invoice was incorrect.",
+            "vietnamese": "Hóa đơn bị sai."
+          },
+          {
+            "key": "C",
+            "text": "Frequent maintenance is required.",
+            "vietnamese": "Cần bảo trì thường xuyên."
+          },
+          {
+            "key": "D",
+            "text": "Some supplies are missing.",
+            "vietnamese": "Một số đồ tiếp tế/vật tư bị thiếu."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người nói nêu vấn đề: 'we're missing the bottles of hydraulic fluid' (bị thiếu các chai dầu thủy lực)."
+      },
+      {
+        "num": 73,
+        "question": "What should the listeners remind customers about?",
+        "vietnameseQuestion": "Những người nghe nên nhắc khách hàng về điều gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Some schedule changes",
+            "vietnamese": "Một số thay đổi lịch trình."
+          },
+          {
+            "key": "B",
+            "text": "An online survey",
+            "vietnamese": "Một khảo sát trực tuyến."
+          },
+          {
+            "key": "C",
+            "text": "A promotional offer",
+            "vietnamese": "Một chương trình ưu đãi khuyến mãi."
+          },
+          {
+            "key": "D",
+            "text": "A safety policy",
+            "vietnamese": "Một chính sách an toàn."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người nói dặn nhắc khách về ưu đãi giảm giá thay dầu khi đặt lịch kiểm định: 'offering a discount on oil changes' -> A promotional offer."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "car lift",
+        "meaning": "cầu nâng, kích nâng ô tô",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "hydraulic fluid",
+        "meaning": "dầu thủy lực",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "vehicle inspection",
+        "meaning": "kiểm định phương tiện xe cộ",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-74-76",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 74 - 76",
+    "title": "Part 4 - Câu 74-76: Doanh số nội thất văn phòng và hoạt động từ thiện",
+    "audioSrc": "/audio/cuts/test2/E26-T02-74-76.mp3",
+    "transcript": [
+      {
+        "id": "p4-74-1",
+        "speaker": "W-Br",
+        "text": "As you know, we've had an extremely successful fourth quarter selling desks and chairs to our corporate clients on the West Coast.",
+        "vietnamese": "Như các bạn đã biết, chúng ta đã có một quý bốn cực kỳ thành công khi bán bàn ghế cho các khách hàng doanh nghiệp ở Bờ Tây."
+      },
+      {
+        "id": "p4-74-2",
+        "speaker": "W-Br",
+        "text": "In fact, we've done so well that we're planning to give ten percent of this month's profits to a local charity in December. They have a great reputation for teaching computer skills to children for free.",
+        "vietnamese": "Thực tế, chúng ta làm tốt đến mức đang lên kế hoạch quyên góp mười phần trăm lợi nhuận tháng này cho một quỹ từ thiện địa phương vào tháng Mười Hai. Họ rất có uy tín trong việc dạy kỹ năng máy tính miễn phí cho trẻ em."
+      },
+      {
+        "id": "p4-74-3",
+        "speaker": "W-Br",
+        "text": "If you'd like to see a video clip of our CEO talking about this initiative, just visit our social media site.",
+        "vietnamese": "Nếu các bạn muốn xem video clip Tổng giám đốc nói về sáng kiến này, chỉ cần truy cập trang mạng xã hội của chúng ta."
+      }
+    ],
+    "questions": [
+      {
+        "num": 74,
+        "question": "What does the company sell?",
+        "vietnameseQuestion": "Công ty bán sản phẩm gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Office furniture",
+            "vietnamese": "Đồ nội thất văn phòng."
+          },
+          {
+            "key": "B",
+            "text": "Kitchen appliances",
+            "vietnamese": "Thiết bị nhà bếp."
+          },
+          {
+            "key": "C",
+            "text": "Garden tools",
+            "vietnamese": "Dụng cụ làm vườn."
+          },
+          {
+            "key": "D",
+            "text": "Tablet computers",
+            "vietnamese": "Máy tính bảng."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Công ty bán bàn ghế cho khách hàng doanh nghiệp ('selling desks and chairs to our corporate clients' -> Office furniture)."
+      },
+      {
+        "num": 75,
+        "question": "What does the speaker say will happen in December?",
+        "vietnameseQuestion": "Người nói cho biết điều gì sẽ diễn ra vào tháng Mười Hai?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A promotional sale will begin.",
+            "vietnamese": "Một đợt bán hàng khuyến mãi sẽ bắt đầu."
+          },
+          {
+            "key": "B",
+            "text": "Special equipment will be delivered.",
+            "vietnamese": "Thiết bị đặc biệt sẽ được giao."
+          },
+          {
+            "key": "C",
+            "text": "Some temporary staff will be hired.",
+            "vietnamese": "Một số nhân viên tạm thời sẽ được tuyển dụng."
+          },
+          {
+            "key": "D",
+            "text": "Some profits will be donated to a charity.",
+            "vietnamese": "Một phần lợi nhuận sẽ được quyên góp cho tổ chức từ thiện."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Công ty dự định trích 10% lợi nhuận tháng này cho tổ chức từ thiện: 'give ten percent of this month's profits to a local charity in December'."
+      },
+      {
+        "num": 76,
+        "question": "According to the speaker, what can the listeners find on a social media site?",
+        "vietnameseQuestion": "Theo người nói, người nghe có thể tìm thấy gì trên trang mạng xã hội?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A manual",
+            "vietnamese": "Một cuốn sổ tay hướng dẫn."
+          },
+          {
+            "key": "B",
+            "text": "A video",
+            "vietnamese": "Một đoạn video."
+          },
+          {
+            "key": "C",
+            "text": "Some photographs",
+            "vietnamese": "Một số bức ảnh."
+          },
+          {
+            "key": "D",
+            "text": "A price list",
+            "vietnamese": "Một bảng giá."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người nói nhắc 'visit our social media site' để xem 'a video clip of our CEO talking about this initiative'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "corporate client",
+        "meaning": "khách hàng doanh nghiệp",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "profit",
+        "meaning": "lợi nhuận",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "initiative",
+        "meaning": "sáng kiến, chương trình mới",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-77-79",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 77 - 79",
+    "title": "Part 4 - Câu 77-79: Ứng dụng công nghệ để gây quỹ từ thiện",
+    "audioSrc": "/audio/cuts/test2/E26-T02-77-79.mp3",
+    "transcript": [
+      {
+        "id": "p4-77-1",
+        "speaker": "M-Au",
+        "text": "Welcome to Impact Unlocked, the podcast for businesses wanting to streamline their operations with new technology. In today's episode, I'll talk about how to raise money by leveraging social media applications to get donations.",
+        "vietnamese": "Chào mừng các bạn đến với Impact Unlocked, kênh podcast dành cho các doanh nghiệp muốn tinh gọn hoạt động bằng công nghệ mới. Trong tập ngày hôm nay, tôi sẽ chia sẻ về cách gây quỹ bằng cách tận dụng các ứng dụng mạng xã hội để thu hút quyên góp."
+      },
+      {
+        "id": "p4-77-2",
+        "speaker": "M-Au",
+        "text": "I could focus on specific applications, but these things are constantly changing. Instead, I'll speak generally about how these types of applications can help you connect with potential donors.",
+        "vietnamese": "Tôi có thể tập trung vào các ứng dụng cụ thể, nhưng những thứ này luôn luôn biến đổi không ngừng. Thay vào đó, tôi sẽ nói khái quát về cách các loại ứng dụng này có thể giúp bạn kết nối với những nhà hảo tâm tiềm năng."
+      },
+      {
+        "id": "p4-77-3",
+        "speaker": "M-Au",
+        "text": "Some organizations keep using the same familiar fund-raising strategies. I see this often, but it's important to also incorporate the latest approaches.",
+        "vietnamese": "Một số tổ chức vẫn tiếp tục sử dụng các chiến lược gây quỹ quen thuộc bấy lâu nay. Tôi thấy điều này rất thường xuyên, nhưng điều quan trọng là cũng phải kết hợp các phương pháp tiếp cận mới nhất."
+      }
+    ],
+    "questions": [
+      {
+        "num": 77,
+        "question": "What is the episode mainly about?",
+        "vietnameseQuestion": "Tập phát sóng chủ yếu nói về nội dung gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Hiring",
+            "vietnamese": "Tuyển dụng."
+          },
+          {
+            "key": "B",
+            "text": "Accounting",
+            "vietnamese": "Kế toán."
+          },
+          {
+            "key": "C",
+            "text": "Fund-raising",
+            "vietnamese": "Gây quỹ từ thiện."
+          },
+          {
+            "key": "D",
+            "text": "Publishing",
+            "vietnamese": "Xuất bản."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Chủ đề của tập podcast là 'how to raise money by leveraging social media applications to get donations' (gây quỹ - Fund-raising)."
+      },
+      {
+        "num": 78,
+        "question": "What does the speaker mean when he says, \"these things are constantly changing\"?",
+        "vietnameseQuestion": "Người nói có ý gì khi nói \"những điều này luôn thay đổi liên tục\"?",
+        "options": [
+          {
+            "key": "A",
+            "text": "He recommends professional development courses.",
+            "vietnamese": "Anh ấy khuyến nghị các khóa bồi dưỡng nghiệp vụ."
+          },
+          {
+            "key": "B",
+            "text": "He questions the value of an investment.",
+            "vietnamese": "Anh ấy nghi ngờ giá trị của một khoản đầu tư."
+          },
+          {
+            "key": "C",
+            "text": "Some information will be excluded.",
+            "vietnamese": "Một số thông tin cụ thể sẽ được lược bỏ."
+          },
+          {
+            "key": "D",
+            "text": "Using technology is important.",
+            "vietnamese": "Việc sử dụng công nghệ là quan trọng."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Vì các app đổi liên tục nên người nói quyết định không đi sâu vào từng app cụ thể ('Instead, I'll speak generally...') -> Một số chi tiết cụ thể sẽ bị lược bớt."
+      },
+      {
+        "num": 79,
+        "question": "What does the speaker say is important for organizations to do?",
+        "vietnameseQuestion": "Người nói cho rằng các tổ chức cần làm điều quan trọng gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Be leaders in their industries",
+            "vietnamese": "Trở thành người dẫn đầu trong ngành."
+          },
+          {
+            "key": "B",
+            "text": "Establish successful advertising methods",
+            "vietnamese": "Thiết lập phương pháp quảng cáo thành công."
+          },
+          {
+            "key": "C",
+            "text": "Collect community feedback",
+            "vietnamese": "Thu thập phản hồi từ cộng đồng."
+          },
+          {
+            "key": "D",
+            "text": "Use familiar and current strategies",
+            "vietnamese": "Sử dụng cả chiến lược quen thuộc lẫn chiến lược hiện đại."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người nói khuyên nên kết hợp cả chiến lược cũ quen thuộc lẫn các cách tiếp cận mới: 'incorporate the latest approaches' cùng với 'familiar fund-raising strategies'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "streamline",
+        "meaning": "tinh gọn, tối ưu hóa",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "leverage",
+        "meaning": "tận dụng, đòn bẩy",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "donor",
+        "meaning": "nhà hảo tâm, người quyên góp",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "incorporate",
+        "meaning": "kết hợp, sáp nhập",
+        "partOfSpeech": "v"
+      }
+    ]
+  },
+  {
+    "id": "part4-80-82",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 80 - 82",
+    "title": "Part 4 - Câu 80-82: Thưởng doanh số kỷ lục và chính sách làm việc từ xa",
+    "audioSrc": "/audio/cuts/test2/E26-T02-80-82.mp3",
+    "transcript": [
+      {
+        "id": "p4-80-1",
+        "speaker": "W-Am",
+        "text": "As the company president, I'm excited to share that we've sold a record number of home appliances for two years in a row, and I'd like to reward your hard work.",
+        "vietnamese": "Với tư cách là chủ tịch công ty, tôi rất vui mừng thông báo rằng chúng ta đã bán được số lượng thiết bị gia dụng kỷ lục trong hai năm liên tiếp, và tôi muốn khen thưởng sự nỗ lực làm việc của các bạn."
+      },
+      {
+        "id": "p4-80-2",
+        "speaker": "W-Am",
+        "text": "First, everyone will be eligible for a one-time monetary bonus. Your supervisor will speak with you about how it'll be calculated and when you'll receive it.",
+        "vietnamese": "Đầu tiên, tất cả mọi người sẽ đủ điều kiện nhận một khoản tiền thưởng một lần. Người giám sát của bạn sẽ trao đổi về cách tính và thời gian bạn sẽ nhận được khoản tiền đó."
+      },
+      {
+        "id": "p4-80-3",
+        "speaker": "W-Am",
+        "text": "Also, I'd like to offer more flexibility in your schedule, so all employees will be permitted to work remotely twice a week. You'll just need to note those days on your calendar, so everyone knows where you are.",
+        "vietnamese": "Ngoài ra, tôi muốn mang lại sự linh hoạt hơn trong lịch trình làm việc của các bạn, vì vậy tất cả nhân viên sẽ được phép làm việc từ xa hai lần một tuần. Bạn chỉ cần ghi chú những ngày đó trên lịch để mọi người biết bạn đang ở đâu."
+      }
+    ],
+    "questions": [
+      {
+        "num": 80,
+        "question": "What does the speaker say the company sells?",
+        "vietnameseQuestion": "Người nói cho biết công ty bán sản phẩm gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Home appliances",
+            "vietnamese": "Thiết bị gia dụng."
+          },
+          {
+            "key": "B",
+            "text": "Office supplies",
+            "vietnamese": "Đồ dùng văn phòng."
+          },
+          {
+            "key": "C",
+            "text": "Sporting goods",
+            "vietnamese": "Đồ dùng thể thao."
+          },
+          {
+            "key": "D",
+            "text": "Entertainment systems",
+            "vietnamese": "Hệ thống giải trí."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Chủ tịch công ty thông báo 'we've sold a record number of home appliances'."
+      },
+      {
+        "num": 81,
+        "question": "What will the listeners discuss with their supervisors?",
+        "vietnameseQuestion": "Người nghe sẽ thảo luận điều gì với người giám sát của mình?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A new sales goal",
+            "vietnamese": "Mục tiêu bán hàng mới."
+          },
+          {
+            "key": "B",
+            "text": "Training opportunities",
+            "vietnamese": "Các cơ hội đào tạo."
+          },
+          {
+            "key": "C",
+            "text": "A financial bonus",
+            "vietnamese": "Một khoản tiền thưởng."
+          },
+          {
+            "key": "D",
+            "text": "Increasing efficiency",
+            "vietnamese": "Tăng hiệu suất làm việc."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Mọi người được nhận 'monetary bonus' (tiền thưởng) và người giám sát sẽ giải thích cách tính."
+      },
+      {
+        "num": 82,
+        "question": "How will the company offer more flexibility?",
+        "vietnameseQuestion": "Công ty sẽ mang lại sự linh hoạt hơn bằng cách nào?",
+        "options": [
+          {
+            "key": "A",
+            "text": "By introducing shared workspaces",
+            "vietnamese": "Bằng việc triển khai không gian làm việc chung."
+          },
+          {
+            "key": "B",
+            "text": "By allowing employees to switch assignments",
+            "vietnamese": "Bằng cách cho phép nhân viên đổi nhiệm vụ."
+          },
+          {
+            "key": "C",
+            "text": "By permitting remote work",
+            "vietnamese": "Bằng việc cho phép làm việc từ xa."
+          },
+          {
+            "key": "D",
+            "text": "By increasing vacation time",
+            "vietnamese": "Bằng cách tăng thời gian nghỉ phép."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Chủ tịch cho phép nhân viên 'work remotely twice a week' (làm việc từ xa 2 ngày mỗi tuần)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "in a row",
+        "meaning": "liên tiếp",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "monetary bonus",
+        "meaning": "khoản tiền thưởng bằng tiền mặt",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "work remotely",
+        "meaning": "làm việc từ xa (tại nhà)",
+        "partOfSpeech": "phrase"
+      }
+    ]
+  },
+  {
+    "id": "part4-83-85",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 83 - 85",
+    "title": "Part 4 - Câu 83-85: Phổ biến chính sách tuyển dụng mới của công ty",
+    "audioSrc": "/audio/cuts/test2/E26-T02-83-85.mp3",
+    "transcript": [
+      {
+        "id": "p4-83-1",
+        "speaker": "M-Cn",
+        "text": "I called this meeting today because I wanted to talk about changes to how our company hires new employees. It came to my attention that some people were confused when reading about these new hiring policies in the latest company newsletter.",
+        "vietnamese": "Tôi triệu tập cuộc họp hôm nay vì muốn thảo luận về những thay đổi trong cách công ty chúng ta tuyển dụng nhân viên mới. Tôi nhận thấy rằng một số người đã bối rối khi đọc về các chính sách tuyển dụng mới này trong bản tin công ty gần đây nhất."
+      },
+      {
+        "id": "p4-83-2",
+        "speaker": "M-Cn",
+        "text": "I posted a link in the meeting invitation to this information, and I asked you to bring your laptops so that you can follow along on your own screen.",
+        "vietnamese": "Tôi đã đính kèm một liên kết dẫn đến thông tin này trong thư mời họp, và tôi đã yêu cầu các bạn mang theo máy tính xách tay để có thể tiện theo dõi trên màn hình của mình."
+      },
+      {
+        "id": "p4-83-3",
+        "speaker": "M-Cn",
+        "text": "After we review the policies, you can see Sumit in the back of the room if you'd like a printed copy. He has several of them.",
+        "vietnamese": "Sau khi chúng ta xem xét xong các chính sách, bạn có thể gặp Sumit ở cuối phòng nếu muốn nhận một bản in. Anh ấy có giữ một số bản in ở đó."
+      }
+    ],
+    "questions": [
+      {
+        "num": 83,
+        "question": "What is the purpose of the meeting?",
+        "vietnameseQuestion": "Mục đích của cuộc họp là gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To evaluate vendor contracts",
+            "vietnamese": "Để đánh giá hợp đồng nhà cung cấp."
+          },
+          {
+            "key": "B",
+            "text": "To review hiring policies",
+            "vietnamese": "Để xem xét/phổ biến chính sách tuyển dụng."
+          },
+          {
+            "key": "C",
+            "text": "To revise budget proposals",
+            "vietnamese": "Để chỉnh sửa các đề xuất ngân sách."
+          },
+          {
+            "key": "D",
+            "text": "To assess editing software",
+            "vietnamese": "Để đánh giá phần mềm chỉnh sửa."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Cuộc họp được triệu tập để nói về 'changes to how our company hires new employees' (chính sách tuyển dụng nhân sự mới)."
+      },
+      {
+        "num": 84,
+        "question": "What did the speaker ask the listeners to bring to the meeting?",
+        "vietnameseQuestion": "Người nói đã yêu cầu người nghe mang gì đến cuộc họp?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A list of concerns",
+            "vietnamese": "Một danh sách thắc mắc."
+          },
+          {
+            "key": "B",
+            "text": "A completed survey",
+            "vietnamese": "Một bản khảo sát đã hoàn thành."
+          },
+          {
+            "key": "C",
+            "text": "A project timeline",
+            "vietnamese": "Tiến độ dự án."
+          },
+          {
+            "key": "D",
+            "text": "A laptop computer",
+            "vietnamese": "Một máy tính xách tay."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người nói nhắc lại: 'I asked you to bring your laptops so that you can follow along'."
+      },
+      {
+        "num": 85,
+        "question": "Why might some of the listeners look for Sumit?",
+        "vietnameseQuestion": "Tại sao một số người nghe có thể sẽ tìm gặp Sumit?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To get a document",
+            "vietnamese": "Để nhận một tài liệu."
+          },
+          {
+            "key": "B",
+            "text": "To ask additional questions",
+            "vietnamese": "Để đặt thêm câu hỏi."
+          },
+          {
+            "key": "C",
+            "text": "To volunteer for an event",
+            "vietnamese": "Để làm tình nguyện cho một sự kiện."
+          },
+          {
+            "key": "D",
+            "text": "To check the status of a request",
+            "vietnamese": "Để kiểm tra trạng thái yêu cầu."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Ai muốn lấy bản in (a printed copy -> a document) thì gặp Sumit ở cuối phòng: 'see Sumit in the back of the room if you'd like a printed copy'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "hiring policy",
+        "meaning": "chính sách tuyển dụng",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "come to one's attention",
+        "meaning": "được ai đó chú ý đến/nhận thấy",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "printed copy",
+        "meaning": "bản sao in giấy",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-86-88",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 86 - 88",
+    "title": "Part 4 - Câu 86-88: Báo cáo thiết kế đồ chơi vận động ngoài trời",
+    "audioSrc": "/audio/cuts/test2/E26-T02-86-88.mp3",
+    "transcript": [
+      {
+        "id": "p4-86-1",
+        "speaker": "M-Au",
+        "text": "As head of the product design team, I have the sales results from the last quarter, and they're disappointing. It's clear that consumers are no longer interested in the types of toys and games we've been producing.",
+        "vietnamese": "Với tư cách là trưởng nhóm thiết kế sản phẩm, tôi đã có kết quả bán hàng từ quý trước, và chúng thật đáng thất vọng. Rõ ràng là người tiêu dùng không còn hứng thú với các loại đồ chơi và trò chơi mà chúng ta đang sản xuất nữa."
+      },
+      {
+        "id": "p4-86-2",
+        "speaker": "M-Au",
+        "text": "My guess is that people are getting tired of noisy, blinking electronics. We have a lot of work to do. There's a new trend toward outdoor toys and games, where people can be physically active.",
+        "vietnamese": "Tôi đoán là mọi người đang dần ngán ngẩm với những món đồ điện tử ồn ào và nhấp nháy đèn. Chúng ta có rất nhiều việc phải làm. Hiện có một xu hướng mới hướng tới các đồ chơi và trò chơi ngoài trời, nơi mọi người có thể vận động thể chất."
+      },
+      {
+        "id": "p4-86-3",
+        "speaker": "M-Au",
+        "text": "I've already come up with some prototypes of new games. I brought a few of them, and now I'll show you how they work.",
+        "vietnamese": "Tôi đã tự mình nghĩ ra một số mẫu thử nghiệm cho các trò chơi mới. Tôi đã mang theo một vài mẫu trong số đó, và bây giờ tôi sẽ cho các bạn xem cách chúng vận hành."
+      }
+    ],
+    "questions": [
+      {
+        "num": 86,
+        "question": "What did the speaker recently receive?",
+        "vietnameseQuestion": "Người nói gần đây đã nhận được gì?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Sales results",
+            "vietnamese": "Kết quả bán hàng/doanh số."
+          },
+          {
+            "key": "B",
+            "text": "Production schedules",
+            "vietnamese": "Lịch trình sản xuất."
+          },
+          {
+            "key": "C",
+            "text": "An inspection report",
+            "vietnamese": "Báo cáo kiểm định."
+          },
+          {
+            "key": "D",
+            "text": "An advertising proposal",
+            "vietnamese": "Đề xuất quảng cáo."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người nói mở đầu bài nói: 'I have the sales results from the last quarter'."
+      },
+      {
+        "num": 87,
+        "question": "What does the speaker mean when he says, \"We have a lot of work to do\"?",
+        "vietnameseQuestion": "Người nói có ý gì khi nói: \"Chúng ta có nhiều việc phải làm\"?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Extra shifts will be scheduled.",
+            "vietnamese": "Sẽ lên lịch thêm ca làm việc."
+          },
+          {
+            "key": "B",
+            "text": "A job opening will be posted soon.",
+            "vietnamese": "Sẽ sớm đăng tuyển vị trí mới."
+          },
+          {
+            "key": "C",
+            "text": "Customer orders have increased.",
+            "vietnamese": "Đơn hàng của khách đã tăng lên."
+          },
+          {
+            "key": "D",
+            "text": "A change is necessary.",
+            "vietnamese": "Cần thiết phải có sự thay đổi."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Đồ chơi cũ không còn bán được, công ty phải nhanh chóng thay đổi sang dòng đồ chơi vận động ngoài trời (A change is necessary)."
+      },
+      {
+        "num": 88,
+        "question": "What will the speaker do next?",
+        "vietnameseQuestion": "Người nói sẽ làm gì tiếp theo?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Distribute some manuals",
+            "vietnamese": "Phát một số sổ tay hướng dẫn."
+          },
+          {
+            "key": "B",
+            "text": "Give a demonstration",
+            "vietnamese": "Thực hiện thuyết minh/thị phạm mẫu."
+          },
+          {
+            "key": "C",
+            "text": "Answer some questions",
+            "vietnamese": "Trả lời một số câu hỏi."
+          },
+          {
+            "key": "D",
+            "text": "Show a video",
+            "vietnamese": "Chiếu một video."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người nói mang sản phẩm mẫu đến và nói 'now I'll show you how they work' (biểu diễn cách thức hoạt động -> Give a demonstration)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "blinking",
+        "meaning": "nhấp nháy đèn",
+        "partOfSpeech": "adj"
+      },
+      {
+        "word": "physically active",
+        "meaning": "vận động thể chất năng động",
+        "partOfSpeech": "phrase"
+      },
+      {
+        "word": "demonstration",
+        "meaning": "sự thị phạm, trình diễn minh họa",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-89-91",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 89 - 91",
+    "title": "Part 4 - Câu 89-91: Tin nhắn thoại khu bảo tồn thiên nhiên Pine Valley",
+    "audioSrc": "/audio/cuts/test2/E26-T02-89-91.mp3",
+    "transcript": [
+      {
+        "id": "p4-89-1",
+        "speaker": "M-Cn",
+        "text": "Hello. You've reached Ji-Soo Yoon at the visitor center of the Pine Valley Nature Preserve. I am currently out of the office.",
+        "vietnamese": "Xin chào. Quý vị đang kết nối với Ji-Soo Yoon tại trung tâm du khách của Khu bảo tồn thiên nhiên Pine Valley. Hiện tôi đang không có mặt ở văn phòng."
+      },
+      {
+        "id": "p4-89-2",
+        "speaker": "M-Cn",
+        "text": "Please be aware that visitor access to the park will be limited during the month of March while our facilities are undergoing renovations.",
+        "vietnamese": "Xin lưu ý rằng việc du khách ra vào công viên sẽ bị hạn chế trong suốt tháng Ba do cơ sở vật chất của chúng tôi đang trong quá trình tu sửa."
+      },
+      {
+        "id": "p4-89-3",
+        "speaker": "M-Cn",
+        "text": "If you are calling for information about helping to maintain our hiking trails, please refer to the volunteer page on our Web site. We welcome the assistance of motivated individuals. For all other inquiries, please leave a message after the tone.",
+        "vietnamese": "Nếu quý vị gọi đến để hỏi thông tin về việc hỗ trợ bảo dưỡng các cung đường mòn đi bộ leo núi, xin vui lòng xem trang tình nguyện viên trên trang web của chúng tôi. Chúng tôi rất hoan nghênh sự giúp đỡ của những cá nhân nhiệt huyết. Đối với mọi thắc mắc khác, xin vui lòng để lại lời nhắn sau tiếng bíp."
+      }
+    ],
+    "questions": [
+      {
+        "num": 89,
+        "question": "Where does the speaker work?",
+        "vietnameseQuestion": "Người nói làm việc ở đâu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "At a museum",
+            "vietnamese": "Tại một viện bảo tàng."
+          },
+          {
+            "key": "B",
+            "text": "At a park",
+            "vietnamese": "Tại một công viên/khu bảo tồn."
+          },
+          {
+            "key": "C",
+            "text": "At a library",
+            "vietnamese": "Tại một thư viện."
+          },
+          {
+            "key": "D",
+            "text": "At a theater",
+            "vietnamese": "Tại một nhà hát."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người nói giới thiệu làm việc tại 'visitor center of the Pine Valley Nature Preserve' (khu bảo tồn thiên nhiên, công viên - a park)."
+      },
+      {
+        "num": 90,
+        "question": "What will happen in March?",
+        "vietnameseQuestion": "Điều gì sẽ diễn ra vào tháng Ba?",
+        "options": [
+          {
+            "key": "A",
+            "text": "A new facility will open.",
+            "vietnamese": "Một cơ sở mới sẽ mở cửa."
+          },
+          {
+            "key": "B",
+            "text": "An exhibition will be held.",
+            "vietnamese": "Một cuộc triển lãm sẽ được tổ chức."
+          },
+          {
+            "key": "C",
+            "text": "Renovations will take place.",
+            "vietnamese": "Công việc tu sửa cải tạo sẽ diễn ra."
+          },
+          {
+            "key": "D",
+            "text": "Operating hours will be extended.",
+            "vietnamese": "Giờ mở cửa sẽ được kéo dài."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Trong tháng Ba công viên sẽ hạn chế khách vào do 'facilities are undergoing renovations' (đang tiến hành tu sửa)."
+      },
+      {
+        "num": 91,
+        "question": "What does the speaker say can be found online?",
+        "vietnameseQuestion": "Người nói cho biết thông tin gì có thể tìm thấy trên mạng?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Volunteer information",
+            "vietnamese": "Thông tin về tình nguyện viên."
+          },
+          {
+            "key": "B",
+            "text": "A calendar of upcoming events",
+            "vietnamese": "Lịch sự kiện sắp tới."
+          },
+          {
+            "key": "C",
+            "text": "Ticket prices",
+            "vietnamese": "Giá vé."
+          },
+          {
+            "key": "D",
+            "text": "An area map",
+            "vietnamese": "Bản đồ khu vực."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Ai muốn giúp bảo dưỡng đường leo núi thì 'refer to the volunteer page on our Web site' (thông tin tình nguyện viên trên web)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "nature preserve",
+        "meaning": "khu bảo tồn thiên nhiên",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "hiking trail",
+        "meaning": "đường mòn đi bộ đường dài, leo núi",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "motivated",
+        "meaning": "nhiệt huyết, có động lực cao",
+        "partOfSpeech": "adj"
+      }
+    ]
+  },
+  {
+    "id": "part4-92-94",
+    "part": 4,
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 92 - 94",
+    "title": "Part 4 - Câu 92-94: Phỏng vấn thương hiệu dầu ô liu Salazar",
+    "audioSrc": "/audio/cuts/test2/E26-T02-92-94.mp3",
+    "transcript": [
+      {
+        "id": "p4-92-1",
+        "speaker": "W-Am",
+        "text": "Today, I'll be interviewing the owners of Salazar Olive Oil, one of the best in California for the past two decades.",
+        "vietnamese": "Hôm nay, tôi sẽ phỏng vấn các chủ sở hữu của thương hiệu Dầu ô liu Salazar, một trong những thương hiệu tốt nhất ở California trong suốt hai thập kỷ qua."
+      },
+      {
+        "id": "p4-92-2",
+        "speaker": "W-Am",
+        "text": "Now—if you're hearing about this olive oil for the first time, you're not alone. The Salazar family has kept the operation small.",
+        "vietnamese": "Bây giờ—nếu bạn mới nghe về loại dầu ô liu này lần đầu tiên, bạn không phải người duy nhất đâu. Gia đình Salazar vẫn luôn duy trì quy mô kinh doanh nhỏ gọn."
+      },
+      {
+        "id": "p4-92-3",
+        "speaker": "W-Am",
+        "text": "I'm interested in discussing their business philosophy as well as their new project: an olive oil tasting class on their farm. You'll find out how to register during the interview so you can sign up!",
+        "vietnamese": "Tôi rất hào hứng được thảo luận về triết lý kinh doanh của họ cũng như dự án mới của họ: một lớp học nếm thử dầu ô liu ngay tại trang trại. Bạn sẽ biết cách đăng ký trong buổi phỏng vấn để có thể tham gia!"
+      }
+    ],
+    "questions": [
+      {
+        "num": 92,
+        "question": "Who are today's guests on the podcast?",
+        "vietnameseQuestion": "Khách mời hôm nay trên chương trình podcast là ai?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Government officials",
+            "vietnamese": "Các quan chức chính phủ."
+          },
+          {
+            "key": "B",
+            "text": "Business owners",
+            "vietnamese": "Những chủ doanh nghiệp."
+          },
+          {
+            "key": "C",
+            "text": "Real estate developers",
+            "vietnamese": "Các nhà phát triển bất động sản."
+          },
+          {
+            "key": "D",
+            "text": "Cooking-school instructors",
+            "vietnamese": "Các giảng viên trường dạy nấu ăn."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Người dẫn chương trình nói 'interviewing the owners of Salazar Olive Oil' (chủ doanh nghiệp - Business owners)."
+      },
+      {
+        "num": 93,
+        "question": "Why does the speaker say, \"The Salazar family has kept the operation small\"?",
+        "vietnameseQuestion": "Tại sao người nói lại bảo \"Gia đình Salazar vẫn duy trì quy mô hoạt động nhỏ\"?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To indicate why a product is only sold online",
+            "vietnamese": "Để chỉ ra lý do sản phẩm chỉ bán trực tuyến."
+          },
+          {
+            "key": "B",
+            "text": "To justify the high price of a product",
+            "vietnamese": "Để biện minh cho mức giá cao của sản phẩm."
+          },
+          {
+            "key": "C",
+            "text": "To suggest that a company is having financial difficulties",
+            "vietnamese": "Để ngụ ý công ty đang gặp khó khăn tài chính."
+          },
+          {
+            "key": "D",
+            "text": "To explain why a product is not well-known",
+            "vietnamese": "Để giải thích lý do tại sao sản phẩm chưa được nhiều người biết tới."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Trước đó người nói bảo nếu quý vị mới nghe lần đầu thì cũng đừng ngạc nhiên ('if you're hearing about this... for the first time, you're not alone'), vì họ giữ quy mô gia đình nhỏ (giải thích tại sao chưa nổi tiếng đại trà)."
+      },
+      {
+        "num": 94,
+        "question": "What will the listeners be able to do after the podcast?",
+        "vietnameseQuestion": "Người nghe sẽ có thể làm gì sau chương trình podcast?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Request some product samples",
+            "vietnamese": "Yêu cầu một số mẫu sản phẩm dùng thử."
+          },
+          {
+            "key": "B",
+            "text": "Subscribe to a newsletter",
+            "vietnamese": "Đăng ký nhận bản tin."
+          },
+          {
+            "key": "C",
+            "text": "Enter a contest",
+            "vietnamese": "Tham gia một cuộc thi."
+          },
+          {
+            "key": "D",
+            "text": "Sign up for a class",
+            "vietnamese": "Đăng ký một lớp học."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Người nói chỉ cách đăng ký lớp học nếm dầu ô liu: 'an olive oil tasting class on their farm... find out how to register... so you can sign up!'."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "decade",
+        "meaning": "thập kỷ (10 năm)",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "philosophy",
+        "meaning": "triết lý, quan điểm",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "tasting class",
+        "meaning": "lớp học nếm thử, thưởng thức",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-95-97",
+    "part": 4,
+    "imageUrl": "/images/intensive/test2/q95_97.png",
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 95 - 97",
+    "title": "Part 4 - Câu 95-97: Thông báo đổi điểm đón xe buýt tại ga Abingdon",
+    "audioSrc": "/audio/cuts/test2/E26-T02-95-97.mp3",
+    "transcript": [
+      {
+        "id": "p4-95-1",
+        "speaker": "W-Br",
+        "text": "Welcome to the Abingdon Transit Station. Please be advised that the Circle Route bus is not currently stopping at the station entrance because of some street resurfacing work.",
+        "vietnamese": "Chào mừng quý khách đến với Ga trung chuyển Abingdon. Xin lưu ý rằng tuyến xe buýt Circle Route hiện không dừng tại lối vào nhà ga do đang có công trình trải lại mặt đường."
+      },
+      {
+        "id": "p4-95-2",
+        "speaker": "W-Br",
+        "text": "A temporary bus stop has been set up around the corner in front of the post office. Signs are posted directing you to the new stop. Bus timetables will be affected by the change in the route.",
+        "vietnamese": "Một điểm dừng xe buýt tạm thời đã được thiết lập ngay góc phố ở phía trước bưu điện. Các biển chỉ dẫn đã được gắn để hướng dẫn quý khách tới điểm dừng mới. Lịch trình xe buýt sẽ bị ảnh hưởng bởi sự thay đổi lộ trình này."
+      },
+      {
+        "id": "p4-95-3",
+        "speaker": "W-Br",
+        "text": "Use the Abingdon Transit mobile phone app to view live updates for when the next bus is due.",
+        "vietnamese": "Hãy sử dụng ứng dụng điện thoại Abingdon Transit để xem cập nhật thời gian thực khi nào chuyến xe buýt tiếp theo sẽ đến."
+      }
+    ],
+    "questions": [
+      {
+        "num": 95,
+        "question": "According to the speaker, why was a transit route changed?",
+        "vietnameseQuestion": "Theo người nói, tại sao một lộ trình di chuyển lại bị thay đổi?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Some streets are being resurfaced.",
+            "vietnamese": "Một số đường phố đang được trải lại mặt đường."
+          },
+          {
+            "key": "B",
+            "text": "Some roads are closed for a bicycle race.",
+            "vietnamese": "Một số đường bị đóng để tổ chức đua xe đạp."
+          },
+          {
+            "key": "C",
+            "text": "A group of residents is hosting a fund-raising concert.",
+            "vietnamese": "Một nhóm cư dân đang tổ chức hòa nhạc gây quỹ."
+          },
+          {
+            "key": "D",
+            "text": "A local politician will be speaking in a park.",
+            "vietnamese": "Một chính trị gia địa phương sẽ phát biểu ở công viên."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Lộ trình đổi vì 'street resurfacing work' (công trình trải lại mặt đường nhựa)."
+      },
+      {
+        "num": 96,
+        "question": "Look at the graphic. Where will the listeners find a new bus stop?",
+        "vietnameseQuestion": "Nhìn vào sơ đồ. Người nghe sẽ tìm thấy điểm dừng xe buýt mới ở đâu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "On Plum Lane",
+            "vietnamese": "Trên đường Plum Lane."
+          },
+          {
+            "key": "B",
+            "text": "On Peach Street",
+            "vietnamese": "Trên phố Peach Street."
+          },
+          {
+            "key": "C",
+            "text": "On Cherry Avenue",
+            "vietnamese": "Trên đại lộ Cherry Avenue."
+          },
+          {
+            "key": "D",
+            "text": "On Quincy Drive",
+            "vietnamese": "Trên đường Quincy Drive."
+          }
+        ],
+        "correctAnswer": "B",
+        "explanation": "Điểm dừng mới nằm ở 'in front of the post office' (trước bưu điện). Trên sơ đồ hình ảnh, Post Office nằm trên đường Peach Street."
+      },
+      {
+        "num": 97,
+        "question": "Why should the listeners check a mobile phone application?",
+        "vietnameseQuestion": "Tại sao người nghe nên kiểm tra ứng dụng điện thoại di động?",
+        "options": [
+          {
+            "key": "A",
+            "text": "To apply for a job",
+            "vietnamese": "Để nộp đơn xin việc."
+          },
+          {
+            "key": "B",
+            "text": "To scan a promotional code",
+            "vietnamese": "Để quét mã khuyến mãi."
+          },
+          {
+            "key": "C",
+            "text": "To view bus schedule updates",
+            "vietnamese": "Để xem cập nhật lịch trình xe buýt."
+          },
+          {
+            "key": "D",
+            "text": "To purchase bus tickets",
+            "vietnamese": "Để mua vé xe buýt."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người nói khuyên dùng app điện thoại để 'view live updates for when the next bus is due' (xem cập nhật lịch xe buýt đến)."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "resurface",
+        "meaning": "trải lại mặt đường, làm lại bề mặt",
+        "partOfSpeech": "v"
+      },
+      {
+        "word": "temporary",
+        "meaning": "tạm thời",
+        "partOfSpeech": "adj"
+      },
+      {
+        "word": "timetable",
+        "meaning": "lịch trình, thời gian biểu",
+        "partOfSpeech": "n"
+      }
+    ]
+  },
+  {
+    "id": "part4-98-100",
+    "part": 4,
+    "imageUrl": "/images/intensive/test2/q98_100.png",
+    "partTitle": "Part 4: Bài nói ngắn",
+    "questionRange": "Câu 98 - 100",
+    "title": "Part 4 - Câu 98-100: Hội thảo giáo dục thường xuyên tại trung tâm cộng đồng",
+    "audioSrc": "/audio/cuts/test2/E26-T02-98-100.mp3",
+    "transcript": [
+      {
+        "id": "p4-98-1",
+        "speaker": "M-Cn",
+        "text": "Hello, everyone! We're happy to announce that the February continuing education workshops here at the community center were very successful. Thank you for working so hard to make sure they ran smoothly.",
+        "vietnamese": "Xin chào tất cả mọi người! Chúng tôi rất vui mừng thông báo rằng các hội thảo giáo dục thường xuyên tháng Hai tại trung tâm cộng đồng của chúng ta đã rất thành công. Cảm ơn các bạn đã làm việc chăm chỉ để đảm bảo chúng diễn ra suôn sẻ."
+      },
+      {
+        "id": "p4-98-2",
+        "speaker": "M-Cn",
+        "text": "Every workshop was completely full. In fact, we had to create a waiting list for the Monday night workshop. Beginning in March, we'll offer that same workshop on Fridays.",
+        "vietnamese": "Tất cả các buổi hội thảo đều kín chỗ hoàn toàn. Thậm chí, chúng tôi đã phải lập danh sách chờ cho buổi hội thảo tối thứ Hai. Bắt đầu từ tháng Ba, chúng tôi sẽ mở thêm chính buổi hội thảo đó vào các ngày thứ Sáu."
+      },
+      {
+        "id": "p4-98-3",
+        "speaker": "M-Cn",
+        "text": "Now, many participants complained about the lack of vending machines in the building. Bianca will be contacting vending services next week to ask about pricing.",
+        "vietnamese": "Hiện tại, nhiều học viên đã phàn nàn về việc thiếu máy bán hàng tự động trong tòa nhà. Tuần tới Bianca sẽ liên hệ với các đơn vị dịch vụ máy bán hàng để hỏi về giá cả."
+      }
+    ],
+    "questions": [
+      {
+        "num": 98,
+        "question": "Where does the speaker work?",
+        "vietnameseQuestion": "Người nói làm việc ở đâu?",
+        "options": [
+          {
+            "key": "A",
+            "text": "At a restaurant",
+            "vietnamese": "Tại một nhà hàng."
+          },
+          {
+            "key": "B",
+            "text": "At a public library",
+            "vietnamese": "Tại một thư viện công cộng."
+          },
+          {
+            "key": "C",
+            "text": "At a community center",
+            "vietnamese": "Tại một trung tâm cộng đồng."
+          },
+          {
+            "key": "D",
+            "text": "At a hospital",
+            "vietnamese": "Tại một bệnh viện."
+          }
+        ],
+        "correctAnswer": "C",
+        "explanation": "Người nói nhắc đến 'here at the community center' (tại trung tâm cộng đồng)."
+      },
+      {
+        "num": 99,
+        "question": "Look at the graphic. Which workshop will be offered on Fridays starting in March?",
+        "vietnameseQuestion": "Nhìn vào lịch biểu. Hội thảo nào sẽ được tổ chức vào các ngày thứ Sáu bắt đầu từ tháng Ba?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Podcasting",
+            "vietnamese": "Sản xuất Podcasting."
+          },
+          {
+            "key": "B",
+            "text": "Entrepreneurship for Beginners",
+            "vietnamese": "Khởi nghiệp cho người mới bắt đầu."
+          },
+          {
+            "key": "C",
+            "text": "Introduction to Coding",
+            "vietnamese": "Nhập môn lập trình."
+          },
+          {
+            "key": "D",
+            "text": "Accounting for Small Businesses",
+            "vietnamese": "Kế toán cho doanh nghiệp nhỏ."
+          }
+        ],
+        "correctAnswer": "A",
+        "explanation": "Người nói cho biết sẽ mở thêm buổi thứ Sáu cho hội thảo tối thứ Hai ('waiting list for the Monday night workshop... offer that same workshop on Fridays'). Nhìn bảng hình ảnh, lớp ngày thứ Hai (Mondays) chính là 'Podcasting'."
+      },
+      {
+        "num": 100,
+        "question": "What will Bianca do next week?",
+        "vietnameseQuestion": "Bianca sẽ làm gì vào tuần tới?",
+        "options": [
+          {
+            "key": "A",
+            "text": "Request feedback from participants",
+            "vietnamese": "Thu thập phản hồi từ người tham gia."
+          },
+          {
+            "key": "B",
+            "text": "Order office supplies",
+            "vietnamese": "Đặt mua đồ dùng văn phòng."
+          },
+          {
+            "key": "C",
+            "text": "Update registration information",
+            "vietnamese": "Cập nhật thông tin đăng ký."
+          },
+          {
+            "key": "D",
+            "text": "Contact some vendors",
+            "vietnamese": "Liên hệ với các nhà cung cấp dịch vụ."
+          }
+        ],
+        "correctAnswer": "D",
+        "explanation": "Bianca sẽ liên hệ với các đơn vị dịch vụ máy bán hàng tự động để hỏi giá: 'contacting vending services next week to ask about pricing' -> Contact some vendors."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "continuing education",
+        "meaning": "giáo dục thường xuyên, học tập trọn đời",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "waiting list",
+        "meaning": "danh sách chờ",
+        "partOfSpeech": "n"
+      },
+      {
+        "word": "vending machine",
+        "meaning": "máy bán hàng tự động",
+        "partOfSpeech": "n"
+      }
+    ]
+  }
+];
+
+export function getIntensiveItemById(id: string): IntensiveListeningItem | undefined {
+  return test2IntensiveData.find((item) => item.id === id);
+}
+
+export function getItemsByPart(part: 1 | 2 | 3 | 4): IntensiveListeningItem[] {
+  return test2IntensiveData.filter((item) => item.part === part);
+}
