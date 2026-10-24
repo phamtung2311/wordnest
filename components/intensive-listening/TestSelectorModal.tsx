@@ -37,12 +37,17 @@ export function TestSelectorModal({
   const [testStats, setTestStats] = useState<
     Record<number, { completed: number; total: number; percentage: number }>
   >({});
+  const [lastActiveItems, setLastActiveItems] = useState<
+    Record<number, { range: string; title: string }>
+  >({});
 
-  // Read stats from localStorage whenever modal opens
+  // Read stats and last active item from localStorage whenever modal opens
   useEffect(() => {
     if (!isOpen) return;
 
     const stats: Record<number, { completed: number; total: number; percentage: number }> = {};
+    const activeMap: Record<number, { range: string; title: string }> = {};
+
     availableIntensiveTests.forEach((t) => {
       try {
         const raw =
@@ -57,12 +62,28 @@ export function TestSelectorModal({
         } else {
           stats[t.id] = { completed: 0, total: t.itemCount || 54, percentage: 0 };
         }
+
+        // Find last active item
+        const lastItemId =
+          localStorage.getItem(`toeic_intensive_last_item_t${t.id}`) ||
+          (t.id === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
+
+        if (lastItemId) {
+          const found = t.data.find((i) => i.id === lastItemId);
+          if (found) {
+            activeMap[t.id] = {
+              range: found.questionRange,
+              title: found.title,
+            };
+          }
+        }
       } catch {
         stats[t.id] = { completed: 0, total: t.itemCount || 54, percentage: 0 };
       }
     });
 
     setTestStats(stats);
+    setLastActiveItems(activeMap);
   }, [isOpen]);
 
   // Handle escape key to close
@@ -251,21 +272,25 @@ export function TestSelectorModal({
 
                   {/* Bottom: Progress Bar & Button */}
                   <div className="pt-3 border-t border-[#213a34]/10 mt-2">
-                    <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                      <span className="text-gray-500">
-                        Đã làm: <span className="text-[#213a34] font-black">{stats.completed}</span>/{stats.total} bài
+                    {/* Active Question Info */}
+                    <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 mb-1.5">
+                      <span className="flex items-center gap-1">
+                        <span className="text-[#eb6a52]">📍</span>
+                        {lastActiveItems[test.id] ? (
+                          <>
+                            Đang làm: <span className="text-[#213a34] font-black">{lastActiveItems[test.id].range}</span>
+                          </>
+                        ) : (
+                          <span>Chưa bắt đầu</span>
+                        )}
                       </span>
-                      <span
-                        className={`font-black ${
-                          stats.percentage > 0 ? 'text-[#213a34]' : 'text-gray-400'
-                        }`}
-                      >
-                        {stats.percentage}%
+                      <span className="text-gray-400">
+                        {stats.completed}/{stats.total} bài ({stats.percentage}%)
                       </span>
                     </div>
 
                     {/* Progress track */}
-                    <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden mb-3">
+                    <div className="w-full h-1.5 rounded-full bg-gray-200 overflow-hidden mb-3">
                       <div
                         className={`h-full transition-all duration-300 ${
                           stats.percentage === 100
@@ -284,11 +309,17 @@ export function TestSelectorModal({
                         type="button"
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all ${
                           isSelected
-                            ? 'bg-[#213a34] text-[#f8d467]'
+                            ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
                             : 'bg-white border border-[#213a34]/20 text-[#213a34] group-hover:bg-[#213a34] group-hover:text-white'
                         }`}
                       >
-                        <span>{isSelected ? 'Đang luyện đề này' : 'Vào luyện đề này'}</span>
+                        <span>
+                          {isSelected
+                            ? `Đang luyện · ${lastActiveItems[test.id]?.range || 'Bài 1'}`
+                            : lastActiveItems[test.id]
+                            ? `Tiếp tục ${lastActiveItems[test.id].range}`
+                            : 'Vào luyện đề này'}
+                        </span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </div>

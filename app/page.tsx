@@ -568,6 +568,25 @@ export default function Home() {
   const [syncStatus, setSyncStatus] = useState<
     'local' | 'loading' | 'saved' | 'error'
   >('local');
+  const [recentIntensive, setRecentIntensive] = useState<{
+    testShortTitle: string;
+    itemRange: string;
+  } | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('toeic_intensive_global_history');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.testShortTitle && parsed.itemRange) {
+          setRecentIntensive({
+            testShortTitle: parsed.testShortTitle,
+            itemRange: parsed.itemRange,
+          });
+        }
+      }
+    } catch {}
+  }, []);
   const [authError, setAuthError] = useState('');
   const [migrationNotice, setMigrationNotice] = useState('');
   const [audioStatus, setAudioStatus] = useState<
@@ -2164,9 +2183,15 @@ export default function Home() {
                       <Headphones className="w-6 h-6 text-[#f8d467]" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[#f8d467] block">Mới · STUDY4 Style</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#f8d467] block">
+                        {recentIntensive ? 'Đang học dở' : 'Mới · STUDY4 Style'}
+                      </span>
                       <h3 className="font-black text-white text-base leading-snug">Luyện Nghe Chi Tiết</h3>
-                      <p className="text-xs text-white/80 font-medium">Audio cắt lẻ · Song ngữ · Chép chính tả</p>
+                      <p className="text-xs text-white/80 font-medium">
+                        {recentIntensive
+                          ? `Tiếp tục: ${recentIntensive.testShortTitle} · ${recentIntensive.itemRange}`
+                          : 'Audio cắt lẻ · Song ngữ · Chép chính tả'}
+                      </p>
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0 ml-2" />

@@ -54,18 +54,31 @@ export function IntensiveListeningHub() {
   useEffect(() => {
     setMounted(true);
     try {
-      // 1. Load active test (from URL or localStorage)
+      // 1. Load active test (Priority: URL query > global history > localStorage)
       const searchParams = new URLSearchParams(window.location.search);
       const urlTest = searchParams.get('test');
       const savedTest = localStorage.getItem('toeic_intensive_current_test');
       let initialTestId = 1;
+      let initialItemId: string | null = null;
+
+      try {
+        const histRaw = localStorage.getItem('toeic_intensive_global_history');
+        if (histRaw) {
+          const hist = JSON.parse(histRaw);
+          if (hist.testId && availableIntensiveTests.some((t) => t.id === hist.testId)) {
+            initialTestId = hist.testId;
+            initialItemId = hist.itemId || null;
+          }
+        }
+      } catch {}
 
       if (urlTest) {
         const parsedUrl = parseInt(urlTest, 10);
         if (availableIntensiveTests.some((t) => t.id === parsedUrl)) {
           initialTestId = parsedUrl;
+          initialItemId = null;
         }
-      } else if (savedTest) {
+      } else if (savedTest && !initialItemId) {
         const parsedTest = parseInt(savedTest, 10);
         if (availableIntensiveTests.some((t) => t.id === parsedTest)) {
           initialTestId = parsedTest;
@@ -75,9 +88,11 @@ export function IntensiveListeningHub() {
 
       const activeData = getIntensiveDataByTestId(initialTestId);
 
-      // 2. Load last active item for that test
-      const savedLastItem = localStorage.getItem(`toeic_intensive_last_item_t${initialTestId}`) 
-        || (initialTestId === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
+      // 2. Load last active item for that test (chính xác câu đang làm dở)
+      const savedLastItem =
+        initialItemId ||
+        localStorage.getItem(`toeic_intensive_last_item_t${initialTestId}`) ||
+        (initialTestId === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
 
       if (savedLastItem && activeData.some((i) => i.id === savedLastItem)) {
         setCurrentItemId(savedLastItem);
@@ -86,8 +101,9 @@ export function IntensiveListeningHub() {
       }
 
       // 3. Load completed items for that test
-      const savedCompleted = localStorage.getItem(`toeic_intensive_completed_t${initialTestId}`)
-        || (initialTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
+      const savedCompleted =
+        localStorage.getItem(`toeic_intensive_completed_t${initialTestId}`) ||
+        (initialTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
 
       if (savedCompleted) {
         setCompletedItems(JSON.parse(savedCompleted));
@@ -119,12 +135,30 @@ export function IntensiveListeningHub() {
     try {
       localStorage.setItem('toeic_intensive_current_test', String(testId));
 
-      // Load saved item for the new test
+      // Load saved item for the new test (câu đang làm dở của đề đó)
       const savedItemForTest = localStorage.getItem(`toeic_intensive_last_item_t${testId}`);
+      let targetItem = newTestData[0];
       if (savedItemForTest && newTestData.some((i) => i.id === savedItemForTest)) {
+        targetItem = newTestData.find((i) => i.id === savedItemForTest) || newTestData[0];
         setCurrentItemId(savedItemForTest);
       } else if (newTestData.length > 0) {
         setCurrentItemId(newTestData[0].id);
+      }
+
+      // Save global history
+      if (targetItem) {
+        const testInfo = availableIntensiveTests.find((t) => t.id === testId);
+        const histData = {
+          testId: testId,
+          testTitle: testInfo?.title || `ETS TOEIC 2026 - Test ${testId}`,
+          testShortTitle: testInfo?.shortTitle || `Test ${testId}`,
+          itemId: targetItem.id,
+          itemRange: targetItem.questionRange,
+          itemTitle: targetItem.title,
+          part: targetItem.part,
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
       }
 
       // Load completed items for the new test
@@ -142,10 +176,25 @@ export function IntensiveListeningHub() {
   // Handler: Select an item in current test
   const handleSelectItem = (id: string) => {
     setCurrentItemId(id);
+    const targetItem = currentTestData.find((i) => i.id === id);
     try {
+      localStorage.setItem('toeic_intensive_current_test', String(currentTestId));
       localStorage.setItem(`toeic_intensive_last_item_t${currentTestId}`, id);
       if (currentTestId === 1) {
         localStorage.setItem('toeic_intensive_last_item', id);
+      }
+      if (targetItem) {
+        const histData = {
+          testId: currentTestId,
+          testTitle: activeTestInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`,
+          testShortTitle: activeTestInfo?.shortTitle || `Test ${currentTestId}`,
+          itemId: id,
+          itemRange: targetItem.questionRange,
+          itemTitle: targetItem.title,
+          part: targetItem.part,
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
       }
     } catch (e) {}
   };
@@ -214,13 +263,27 @@ export function IntensiveListeningHub() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           {/* Left: Back & Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <Link
+            <a
               href="/"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] transition-colors shrink-0"
+              onClick={(e) => {
+                e.preventDefault();
+                try {
+                  router.push('/');
+                } catch {
+                  window.location.href = '/';
+                }
+                setTimeout(() => {
+                  if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+                    window.location.href = '/';
+                  }
+                }, 100);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs"
+              title="Quay lại Trang chủ"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Trang chủ</span>
-            </Link>
+              <ArrowLeft className="w-4 h-4 shrink-0" />
+              <span>Trang chủ</span>
+            </a>
 
             <div className="h-5 w-[1px] bg-gray-200 hidden sm:block shrink-0" />
 
@@ -234,12 +297,12 @@ export function IntensiveListeningHub() {
             </div>
           </div>
 
-          {/* Center / Header Test Selector Button */}
-          <div className="flex items-center gap-1.5">
+          {/* Center / Header Test Selector & Question Indicator Button */}
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setIsTestSelectorOpen(true)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#213a34] text-white hover:bg-[#2c4e46] shadow-xs text-xs font-black transition-all group active:scale-95"
+              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#213a34] text-white hover:bg-[#2c4e46] shadow-xs text-xs font-black transition-all group active:scale-95 cursor-pointer"
               title="Nhấn để mở danh sách 10 đề thi ETS 2026"
             >
               <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
@@ -249,6 +312,12 @@ export function IntensiveListeningHub() {
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-gray-300 group-hover:translate-y-0.5 transition-transform" />
             </button>
+
+            {/* Current Item Indicator (Đang làm đến câu nào) */}
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e9f2ed] text-[#213a34] border border-[#213a34]/15 text-xs font-black shadow-2xs">
+              <span className="text-[#eb6a52]">📍</span>
+              <span className="truncate max-w-[150px]">{currentItem?.questionRange}</span>
+            </div>
           </div>
 
           {/* Right: Progress & Mobile Menu Toggle */}

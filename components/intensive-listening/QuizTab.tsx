@@ -42,16 +42,45 @@ export function QuizTab({
   const [showScript, setShowScript] = useState<boolean>(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
 
-  // Reset state when switching items
+  // Save quiz answers to localStorage
+  const persistQuizState = (answers: Record<number, string>, submitted: boolean) => {
+    try {
+      localStorage.setItem(
+        `toeic_intensive_quiz_${itemId}`,
+        JSON.stringify({
+          selectedAnswers: answers,
+          isSubmitted: submitted,
+          updatedAt: Date.now(),
+        })
+      );
+    } catch {}
+  };
+
+  // Load saved state when switching items or mounting
   useEffect(() => {
-    setSelectedAnswers({});
-    setIsSubmitted(false);
-    setShowExplanation(false);
+    try {
+      const savedRaw = localStorage.getItem(`toeic_intensive_quiz_${itemId}`);
+      if (savedRaw) {
+        const parsed = JSON.parse(savedRaw);
+        setSelectedAnswers(parsed.selectedAnswers || {});
+        setIsSubmitted(Boolean(parsed.isSubmitted));
+        setShowExplanation(Boolean(parsed.isSubmitted));
+        setShowScript(Boolean(parsed.isSubmitted));
+      } else {
+        setSelectedAnswers({});
+        setIsSubmitted(false);
+        setShowExplanation(false);
+        setShowScript(false);
+      }
+    } catch {
+      setSelectedAnswers({});
+      setIsSubmitted(false);
+      setShowExplanation(false);
+      setShowScript(false);
+    }
     setPeekTranscript(false);
     setShowTranslation(false);
-    setShowScript(false);
     setIsImageModalOpen(false);
-    setShowScript(false);
   }, [itemId]);
 
   const handleSelectOption = (qNum: number, key: string) => {
@@ -66,16 +95,22 @@ export function QuizTab({
     if (part === 1 || part === 2) {
       setIsSubmitted(true);
       setShowExplanation(true);
+      setShowScript(true);
+      persistQuizState(nextAnswers, true);
       const isRight = key === questions[0]?.correctAnswer;
       if (onCompleteItem) {
         onCompleteItem(isRight ? 1 : 0, 1);
       }
+    } else {
+      persistQuizState(nextAnswers, false);
     }
   };
 
   const handleCheckAnswers = () => {
     setIsSubmitted(true);
     setShowExplanation(true);
+    setShowScript(true);
+    persistQuizState(selectedAnswers, true);
     let correctCount = 0;
     questions.forEach((q) => {
       if (selectedAnswers[q.num] === q.correctAnswer) {
@@ -91,7 +126,11 @@ export function QuizTab({
     setSelectedAnswers({});
     setIsSubmitted(false);
     setShowExplanation(false);
+    setShowScript(false);
     setPeekTranscript(false);
+    try {
+      localStorage.removeItem(`toeic_intensive_quiz_${itemId}`);
+    } catch {}
   };
 
   const totalQuestions = questions.length;

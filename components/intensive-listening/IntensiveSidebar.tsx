@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { IntensiveListeningItem, IntensiveTestOption } from '@/data/intensive_listening_index';
 import type { PartFilter } from './types';
 import {
@@ -42,6 +42,17 @@ export function IntensiveSidebar({
 }: IntensiveSidebarProps) {
   const [selectedPart, setSelectedPart] = useState<PartFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const activeItemRef = useRef<HTMLButtonElement | null>(null);
+
+  // Auto-scroll active item into view
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [currentItemId]);
 
   // Filtering
   const filteredItems = items.filter((item) => {
@@ -223,6 +234,7 @@ export function IntensiveSidebar({
             return (
               <button
                 key={item.id}
+                ref={isSelected ? activeItemRef : null}
                 type="button"
                 onClick={() => {
                   onSelectItem(item.id);
@@ -230,7 +242,7 @@ export function IntensiveSidebar({
                 }}
                 className={`w-full text-left p-3 rounded-2xl transition-all flex items-start gap-3 ${
                   isSelected
-                    ? 'bg-[#213a34] text-white shadow-md'
+                    ? 'bg-[#213a34] text-white shadow-md ring-2 ring-[#213a34]/30'
                     : 'hover:bg-[#f5f0e6]/70 text-[#213a34]'
                 }`}
               >
@@ -253,23 +265,32 @@ export function IntensiveSidebar({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
-                        isSelected
-                          ? 'bg-white/20 text-[#f8d467] border-white/20'
-                          : getPartBadge(item.part)
-                      }`}
-                    >
-                      P{item.part}
-                    </span>
-                    <span
-                      className={`text-xs font-black truncate ${
-                        isSelected ? 'text-white' : 'text-[#213a34]'
-                      }`}
-                    >
-                      {item.questionRange}
-                    </span>
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
+                          isSelected
+                            ? 'bg-white/20 text-[#f8d467] border-white/20'
+                            : getPartBadge(item.part)
+                        }`}
+                      >
+                        P{item.part}
+                      </span>
+                      <span
+                        className={`text-xs font-black truncate ${
+                          isSelected ? 'text-white' : 'text-[#213a34]'
+                        }`}
+                      >
+                        {item.questionRange}
+                      </span>
+                    </div>
+
+                    {isSelected && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-[#f8d467] text-[#213a34] shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#213a34] animate-pulse" />
+                        Đang làm
+                      </span>
+                    )}
                   </div>
 
                   <p
