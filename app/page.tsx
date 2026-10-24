@@ -2117,7 +2117,7 @@ export default function Home() {
               </div>
 
               {/* Quick TOEIC Exam Practice Hub */}
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => router.push('/practice-test')}
@@ -2152,6 +2152,24 @@ export default function Home() {
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#213a34] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => router.push('/intensive-listening')}
+                  className="flex items-center justify-between p-4 bg-[#213a34] text-white rounded-2xl border-2 border-[#213a34] hover:border-[#f8d467] shadow-sm hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Headphones className="w-6 h-6 text-[#f8d467]" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#f8d467] block">Mới · STUDY4 Style</span>
+                      <h3 className="font-black text-white text-base leading-snug">Luyện Nghe Chi Tiết</h3>
+                      <p className="text-xs text-white/80 font-medium">Audio cắt lẻ · Song ngữ · Chép chính tả</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                 </button>
               </div>
             </div>
@@ -3862,6 +3880,14 @@ function Header({
             >
               <Headphones size={15} className="text-[#f29f77]" />
               Luyện Listening
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/intensive-listening')}
+              className="shrink-0 rounded-full px-3.5 py-1.5 whitespace-nowrap bg-[#213a34] text-white hover:bg-[#2c4e46] font-black flex items-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Headphones size={15} className="text-[#f8d467]" />
+              Luyện nghe chi tiết
             </button>
           </nav>
         )}
