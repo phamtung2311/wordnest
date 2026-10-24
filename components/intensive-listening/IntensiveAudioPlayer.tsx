@@ -208,8 +208,14 @@ export function IntensiveAudioPlayer({
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  // Clean title without redundant prefixes
-  const displayTitle = title.replace(/^Part \d - (Câu [^:]+: )?/, '');
+  // Clean neutral part label without spoiling question translation
+  const getPartLabel = () => {
+    if (part === 1) return 'Part 1 · Mô tả tranh';
+    if (part === 2) return 'Part 2 · Hỏi - Đáp';
+    if (part === 3) return 'Part 3 · Đoạn hội thoại';
+    if (part === 4) return 'Part 4 · Bài nói chuyện';
+    return `Part ${part || 2} · Luyện nghe ETS 2026`;
+  };
 
   return (
     <div className="bg-white rounded-2xl border-2 border-[#213a34]/12 shadow-sm p-2.5 sm:p-3 space-y-2 transition-all">
@@ -230,8 +236,8 @@ export function IntensiveAudioPlayer({
           <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-wider bg-[#213a34] text-[#f8d467] shrink-0">
             {questionRange}
           </span>
-          <h2 className="font-black text-[#213a34] text-xs sm:text-sm truncate" title={title}>
-            {displayTitle}
+          <h2 className="font-bold text-[#213a34] text-xs sm:text-sm truncate">
+            {getPartLabel()}
           </h2>
         </div>
 

@@ -240,14 +240,14 @@ export function IntensiveSidebar({
                   onSelectItem(item.id);
                   onCloseMobile();
                 }}
-                className={`w-full text-left p-3 rounded-2xl transition-all flex items-start gap-3 ${
+                className={`w-full text-left p-2.5 rounded-xl sm:rounded-2xl transition-all flex items-center gap-2.5 cursor-pointer ${
                   isSelected
                     ? 'bg-[#213a34] text-white shadow-md ring-2 ring-[#213a34]/30'
                     : 'hover:bg-[#f5f0e6]/70 text-[#213a34]'
                 }`}
               >
                 {/* Status Icon */}
-                <div className="pt-0.5 shrink-0">
+                <div className="shrink-0 flex items-center justify-center">
                   {isDone ? (
                     <CheckCircle2
                       className={`w-4 h-4 ${
@@ -264,42 +264,32 @@ export function IntensiveSidebar({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1.5 mb-1">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
-                          isSelected
-                            ? 'bg-white/20 text-[#f8d467] border-white/20'
-                            : getPartBadge(item.part)
-                        }`}
-                      >
-                        P{item.part}
-                      </span>
-                      <span
-                        className={`text-xs font-black truncate ${
-                          isSelected ? 'text-white' : 'text-[#213a34]'
-                        }`}
-                      >
-                        {item.questionRange}
-                      </span>
-                    </div>
-
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-[#f8d467] text-[#213a34] shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#213a34] animate-pulse" />
-                        Đang làm
-                      </span>
-                    )}
+                <div className="flex-1 min-w-0 flex items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
+                        isSelected
+                          ? 'bg-white/20 text-[#f8d467] border-white/20'
+                          : getPartBadge(item.part)
+                      }`}
+                    >
+                      P{item.part}
+                    </span>
+                    <span
+                      className={`text-xs font-black truncate ${
+                        isSelected ? 'text-white' : 'text-[#213a34]'
+                      }`}
+                    >
+                      {item.questionRange}
+                    </span>
                   </div>
 
-                  <p
-                    className={`text-xs font-medium line-clamp-1 ${
-                      isSelected ? 'text-white/80' : 'text-gray-500'
-                    }`}
-                  >
-                    {item.title.replace(/^Part \d - (Câu [^:]+: )?/, '')}
-                  </p>
+                  {isSelected && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-[#f8d467] text-[#213a34] shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#213a34] animate-pulse" />
+                      Đang làm
+                    </span>
+                  )}
                 </div>
               </button>
             );
