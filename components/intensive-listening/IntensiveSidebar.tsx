@@ -11,6 +11,8 @@ import {
   Sparkles,
   BookMarked,
   Filter,
+  ChevronRight,
+  ChevronDown,
 } from 'lucide-react';
 
 interface IntensiveSidebarProps {
@@ -23,6 +25,7 @@ interface IntensiveSidebarProps {
   currentTestId?: number;
   onSelectTest?: (testId: number) => void;
   availableTests?: IntensiveTestOption[];
+  onOpenTestSelector?: () => void;
 }
 
 export function IntensiveSidebar({
@@ -35,6 +38,7 @@ export function IntensiveSidebar({
   currentTestId = 1,
   onSelectTest,
   availableTests,
+  onOpenTestSelector,
 }: IntensiveSidebarProps) {
   const [selectedPart, setSelectedPart] = useState<PartFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,26 +112,57 @@ export function IntensiveSidebar({
           </button>
         </div>
 
-        {/* Test Selector Tabs */}
-        {availableTests && onSelectTest && availableTests.length > 1 && (
-          <div className="flex items-center gap-1.5 p-1 bg-[#213a34]/5 rounded-xl mt-3">
-            {availableTests.map((t) => {
-              const isSelected = t.id === currentTestId;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => onSelectTest(t.id)}
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-black transition-all ${
-                    isSelected
-                      ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
-                      : 'text-gray-600 hover:text-[#213a34] hover:bg-white/60'
-                  }`}
-                >
-                  {t.shortTitle}
-                </button>
-              );
-            })}
+        {/* Test Selector Button & Quick Chips */}
+        {availableTests && (
+          <div className="mt-3 space-y-2">
+            {onOpenTestSelector && (
+              <button
+                type="button"
+                onClick={onOpenTestSelector}
+                className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white border border-[#213a34]/15 hover:border-[#213a34]/35 hover:bg-[#e9f2ed]/50 transition-all shadow-2xs group text-left"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center text-xs font-black shrink-0">
+                    T{currentTestId}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-black text-[#213a34] truncate">
+                      {currentTest ? currentTest.title : `ETS 2026 - Test ${currentTestId}`}
+                    </div>
+                    <div className="text-[10px] text-gray-500 font-bold">
+                      Nhấn để chọn trong 10 đề thi
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-xs font-black text-[#eb6a52] shrink-0 group-hover:translate-x-0.5 transition-transform">
+                  <span>Đổi đề</span>
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </button>
+            )}
+
+            {/* Quick Test Chips (10 Tests horizontal scroll) */}
+            {onSelectTest && (
+              <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none">
+                {availableTests.map((t) => {
+                  const isSelected = t.id === currentTestId;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => onSelectTest(t.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-black whitespace-nowrap transition-all shrink-0 ${
+                        isSelected
+                          ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                          : 'bg-white/80 text-gray-600 hover:text-[#213a34] hover:bg-white border border-[#213a34]/10'
+                      }`}
+                    >
+                      {t.shortTitle}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

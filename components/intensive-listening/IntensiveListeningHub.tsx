@@ -14,6 +14,7 @@ import { IntensiveAudioPlayer } from './IntensiveAudioPlayer';
 import { QuizTab } from './QuizTab';
 import { TranscriptTab } from './TranscriptTab';
 import { DictationTab } from './DictationTab';
+import { TestSelectorModal } from './TestSelectorModal';
 import {
   ArrowLeft,
   Headphones,
@@ -24,6 +25,7 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Sparkles,
   Trophy,
   Layers,
@@ -32,8 +34,9 @@ import {
 export function IntensiveListeningHub() {
   const router = useRouter();
 
-  // Test Selection state (Test 1, Test 2, Test 3)
+  // Test Selection state (Test 1 to 10)
   const [currentTestId, setCurrentTestId] = useState<number>(1);
+  const [isTestSelectorOpen, setIsTestSelectorOpen] = useState<boolean>(false);
   const currentTestData = getIntensiveDataByTestId(currentTestId);
 
   // Item & practice State
@@ -51,16 +54,24 @@ export function IntensiveListeningHub() {
   useEffect(() => {
     setMounted(true);
     try {
-      // 1. Load active test
+      // 1. Load active test (from URL or localStorage)
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlTest = searchParams.get('test');
       const savedTest = localStorage.getItem('toeic_intensive_current_test');
       let initialTestId = 1;
-      if (savedTest) {
+
+      if (urlTest) {
+        const parsedUrl = parseInt(urlTest, 10);
+        if (availableIntensiveTests.some((t) => t.id === parsedUrl)) {
+          initialTestId = parsedUrl;
+        }
+      } else if (savedTest) {
         const parsedTest = parseInt(savedTest, 10);
-        if ([1, 2, 3].includes(parsedTest)) {
+        if (availableIntensiveTests.some((t) => t.id === parsedTest)) {
           initialTestId = parsedTest;
-          setCurrentTestId(parsedTest);
         }
       }
+      setCurrentTestId(initialTestId);
 
       const activeData = getIntensiveDataByTestId(initialTestId);
 
@@ -223,25 +234,21 @@ export function IntensiveListeningHub() {
             </div>
           </div>
 
-          {/* Center / Header Test Selector Pills */}
-          <div className="flex items-center gap-1 bg-[#e9f2ed] p-1 rounded-full border border-[#213a34]/10">
-            {availableIntensiveTests.map((t) => {
-              const isSelected = t.id === currentTestId;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => handleSelectTest(t.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-black transition-all ${
-                    isSelected
-                      ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
-                      : 'text-gray-600 hover:text-[#213a34]'
-                  }`}
-                >
-                  {t.shortTitle}
-                </button>
-              );
-            })}
+          {/* Center / Header Test Selector Button */}
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setIsTestSelectorOpen(true)}
+              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#213a34] text-white hover:bg-[#2c4e46] shadow-xs text-xs font-black transition-all group active:scale-95"
+              title="Nhấn để mở danh sách 10 đề thi ETS 2026"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
+              <span>ETS 2026 · {activeTestInfo?.shortTitle || `Test ${currentTestId}`}</span>
+              <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md text-[10px] bg-white/10 text-[#f8d467]">
+                10 Đề
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-300 group-hover:translate-y-0.5 transition-transform" />
+            </button>
           </div>
 
           {/* Right: Progress & Mobile Menu Toggle */}
@@ -280,6 +287,7 @@ export function IntensiveListeningHub() {
           currentTestId={currentTestId}
           onSelectTest={handleSelectTest}
           availableTests={availableIntensiveTests}
+          onOpenTestSelector={() => setIsTestSelectorOpen(true)}
         />
 
         {/* Right Study Area */}
@@ -406,6 +414,14 @@ export function IntensiveListeningHub() {
           </div>
         </div>
       </main>
+
+      {/* Dedicated Test Selection Modal */}
+      <TestSelectorModal
+        isOpen={isTestSelectorOpen}
+        onClose={() => setIsTestSelectorOpen(false)}
+        currentTestId={currentTestId}
+        onSelectTest={handleSelectTest}
+      />
     </div>
   );
 }
