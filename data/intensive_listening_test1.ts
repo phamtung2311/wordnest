@@ -22,6 +22,7 @@ export interface QuestionItem {
   options: QuestionOption[];
   correctAnswer: 'A' | 'B' | 'C' | 'D';
   explanation?: string;
+  paraphraseGroup?: { original: string; paraphrase: string }[];
 }
 
 export interface VocabItem {
@@ -38,9 +39,10 @@ export interface IntensiveListeningItem {
   title: string;
   audioSrc: string;
   imageUrl?: string;
+  image?: string;
   transcript: DialogueLine[];
   questions: QuestionItem[];
-  vocabulary: VocabItem[];
+  vocabulary?: VocabItem[];
 }
 
 export const test1IntensiveData: IntensiveListeningItem[] = [
