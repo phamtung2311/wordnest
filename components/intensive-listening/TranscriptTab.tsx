@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { DialogueLine, VocabItem } from '@/data/intensive_listening_test1';
 import {
   Volume2,
@@ -10,7 +10,12 @@ import {
   EyeOff,
   BookOpen,
   Sparkles,
+  Plus,
+  FolderPlus,
+  BookmarkPlus,
 } from 'lucide-react';
+import { AddToDeckModal, type VocabCandidate } from './AddToDeckModal';
+import { getSavedTermsSet, normalizeTerm } from '@/lib/vocabService';
 
 interface TranscriptTabProps {
   transcript: DialogueLine[];
@@ -26,6 +31,76 @@ export function TranscriptTab({
   const [showTranslation, setShowTranslation] = useState<boolean>(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
+
+  // Deck modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [singleCandidate, setSingleCandidate] = useState<VocabCandidate | null>(null);
+  const [batchCandidates, setBatchCandidates] = useState<VocabCandidate[] | undefined>(undefined);
+  const [savedTerms, setSavedTerms] = useState<Set<string>>(new Set());
+
+  // Listen for deck updates
+  useEffect(() => {
+    setSavedTerms(getSavedTermsSet());
+    const handleUpdate = () => {
+      setSavedTerms(getSavedTermsSet());
+    };
+    window.addEventListener('wordnest-decks-updated', handleUpdate);
+    return () => window.removeEventListener('wordnest-decks-updated', handleUpdate);
+  }, []);
+
+  // Helper to find sample sentence for a vocab word
+  const findExampleForWord = (word: string): string => {
+    const norm = word.toLowerCase().trim();
+    for (const line of transcript) {
+      if (line.text.toLowerCase().includes(norm)) {
+        return line.text;
+      }
+    }
+    return transcript[0]?.text || '';
+  };
+
+  const handleOpenAddSingle = (vocab: VocabItem) => {
+    setBatchCandidates(undefined);
+    setSingleCandidate({
+      word: vocab.word,
+      meaning: vocab.meaning,
+      partOfSpeech: vocab.partOfSpeech,
+      example: findExampleForWord(vocab.word),
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenAddBatch = () => {
+    if (!vocabulary || vocabulary.length === 0) return;
+    setSingleCandidate(null);
+    setBatchCandidates(
+      vocabulary.map((v) => ({
+        word: v.word,
+        meaning: v.meaning,
+        partOfSpeech: v.partOfSpeech,
+        example: findExampleForWord(v.word),
+      }))
+    );
+    setIsModalOpen(true);
+  };
+
+  const handleAddFromLine = (line: DialogueLine) => {
+    let selected = '';
+    if (typeof window !== 'undefined') {
+      const sel = window.getSelection()?.toString().trim();
+      if (sel && line.text.toLowerCase().includes(sel.toLowerCase())) {
+        selected = sel;
+      }
+    }
+
+    setBatchCandidates(undefined);
+    setSingleCandidate({
+      word: selected || '',
+      meaning: selected ? '' : line.vietnamese || '',
+      example: line.text,
+    });
+    setIsModalOpen(true);
+  };
 
   const handleSpeak = (text: string, id: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -93,7 +168,7 @@ export function TranscriptTab({
         <button
           type="button"
           onClick={() => setShowTranslation(!showTranslation)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-white hover:bg-[#e9f2ed] border border-[#213a34]/15 text-[#213a34] shadow-sm transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-white hover:bg-[#e9f2ed] border border-[#213a34]/15 text-[#213a34] shadow-sm transition-colors cursor-pointer"
         >
           {showTranslation ? (
             <>
@@ -140,6 +215,17 @@ export function TranscriptTab({
 
               {/* Action Buttons */}
               <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                {/* Add Word from this sentence */}
+                <button
+                  type="button"
+                  onClick={() => handleAddFromLine(line)}
+                  title="Thêm từ vựng từ câu này vào sổ từ"
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-gray-600 hover:text-[#213a34] hover:bg-[#e9f2ed] border border-transparent hover:border-[#213a34]/15 transition-colors cursor-pointer"
+                >
+                  <BookmarkPlus className="w-3.5 h-3.5 text-[#eb6a52]" />
+                  <span className="hidden sm:inline text-[11px] font-black text-[#213a34]">+ Từ</span>
+                </button>
+
                 {/* Text-to-Speech Speak */}
                 <button
                   type="button"
@@ -186,51 +272,103 @@ export function TranscriptTab({
       {/* Vocabulary Highlights Section */}
       {vocabulary && vocabulary.length > 0 && (
         <div className="bg-[#fffdf8] rounded-2xl sm:rounded-3xl p-5 sm:p-6 border-2 border-[#213a34]/15 shadow-sm space-y-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-[#eb6a52]" />
-            <h4 className="font-black text-[#213a34] text-base sm:text-lg">
-              Từ vựng trọng tâm trong bài
-            </h4>
-            <span className="text-xs font-bold text-gray-500 bg-[#e9f2ed] px-2 py-0.5 rounded-full">
-              {vocabulary.length} từ
-            </span>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-[#eb6a52]" />
+              <h4 className="font-black text-[#213a34] text-base sm:text-lg">
+                Từ vựng trọng tâm trong bài
+              </h4>
+              <span className="text-xs font-bold text-gray-500 bg-[#e9f2ed] px-2 py-0.5 rounded-full">
+                {vocabulary.length} từ
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleOpenAddBatch}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467] shadow-sm transition-all active:scale-95 cursor-pointer"
+            >
+              <FolderPlus className="w-4 h-4 text-[#f8d467]" />
+              <span>Thêm tất cả {vocabulary.length} từ vào bộ từ</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {vocabulary.map((vocab, vIdx) => (
-              <div
-                key={vIdx}
-                className="bg-white p-3.5 rounded-xl sm:rounded-2xl border border-[#213a34]/10 hover:border-[#f29f77] shadow-xs hover:shadow-sm transition-all flex items-start justify-between gap-3 group"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-[#213a34] text-sm sm:text-base">
-                      {vocab.word}
-                    </span>
-                    {vocab.partOfSpeech && (
-                      <span className="text-[10px] font-black uppercase text-[#eb6a52] bg-[#f5f0e6] px-1.5 py-0.5 rounded">
-                        {vocab.partOfSpeech}
+            {vocabulary.map((vocab, vIdx) => {
+              const isSaved = savedTerms.has(normalizeTerm(vocab.word));
+
+              return (
+                <div
+                  key={vIdx}
+                  className="bg-white p-3.5 rounded-xl sm:rounded-2xl border border-[#213a34]/10 hover:border-[#f29f77] shadow-xs hover:shadow-sm transition-all flex items-start justify-between gap-3 group"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-black text-[#213a34] text-sm sm:text-base">
+                        {vocab.word}
                       </span>
+                      {vocab.partOfSpeech && (
+                        <span className="text-[10px] font-black uppercase text-[#eb6a52] bg-[#f5f0e6] px-1.5 py-0.5 rounded">
+                          {vocab.partOfSpeech}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
+                      {vocab.meaning}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleSpeak(vocab.word, `vocab-${vIdx}`)}
+                      title={`Nghe phát âm từ: ${vocab.word}`}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-[#213a34] hover:bg-[#e9f2ed] transition-colors"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+
+                    {isSaved ? (
+                      <span
+                        title="Từ này đã có trong bộ từ vựng của bạn"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Đã lưu</span>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAddSingle(vocab)}
+                        title="Lưu từ này vào sổ từ vựng"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black bg-[#f5f0e6] hover:bg-[#213a34] text-[#213a34] hover:text-[#f8d467] border border-[#213a34]/15 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Lưu từ</span>
+                      </button>
                     )}
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
-                    {vocab.meaning}
-                  </p>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(vocab.word, `vocab-${vIdx}`)}
-                  title={`Nghe phát âm từ: ${vocab.word}`}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-[#213a34] hover:bg-[#e9f2ed] shrink-0 transition-colors"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
+
+      {/* Add To Deck Modal */}
+      <AddToDeckModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        singleWord={singleCandidate}
+        batchWords={batchCandidates}
+        onAddedSuccess={(addedTerms) => {
+          setSavedTerms((prev) => {
+            const next = new Set(prev);
+            addedTerms.forEach((t) => next.add(normalizeTerm(t)));
+            return next;
+          });
+        }}
+      />
     </div>
   );
 }
