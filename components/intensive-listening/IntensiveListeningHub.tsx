@@ -139,6 +139,7 @@ export function IntensiveListeningHub() {
   const handleSelectTest = (testId: number) => {
     if (testId === currentTestId) return;
     setCurrentTestId(testId);
+    setActiveTab('quiz');
     const newTestData = getIntensiveDataByTestId(testId);
 
     try {
@@ -185,6 +186,7 @@ export function IntensiveListeningHub() {
   // Handler: Select an item in current test
   const handleSelectItem = (id: string) => {
     setCurrentItemId(id);
+    setActiveTab('quiz'); // Luôn tự động chuyển về Tab 1: Làm trắc nghiệm khi chuyển câu mới
     const targetItem = currentTestData.find((i) => i.id === id);
     try {
       localStorage.setItem('toeic_intensive_current_test', String(currentTestId));
