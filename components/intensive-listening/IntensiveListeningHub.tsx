@@ -38,21 +38,22 @@ function loadQuizResultsForTest(
   const results: Record<string, QuizItemResult> = {};
   if (typeof window === 'undefined') return results;
 
-  // 1. Load from saved results map if any
-  try {
-    const raw = localStorage.getItem(`toeic_intensive_results_t${testId}`);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object') {
-        Object.assign(results, parsed);
-      }
-    }
-  } catch {}
-
-  // 2. Scan individual quiz items to ensure sync and recover historical quizzes
+  // Scan individual quiz items strictly scoped by testId
   items.forEach((item) => {
     try {
-      const quizRaw = localStorage.getItem(`toeic_intensive_quiz_${item.id}`);
+      const primaryKey = `toeic_intensive_quiz_t${testId}_${item.id}`;
+      // ONLY testId === 1 falls back to legacy un-prefixed keys
+      const legacyKey = testId === 1 ? `toeic_intensive_quiz_${item.id}` : null;
+      let quizRaw = localStorage.getItem(primaryKey);
+      if (!quizRaw && legacyKey) {
+        quizRaw = localStorage.getItem(legacyKey);
+        if (quizRaw) {
+          try {
+            localStorage.setItem(primaryKey, quizRaw);
+          } catch {}
+        }
+      }
+
       if (quizRaw) {
         const quizData = JSON.parse(quizRaw);
         if (quizData && quizData.isSubmitted && quizData.selectedAnswers) {
@@ -70,6 +71,14 @@ function loadQuizResultsForTest(
       }
     } catch {}
   });
+
+  // Always rewrite test results cache with clean, scoped data
+  try {
+    localStorage.setItem(
+      `toeic_intensive_results_t${testId}`,
+      JSON.stringify(results)
+    );
+  } catch {}
 
   return results;
 }
@@ -153,20 +162,45 @@ export function IntensiveListeningHub() {
         setCurrentItemId(activeData[0].id);
       }
 
-      // 3. Load completed items for that test
+      // Auto-cleanup dirty cross-contaminated test caches (t2 to t10)
+      const hasCleaned = localStorage.getItem('toeic_intensive_scoped_v1');
+      if (!hasCleaned) {
+        for (let t = 2; t <= 10; t++) {
+          let hasScopedKey = false;
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith(`toeic_intensive_quiz_t${t}_`)) {
+              hasScopedKey = true;
+              break;
+            }
+          }
+          if (!hasScopedKey) {
+            localStorage.removeItem(`toeic_intensive_results_t${t}`);
+            localStorage.removeItem(`toeic_intensive_completed_t${t}`);
+          }
+        }
+        localStorage.setItem('toeic_intensive_scoped_v1', 'true');
+      }
+
+      // 3. Load quiz results & score stats for that test
+      const initialResults = loadQuizResultsForTest(initialTestId, activeData);
+      setQuizResults(initialResults);
+
+      // 4. Load completed items for that test
       const savedCompleted =
         localStorage.getItem(`toeic_intensive_completed_t${initialTestId}`) ||
         (initialTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
 
-      if (savedCompleted) {
+      if (savedCompleted && (initialTestId === 1 || Object.keys(initialResults).length > 0)) {
         setCompletedItems(JSON.parse(savedCompleted));
       } else {
         setCompletedItems({});
+        try {
+          if (initialTestId > 1 && Object.keys(initialResults).length === 0) {
+            localStorage.removeItem(`toeic_intensive_completed_t${initialTestId}`);
+          }
+        } catch {}
       }
-
-      // 4. Load quiz results & score stats for that test
-      const initialResults = loadQuizResultsForTest(initialTestId, activeData);
-      setQuizResults(initialResults);
 
       // 4. Other playback settings
       const savedLoop = localStorage.getItem('toeic_intensive_loop');
@@ -219,17 +253,22 @@ export function IntensiveListeningHub() {
         localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
       }
 
+      // Load quiz results for the new test first
+      const testResults = loadQuizResultsForTest(testId, newTestData);
+      setQuizResults(testResults);
+
       // Load completed items for the new test
       const savedCompleted = localStorage.getItem(`toeic_intensive_completed_t${testId}`);
-      if (savedCompleted) {
+      if (savedCompleted && (testId === 1 || Object.keys(testResults).length > 0)) {
         setCompletedItems(JSON.parse(savedCompleted));
       } else {
         setCompletedItems({});
+        try {
+          if (testId > 1 && Object.keys(testResults).length === 0) {
+            localStorage.removeItem(`toeic_intensive_completed_t${testId}`);
+          }
+        } catch {}
       }
-
-      // Load quiz results for the new test
-      const testResults = loadQuizResultsForTest(testId, newTestData);
-      setQuizResults(testResults);
     } catch (e) {
       console.error('Error switching test', e);
     }
@@ -507,6 +546,7 @@ export function IntensiveListeningHub() {
             {activeTab === 'quiz' && (
               <QuizTab
                 key={`quiz-${currentTestId}-${currentItem.id}`}
+                testId={currentTestId}
                 itemId={currentItem.id}
                 part={currentItem.part}
                 imageUrl={currentItem.imageUrl || (currentItem as any).image || (currentItem as any).graphicImage}

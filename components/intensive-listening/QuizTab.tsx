@@ -17,6 +17,7 @@ import {
 
 interface QuizTabProps {
   itemId: string;
+  testId?: number;
   questions: QuestionItem[];
   part?: 1 | 2 | 3 | 4;
   imageUrl?: string;
@@ -27,6 +28,7 @@ interface QuizTabProps {
 
 export function QuizTab({
   itemId,
+  testId = 1,
   questions,
   part = 1,
   imageUrl,
@@ -43,11 +45,13 @@ export function QuizTab({
   const [showScript, setShowScript] = useState<boolean>(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
 
+  const getStorageKey = () => `toeic_intensive_quiz_t${testId}_${itemId}`;
+
   // Save quiz answers to localStorage
   const persistQuizState = (answers: Record<number, string>, submitted: boolean) => {
     try {
       localStorage.setItem(
-        `toeic_intensive_quiz_${itemId}`,
+        getStorageKey(),
         JSON.stringify({
           selectedAnswers: answers,
           isSubmitted: submitted,
@@ -60,7 +64,18 @@ export function QuizTab({
   // Load saved state when switching items or mounting
   useEffect(() => {
     try {
-      const savedRaw = localStorage.getItem(`toeic_intensive_quiz_${itemId}`);
+      const primaryKey = getStorageKey();
+      let savedRaw = localStorage.getItem(primaryKey);
+      // Fallback only for testId === 1 to migrate legacy un-prefixed keys
+      if (!savedRaw && testId === 1) {
+        savedRaw = localStorage.getItem(`toeic_intensive_quiz_${itemId}`);
+        if (savedRaw) {
+          try {
+            localStorage.setItem(primaryKey, savedRaw);
+          } catch {}
+        }
+      }
+
       if (savedRaw) {
         const parsed = JSON.parse(savedRaw);
         setSelectedAnswers(parsed.selectedAnswers || {});
@@ -82,7 +97,7 @@ export function QuizTab({
     setPeekTranscript(false);
     setShowTranslation(false);
     setIsImageModalOpen(false);
-  }, [itemId]);
+  }, [itemId, testId]);
 
   const handleSelectOption = (qNum: number, key: string) => {
     if (isSubmitted) return;
@@ -130,7 +145,10 @@ export function QuizTab({
     setShowScript(false);
     setPeekTranscript(false);
     try {
-      localStorage.removeItem(`toeic_intensive_quiz_${itemId}`);
+      localStorage.removeItem(getStorageKey());
+      if (testId === 1) {
+        localStorage.removeItem(`toeic_intensive_quiz_${itemId}`);
+      }
     } catch {}
     if (onResetItem) {
       onResetItem();
