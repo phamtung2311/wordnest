@@ -8,7 +8,7 @@ import {
   getIntensiveDataByTestId,
 } from '@/data/intensive_listening_index';
 import type { IntensiveListeningItem } from '@/data/intensive_listening_index';
-import type { PracticeTab } from './types';
+import type { PracticeTab, QuizItemResult } from './types';
 import { IntensiveSidebar } from './IntensiveSidebar';
 import { IntensiveAudioPlayer } from './IntensiveAudioPlayer';
 import { QuizTab } from './QuizTab';
@@ -31,6 +31,49 @@ import {
   Layers,
 } from 'lucide-react';
 
+function loadQuizResultsForTest(
+  testId: number,
+  items: IntensiveListeningItem[]
+): Record<string, QuizItemResult> {
+  const results: Record<string, QuizItemResult> = {};
+  if (typeof window === 'undefined') return results;
+
+  // 1. Load from saved results map if any
+  try {
+    const raw = localStorage.getItem(`toeic_intensive_results_t${testId}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        Object.assign(results, parsed);
+      }
+    }
+  } catch {}
+
+  // 2. Scan individual quiz items to ensure sync and recover historical quizzes
+  items.forEach((item) => {
+    try {
+      const quizRaw = localStorage.getItem(`toeic_intensive_quiz_${item.id}`);
+      if (quizRaw) {
+        const quizData = JSON.parse(quizRaw);
+        if (quizData && quizData.isSubmitted && quizData.selectedAnswers) {
+          const total = item.questions.length;
+          const correct = item.questions.filter(
+            (q) => quizData.selectedAnswers[q.num] === q.correctAnswer
+          ).length;
+          results[item.id] = {
+            correct,
+            total,
+            isCorrect: total > 0 && correct === total,
+            answeredAt: quizData.updatedAt || Date.now(),
+          };
+        }
+      }
+    } catch {}
+  });
+
+  return results;
+}
+
 export function IntensiveListeningHub() {
   const router = useRouter();
 
@@ -47,6 +90,7 @@ export function IntensiveListeningHub() {
   const [isLooping, setIsLooping] = useState<boolean>(false);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
+  const [quizResults, setQuizResults] = useState<Record<string, QuizItemResult>>({});
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -120,6 +164,10 @@ export function IntensiveListeningHub() {
         setCompletedItems({});
       }
 
+      // 4. Load quiz results & score stats for that test
+      const initialResults = loadQuizResultsForTest(initialTestId, activeData);
+      setQuizResults(initialResults);
+
       // 4. Other playback settings
       const savedLoop = localStorage.getItem('toeic_intensive_loop');
       if (savedLoop !== null) {
@@ -178,6 +226,10 @@ export function IntensiveListeningHub() {
       } else {
         setCompletedItems({});
       }
+
+      // Load quiz results for the new test
+      const testResults = loadQuizResultsForTest(testId, newTestData);
+      setQuizResults(testResults);
     } catch (e) {
       console.error('Error switching test', e);
     }
@@ -242,6 +294,45 @@ export function IntensiveListeningHub() {
     });
   };
 
+  const handleRecordQuizResult = (itemId: string, correct: number, total: number) => {
+    setQuizResults((prev) => {
+      const isCorrect = total > 0 && correct === total;
+      const updated: Record<string, QuizItemResult> = {
+        ...prev,
+        [itemId]: {
+          correct,
+          total,
+          isCorrect,
+          answeredAt: Date.now(),
+        },
+      };
+      try {
+        localStorage.setItem(
+          `toeic_intensive_results_t${currentTestId}`,
+          JSON.stringify(updated)
+        );
+      } catch (e) {}
+      return updated;
+    });
+
+    // Mark as completed in the item progress
+    markItemCompleted(itemId);
+  };
+
+  const handleResetQuizResult = (itemId: string) => {
+    setQuizResults((prev) => {
+      const updated = { ...prev };
+      delete updated[itemId];
+      try {
+        localStorage.setItem(
+          `toeic_intensive_results_t${currentTestId}`,
+          JSON.stringify(updated)
+        );
+      } catch (e) {}
+      return updated;
+    });
+  };
+
   // Find current item and indices within active test
   const currentItemIndex = currentTestData.findIndex((i) => i.id === currentItemId);
   const currentItem: IntensiveListeningItem =
@@ -266,6 +357,15 @@ export function IntensiveListeningHub() {
   const totalCount = currentTestData.length;
   const completionPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   const activeTestInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
+
+  const totalCorrectQuestions = Object.values(quizResults).reduce(
+    (acc, res) => acc + (res?.correct || 0),
+    0
+  );
+  const totalQuestionsInTest = currentTestData.reduce(
+    (acc, item) => acc + item.questions.length,
+    0
+  );
 
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
@@ -333,11 +433,15 @@ export function IntensiveListeningHub() {
 
           {/* Right: Progress & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Progress Pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f5f0e6] border border-[#213a34]/10">
+            {/* Score & Progress Pill */}
+            <div
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f0e6] border border-[#213a34]/10 cursor-pointer hover:bg-[#e9f2ed] transition-colors"
+              onClick={() => setIsMobileSidebarOpen(true)}
+              title="Điểm số câu đúng / Tổng số câu đề này"
+            >
               <Trophy className="w-4 h-4 text-amber-500" />
               <span className="text-xs font-black text-[#213a34]">
-                {completedCount}/{totalCount} ({completionPercentage}%)
+                {totalCorrectQuestions}/{totalQuestionsInTest} câu đúng
               </span>
             </div>
 
@@ -348,7 +452,9 @@ export function IntensiveListeningHub() {
               className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#213a34] text-white text-xs font-black shadow-xs active:scale-95 transition-all"
             >
               <Menu className="w-4 h-4 text-[#f8d467]" />
-              <span>{activeTestInfo?.shortTitle} ({completedCount}/{totalCount})</span>
+              <span>
+                {activeTestInfo?.shortTitle} ({totalCorrectQuestions}/{totalQuestionsInTest})
+              </span>
             </button>
           </div>
         </div>
@@ -362,6 +468,7 @@ export function IntensiveListeningHub() {
           currentItemId={currentItem.id}
           onSelectItem={handleSelectItem}
           completedItems={completedItems}
+          quizResults={quizResults}
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
           currentTestId={currentTestId}
@@ -406,9 +513,10 @@ export function IntensiveListeningHub() {
                 transcript={currentItem.transcript}
                 questions={currentItem.questions}
                 onCompleteItem={(score, total) => {
-                  if (score / total >= 0.6) {
-                    markItemCompleted(currentItem.id);
-                  }
+                  handleRecordQuizResult(currentItem.id, score, total);
+                }}
+                onResetItem={() => {
+                  handleResetQuizResult(currentItem.id);
                 }}
               />
             )}

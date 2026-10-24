@@ -22,6 +22,7 @@ interface QuizTabProps {
   imageUrl?: string;
   transcript?: DialogueLine[];
   onCompleteItem?: (score: number, total: number) => void;
+  onResetItem?: () => void;
 }
 
 export function QuizTab({
@@ -31,6 +32,7 @@ export function QuizTab({
   imageUrl,
   transcript,
   onCompleteItem,
+  onResetItem,
 }: QuizTabProps) {
   // Selected answers: { [questionNum]: 'A' | 'B' | 'C' | 'D' }
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
@@ -130,6 +132,9 @@ export function QuizTab({
     try {
       localStorage.removeItem(`toeic_intensive_quiz_${itemId}`);
     } catch {}
+    if (onResetItem) {
+      onResetItem();
+    }
   };
 
   const totalQuestions = questions.length;

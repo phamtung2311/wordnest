@@ -10,3 +10,10 @@ export interface IntensiveListeningSettings {
   autoAdvance: boolean;
   volume: number;
 }
+
+export interface QuizItemResult {
+  correct: number;
+  total: number;
+  isCorrect: boolean;
+  answeredAt?: number;
+}
