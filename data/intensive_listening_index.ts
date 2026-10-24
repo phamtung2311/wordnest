@@ -1,6 +1,8 @@
 import { test1IntensiveData } from './intensive_listening_test1';
 import { test2IntensiveData } from './intensive_listening_test2';
 import { test3IntensiveData } from './intensive_listening_test3';
+import { test4IntensiveData } from './intensive_listening_test4';
+import { test5IntensiveData } from './intensive_listening_test5';
 import type { IntensiveListeningItem } from './intensive_listening_test1';
 
 export type {
@@ -44,6 +46,22 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 3 (Part 1 - 4)',
     itemCount: test3IntensiveData.length,
     data: test3IntensiveData,
+  },
+  {
+    id: 4,
+    title: 'ETS TOEIC 2026 - Test 4',
+    shortTitle: 'Test 4',
+    description: 'Luyện nghe chi tiết Test 4 (Part 1 - 4)',
+    itemCount: test4IntensiveData.length,
+    data: test4IntensiveData,
+  },
+  {
+    id: 5,
+    title: 'ETS TOEIC 2026 - Test 5',
+    shortTitle: 'Test 5',
+    description: 'Luyện nghe chi tiết Test 5 (Part 1 - 4)',
+    itemCount: test5IntensiveData.length,
+    data: test5IntensiveData,
   },
 ];
 
