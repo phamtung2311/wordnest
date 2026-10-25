@@ -83,19 +83,23 @@ export function IntensiveAudioPlayer({
     audioRef.current.playbackRate = playbackSpeed;
     setCurrentTime(0);
     setIsPlaying(false);
-    audioRef.current.load();
 
     // Do NOT auto-play full question audio if user is currently in dictation tab
     if (activeTabRef.current === 'dictation') {
       return;
     }
 
-    const playPromise = audioRef.current.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    }
+    const timer = setTimeout(() => {
+      if (!audioRef.current) return;
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
+    }, 50);
+
+    return () => clearTimeout(timer);
   }, [audioSrc]);
 
   // Sync playbackRate when changed
@@ -128,7 +132,7 @@ export function IntensiveAudioPlayer({
     [duration]
   );
 
-  // KEYBOARD SHORTCUTS LISTENER (STUDY4 Style: Space, Arrows, 1,2,3, [, ])
+  // KEYBOARD SHORTCUTS LISTENER: ArrowRight/Left (Next/Prev câu), Space (Play/Pause), Shift+Arrows (Seek), 1,2,3 (Tabs)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeEl = document.activeElement;
@@ -143,12 +147,20 @@ export function IntensiveAudioPlayer({
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlay();
-      } else if (e.code === 'ArrowLeft') {
+      } else if (e.code === 'ArrowLeft' || e.code === 'BracketLeft') {
         e.preventDefault();
-        skipSeconds(-5);
-      } else if (e.code === 'ArrowRight') {
+        if (e.shiftKey) {
+          skipSeconds(-5);
+        } else {
+          if (hasPrev) onPrev();
+        }
+      } else if (e.code === 'ArrowRight' || e.code === 'BracketRight') {
         e.preventDefault();
-        skipSeconds(5);
+        if (e.shiftKey) {
+          skipSeconds(5);
+        } else {
+          if (hasNext) onNext();
+        }
       } else if (e.code === 'KeyL' || e.code === 'KeyR') {
         e.preventDefault();
         onToggleLoop();
@@ -161,12 +173,6 @@ export function IntensiveAudioPlayer({
       } else if (e.key === '3') {
         e.preventDefault();
         onChangeTab('dictation');
-      } else if (e.code === 'BracketLeft') {
-        e.preventDefault();
-        if (hasPrev) onPrev();
-      } else if (e.code === 'BracketRight') {
-        e.preventDefault();
-        if (hasNext) onNext();
       }
     };
 
@@ -191,10 +197,11 @@ export function IntensiveAudioPlayer({
     if (isLooping) {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
-        audioRef.current.play();
+        audioRef.current.play().catch(() => {});
         setIsPlaying(true);
       }
-    } else if (autoAdvance && hasNext) {
+    } else if (hasNext) {
+      // Khi nghe hết bài nghe, tự động chuyển sang bài nghe tiếp
       onNext();
     } else {
       setIsPlaying(false);
@@ -330,7 +337,7 @@ export function IntensiveAudioPlayer({
             type="button"
             onClick={onPrev}
             disabled={!hasPrev}
-            title="Bài trước (Phím [)"
+            title="Bài trước (Phím ← hoặc [)"
             className="p-1.5 rounded-lg text-[#213a34] hover:bg-[#e9f2ed] disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
           >
             <SkipBack className="w-3.5 h-3.5" />
@@ -340,7 +347,7 @@ export function IntensiveAudioPlayer({
           <button
             type="button"
             onClick={() => skipSeconds(-5)}
-            title="Tua lùi 5s (Phím ←)"
+            title="Tua lùi 5s (Shift + ←)"
             className="flex items-center p-1.5 rounded-lg text-[#213a34] hover:bg-[#e9f2ed] active:scale-95 transition-all cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -369,7 +376,7 @@ export function IntensiveAudioPlayer({
           <button
             type="button"
             onClick={() => skipSeconds(5)}
-            title="Tua tới 5s (Phím →)"
+            title="Tua tới 5s (Shift + →)"
             className="flex items-center p-1.5 rounded-lg text-[#213a34] hover:bg-[#e9f2ed] active:scale-95 transition-all cursor-pointer"
           >
             <span className="text-[10px] font-black mr-0.5">+5s</span>
@@ -381,7 +388,7 @@ export function IntensiveAudioPlayer({
             type="button"
             onClick={onNext}
             disabled={!hasNext}
-            title="Bài tiếp theo (Phím ])"
+            title="Bài tiếp theo (Phím → hoặc ])"
             className="p-1.5 rounded-lg text-[#213a34] hover:bg-[#e9f2ed] disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
           >
             <SkipForward className="w-3.5 h-3.5" />

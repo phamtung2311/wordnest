@@ -155,7 +155,7 @@ export function DictationTab({
     }
   }, [targetWords]);
 
-  // Global listener for Ctrl (replay) and Tab (hint next word)
+  // Global listener for Ctrl (replay), Tab (hint next word), and Alt+Arrows (next/prev sentence)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Replay audio when pressing Ctrl key
@@ -165,6 +165,12 @@ export function DictationTab({
         // Tab key gives next word hint without shifting focus away
         e.preventDefault();
         triggerHint();
+      } else if (e.altKey && (e.code === 'ArrowRight' || e.key === 'ArrowRight')) {
+        e.preventDefault();
+        handleNextSentence();
+      } else if (e.altKey && (e.code === 'ArrowLeft' || e.key === 'ArrowLeft')) {
+        e.preventDefault();
+        handlePrevSentence();
       } else if (e.ctrlKey && e.key !== 'Control') {
         // If combo shortcut like Ctrl+C, Ctrl+V, Ctrl+A was pressed, cancel speech so it won't interrupt
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -178,7 +184,7 @@ export function DictationTab({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [triggerReplay, triggerHint]);
+  }, [triggerReplay, triggerHint, currentSentenceIdx, transcript.length]);
 
   // Track sentence index so typing in textarea NEVER triggers speech
   const prevSentenceIdxRef = useRef<number>(-1);
@@ -528,12 +534,26 @@ export function DictationTab({
               <span>Kiểm tra</span>
             </button>
 
+            {/* Prev Sentence */}
+            {currentSentenceIdx > 0 && (
+              <button
+                type="button"
+                onClick={handlePrevSentence}
+                className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs sm:text-sm font-black bg-[#e9f2ed] hover:bg-[#d5e5db] text-[#213a34] shadow-2xs transition-all cursor-pointer"
+                title="Quay lại câu trước (Alt + ←)"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Câu trước</span>
+              </button>
+            )}
+
             {/* Next Sentence */}
             {currentSentenceIdx < transcript.length - 1 && (
               <button
                 type="button"
                 onClick={handleNextSentence}
-                className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black bg-[#eb6a52] hover:bg-[#d85c45] text-white shadow-sm transition-all"
+                className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black bg-[#eb6a52] hover:bg-[#d85c45] text-white shadow-sm transition-all cursor-pointer"
+                title="Chuyển sang câu tiếp theo (Alt + →)"
               >
                 <span>Câu tiếp</span>
                 <ChevronRight className="w-4 h-4" />
