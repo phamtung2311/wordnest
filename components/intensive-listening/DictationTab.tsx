@@ -61,6 +61,7 @@ export function DictationTab({
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPlayTimeRef = useRef<number>(0);
+  const lastHintTimeRef = useRef<number>(0);
 
   // Current line cleaned of option letters (A), (B), (C), (D)
   const rawCurrentLine = transcript[currentSentenceIdx] || transcript[0];
@@ -103,8 +104,12 @@ export function DictationTab({
     }, 350);
   }, [speakCurrentLine]);
 
-  // Give hint: reveal the exact next word
-  const handleGiveHint = useCallback(() => {
+  // Give hint: reveal EXACTLY the next 1 word with throttle protection
+  const triggerHint = useCallback(() => {
+    const now = Date.now();
+    if (now - lastHintTimeRef.current < 250) return;
+    lastHintTimeRef.current = now;
+
     if (!targetWords || targetWords.length === 0) return;
 
     // Words user already typed
@@ -149,7 +154,7 @@ export function DictationTab({
       } else if (e.key === 'Tab') {
         // Tab key gives next word hint without shifting focus away
         e.preventDefault();
-        handleGiveHint();
+        triggerHint();
       } else if (e.ctrlKey && e.key !== 'Control') {
         // If combo shortcut like Ctrl+C, Ctrl+V, Ctrl+A was pressed, cancel speech so it won't interrupt
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -163,7 +168,7 @@ export function DictationTab({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [triggerReplay, handleGiveHint]);
+  }, [triggerReplay, triggerHint]);
 
   // Play audio on load of line
   useEffect(() => {
@@ -375,7 +380,8 @@ export function DictationTab({
             onKeyDown={(e) => {
               if (e.key === 'Tab') {
                 e.preventDefault();
-                handleGiveHint();
+                e.stopPropagation();
+                triggerHint();
                 return;
               }
               if (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') {
@@ -461,7 +467,7 @@ export function DictationTab({
             {/* Hint Button */}
             <button
               type="button"
-              onClick={handleGiveHint}
+              onClick={triggerHint}
               disabled={hintIndex >= targetWords.length}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border transition-all cursor-pointer ${
                 isHinting
