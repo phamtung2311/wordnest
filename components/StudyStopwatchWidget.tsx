@@ -28,15 +28,30 @@ import {
   emptyProgress,
 } from '@/lib/studyTimeService';
 
-function isAudioPlaying(): boolean {
-  if (typeof document === 'undefined') return false;
-  const audios = document.querySelectorAll('audio');
-  for (const a of audios) {
-    if (!a.paused && !a.ended && a.currentTime > 0) return true;
-  }
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis.speaking) {
+function isAudioActiveCheck(lastAudioActiveTimestamp: number): boolean {
+  // 1. If an audio event fired within the last 2.5 seconds, consider active
+  if (Date.now() - lastAudioActiveTimestamp < 2500) {
     return true;
   }
+
+  // 2. Check DOM audio and video elements
+  if (typeof document !== 'undefined') {
+    const audios = document.querySelectorAll('audio, video');
+    for (const a of audios) {
+      const media = a as HTMLMediaElement;
+      if (!media.paused && !media.ended) {
+        return true;
+      }
+    }
+  }
+
+  // 3. Check window.speechSynthesis
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -62,6 +77,7 @@ export default function StudyStopwatchWidget() {
   const [isIdle, setIsIdle] = useState(false);
   const [autoIdleEnabled, setAutoIdleEnabled] = useState(true);
   const lastActiveRef = useRef<number>(Date.now());
+  const lastAudioActiveRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const today = getTodayKey();
@@ -101,18 +117,106 @@ export default function StudyStopwatchWidget() {
     };
   }, []);
 
-  // Timer interval: ticks every 1s when active, visible, and not idle
+  // Listen for media events, speech synthesis, and audio button clicks globally
+  useEffect(() => {
+    const handleMediaPlay = () => {
+      lastAudioActiveRef.current = Date.now();
+      lastActiveRef.current = Date.now();
+      setIsIdle(false);
+      // Auto-start counting if audio plays!
+      setIsRunning((prev) => {
+        if (!prev) {
+          try {
+            localStorage.setItem('wordnest_stopwatch_running', 'true');
+          } catch {}
+          return true;
+        }
+        return prev;
+      });
+    };
+
+    // Capture media playback events on window (works for ALL <audio> elements anywhere in DOM)
+    const mediaEvents = ['play', 'playing', 'timeupdate', 'seeking', 'seeked'];
+    mediaEvents.forEach((evt) => {
+      window.addEventListener(evt, handleMediaPlay, true);
+    });
+
+    // Capture clicks on audio/listen buttons across any section
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const btn = target.closest('button, [role="button"], a');
+      if (btn) {
+        const text = (btn.textContent || '').toLowerCase();
+        const title = (btn.getAttribute('title') || '').toLowerCase();
+        const aria = (btn.getAttribute('aria-label') || '').toLowerCase();
+        const isAudioTrigger =
+          text.includes('nghe') ||
+          text.includes('phát') ||
+          text.includes('audio') ||
+          text.includes('listen') ||
+          title.includes('nghe') ||
+          title.includes('audio') ||
+          title.includes('phát') ||
+          aria.includes('nghe') ||
+          aria.includes('audio');
+
+        if (isAudioTrigger) {
+          handleMediaPlay();
+        }
+      }
+    };
+    window.addEventListener('click', handleGlobalClick, true);
+
+    // Hook window.speechSynthesis.speak to detect pronunciation audio
+    let originalSpeak: typeof window.speechSynthesis.speak | null = null;
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      originalSpeak = window.speechSynthesis.speak;
+      window.speechSynthesis.speak = function (utterance: SpeechSynthesisUtterance) {
+        handleMediaPlay();
+        if (utterance) {
+          const prevBoundary = utterance.onboundary;
+          const prevEnd = utterance.onend;
+          utterance.onboundary = function (ev) {
+            handleMediaPlay();
+            if (prevBoundary) prevBoundary.call(utterance, ev);
+          };
+          utterance.onend = function (ev) {
+            handleMediaPlay();
+            if (prevEnd) prevEnd.call(utterance, ev);
+          };
+        }
+        return originalSpeak!.call(window.speechSynthesis, utterance);
+      };
+    }
+
+    return () => {
+      mediaEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleMediaPlay, true);
+      });
+      window.removeEventListener('click', handleGlobalClick, true);
+      if (originalSpeak && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.speak = originalSpeak;
+      }
+    };
+  }, []);
+
+  // Timer interval: ticks every 1s when active, visible (or playing audio), and not idle
   useEffect(() => {
     if (!isRunning) return;
 
     const interval = window.setInterval(() => {
-      if (document.visibilityState !== 'visible') return;
+      const audioActive = isAudioActiveCheck(lastAudioActiveRef.current);
+
+      // If document is in background, ONLY count if audio is playing!
+      if (document.visibilityState !== 'visible' && !audioActive) {
+        return;
+      }
 
       if (autoIdleEnabled) {
-        const audioActive = isAudioPlaying();
         if (audioActive) {
           lastActiveRef.current = Date.now();
-          setIsIdle((prev) => (prev ? false : prev));
+          setIsIdle(false);
         } else {
           const inactiveDuration = Date.now() - lastActiveRef.current;
           if (inactiveDuration >= 90000) {
@@ -195,7 +299,7 @@ export default function StudyStopwatchWidget() {
   return (
     <div
       ref={containerRef}
-      className="fixed top-3 right-4 sm:top-3.5 sm:right-6 z-[9995] hidden md:flex flex-col items-end select-none font-sans"
+      className="fixed top-2.5 right-3 sm:top-3.5 sm:right-6 z-[9995] flex flex-col items-end select-none font-sans"
     >
       {/* COMPACT PILL (Fixed at top-right on laptops/desktops) */}
       <div
@@ -286,7 +390,7 @@ export default function StudyStopwatchWidget() {
 
       {/* EXPANDED DETAILS POPOVER */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-84 bg-white rounded-3xl border-2 border-[#213a34]/15 shadow-2xl p-5 z-[9996] space-y-4 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute top-full right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-84 bg-white rounded-3xl border-2 border-[#213a34]/15 shadow-2xl p-4 sm:p-5 z-[9996] space-y-4 animate-in fade-in slide-in-from-top-2 duration-150">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-100 pb-3">
             <div className="flex items-center gap-2">
