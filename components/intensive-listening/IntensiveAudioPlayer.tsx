@@ -442,7 +442,11 @@ export function IntensiveAudioPlayer({
         {/* Keyboard Shortcut Helper Badge */}
         <div className="hidden lg:flex items-center gap-1 text-[10px] font-bold text-gray-500 bg-[#f5f0e6] px-2 py-1 rounded-lg shrink-0">
           <Keyboard className="w-3 h-3 text-[#eb6a52]" />
-          <span>Space: Dừng/Phát · ←/→: Tua 5s · 1/2/3: Đổi tab</span>
+          <span>
+            {activeTab === 'dictation'
+              ? 'Ctrl: Phát lại câu · Enter: Kiểm tra · 1/2/3: Đổi tab'
+              : 'Space: Dừng/Phát · ←/→: Tua 5s · 1/2/3: Đổi tab'}
+          </span>
         </div>
       </div>
     </div>

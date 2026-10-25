@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { DialogueLine } from '@/data/intensive_listening_test1';
 import {
   Volume2,
@@ -41,8 +41,10 @@ export function DictationTab({
   const [hintIndex, setHintIndex] = useState(0);
   const [completedSentences, setCompletedSentences] = useState<Record<number, boolean>>({});
   const [accuracy, setAccuracy] = useState<number | null>(null);
+  const [isReplaying, setIsReplaying] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const lastPlayTimeRef = useRef<number>(0);
 
   // Current line
   const currentLine = transcript[currentSentenceIdx] || transcript[0];
@@ -61,21 +63,56 @@ export function DictationTab({
   }, [currentSentenceIdx, transcript]);
 
   // Speech synthesis for the current line
-  const speakCurrentLine = () => {
+  const speakCurrentLine = useCallback(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window) || !currentLine) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(currentLine.text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
-  };
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(currentLine.text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    } catch {}
+  }, [currentLine]);
+
+  // Trigger audio replay with visual button animation & throttle
+  const triggerReplay = useCallback(() => {
+    const now = Date.now();
+    if (now - lastPlayTimeRef.current < 150) return;
+    lastPlayTimeRef.current = now;
+    speakCurrentLine();
+    setIsReplaying(true);
+    setTimeout(() => {
+      setIsReplaying(false);
+    }, 350);
+  }, [speakCurrentLine]);
+
+  // Global listener for Ctrl key to replay audio in dictation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Replay audio when pressing Ctrl key
+      if ((e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') && !e.repeat) {
+        triggerReplay();
+      } else if (e.ctrlKey && e.key !== 'Control') {
+        // If combo shortcut like Ctrl+C, Ctrl+V, Ctrl+A was pressed, cancel speech so it won't interrupt
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          setIsReplaying(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [triggerReplay]);
 
   // Play audio on load of line
   useEffect(() => {
     if (currentLine) {
       speakCurrentLine();
     }
-  }, [currentSentenceIdx]);
+  }, [currentSentenceIdx, speakCurrentLine]);
 
   // Give hint: reveal words up to hintIndex + 1
   const handleGiveHint = () => {
@@ -100,7 +137,7 @@ export function DictationTab({
     const userWords = userInput.trim().split(/\s+/);
     let correctWordsCount = 0;
 
-    targetWords.forEach((tw, idx) => {
+    targetWords.forEach((tw: string, idx: number) => {
       const uw = userWords[idx];
       if (uw && cleanWord(uw) === cleanWord(tw)) {
         correctWordsCount += 1;
@@ -153,7 +190,7 @@ export function DictationTab({
 
     return (
       <div className="flex flex-wrap gap-2 p-4 rounded-2xl bg-white border border-[#213a34]/15 leading-relaxed text-base sm:text-lg">
-        {targetWords.map((targetWord, idx) => {
+        {targetWords.map((targetWord: string, idx: number) => {
           const userWord = userWords[idx];
           const isMatch = userWord && cleanWord(userWord) === cleanWord(targetWord);
 
@@ -267,11 +304,19 @@ export function DictationTab({
 
           <button
             type="button"
-            onClick={speakCurrentLine}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467] font-black text-xs shadow-xs active:scale-95 transition-all"
+            onClick={triggerReplay}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs shadow-xs active:scale-95 transition-all cursor-pointer ${
+              isReplaying
+                ? 'bg-emerald-600 text-white ring-2 ring-emerald-400 scale-105 shadow-md'
+                : 'bg-[#213a34] hover:bg-[#2c4e46] text-[#f8d467]'
+            }`}
+            title="Bấm nút hoặc nhấn phím Ctrl trên bàn phím để nghe lại câu này"
           >
-            <Volume2 className="w-4 h-4 fill-current" />
+            <Volume2 className={`w-4 h-4 fill-current ${isReplaying ? 'animate-bounce' : ''}`} />
             <span>Nghe lại câu này</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white border border-white/20">
+              Ctrl
+            </kbd>
           </button>
         </div>
 
@@ -283,6 +328,11 @@ export function DictationTab({
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={(e) => {
+              if (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') {
+                e.preventDefault();
+                triggerReplay();
+                return;
+              }
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 handleCheck();
@@ -292,8 +342,14 @@ export function DictationTab({
             className="w-full p-4 rounded-2xl border-2 border-[#213a34]/15 focus:border-[#213a34] focus:outline-none focus:ring-4 focus:ring-[#213a34]/10 text-base sm:text-lg font-medium text-[#213a34] placeholder:text-gray-400 resize-none transition-all"
           />
 
-          <div className="flex items-center justify-between text-xs text-gray-500 font-medium px-1">
-            <span>Bấm <b>Enter</b> để kiểm tra câu</span>
+          <div className="flex flex-wrap items-center justify-between text-xs text-gray-500 font-medium px-1 gap-2">
+            <div className="flex items-center gap-2">
+              <span>Bấm <kbd className="px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 font-mono text-[11px] font-bold text-gray-700">Enter</kbd> để kiểm tra</span>
+              <span className="text-gray-300">·</span>
+              <span className="text-emerald-800 font-bold flex items-center gap-1">
+                Bấm <kbd className="px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-300 font-mono text-[11px] font-black text-emerald-800">Ctrl</kbd> để phát lại audio
+              </span>
+            </div>
             <span>{userInput.trim().split(/\s+/).filter(Boolean).length} / {targetWords.length} từ</span>
           </div>
         </div>
