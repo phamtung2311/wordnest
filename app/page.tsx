@@ -1057,6 +1057,22 @@ export default function Home() {
       window.removeEventListener('wordnest-progress-updated', handleProgressUpdate);
   }, []);
 
+  // Sync vocab studying active mode to document body for global study timer
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (activeDeck !== null) {
+        document.body.dataset.vocabStudying = 'true';
+      } else {
+        delete document.body.dataset.vocabStudying;
+      }
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        delete document.body.dataset.vocabStudying;
+      }
+    };
+  }, [activeDeck]);
+
   useEffect(() => {
     if (activeDeck === null) return;
     const frame = window.requestAnimationFrame(() => {
@@ -1565,7 +1581,7 @@ export default function Home() {
 
   if (activeDeck && currentDeck) {
     return (
-      <main className="min-h-screen bg-[#faf8f5] text-[#14362d] pb-24 lg:pb-12">
+      <main data-study-arena="true" className="min-h-screen bg-[#faf8f5] text-[#14362d] pb-24 lg:pb-12">
         <AppHeader
           compact
           user={user}

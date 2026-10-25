@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useSyncExternalStore } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   Timer,
   RotateCcw,
@@ -11,6 +11,7 @@ import {
   BarChart2,
   Sparkles,
   Coffee,
+  BookOpen,
 } from 'lucide-react';
 import {
   getSavedProgress,
@@ -50,8 +51,46 @@ function isAudioActiveCheck(lastAudioActiveTimestamp: number): boolean {
   return false;
 }
 
+function isStudyContextActive(pathname: string, lastAudioActiveTimestamp: number): boolean {
+  // 1. Any TOEIC reading test routes (/practice-test or /practice-test/[id])
+  if (pathname.startsWith('/practice-test')) {
+    return true;
+  }
+
+  // 2. Any TOEIC listening test routes (/listening-test or /listening-test/[id])
+  if (pathname.startsWith('/listening-test')) {
+    return true;
+  }
+
+  // 3. Intensive listening route (/intensive-listening)
+  if (pathname.startsWith('/intensive-listening')) {
+    return true;
+  }
+
+  // 4. Any page where audio is playing (listening to test audio or word pronunciation)
+  if (isAudioActiveCheck(lastAudioActiveTimestamp)) {
+    return true;
+  }
+
+  // 5. On the home page: ONLY when actively studying vocabulary (inside a deck / flashcard arena)
+  // When user is just on the home dashboard overview, return FALSE.
+  if (typeof document !== 'undefined') {
+    if (document.body.dataset.vocabStudying === 'true') {
+      return true;
+    }
+    if (document.querySelector('[data-study-arena="true"]')) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export default function StudyStopwatchWidget() {
   const router = useRouter();
+  const rawPathname = usePathname();
+  const pathname = rawPathname || '/';
+
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -69,6 +108,7 @@ export default function StudyStopwatchWidget() {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customMinutes, setCustomMinutes] = useState('');
   const [isIdle, setIsIdle] = useState(false);
+  const [isInStudyContext, setIsInStudyContext] = useState(false);
   const lastActiveRef = useRef<number>(Date.now());
   const lastAudioActiveRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -80,6 +120,18 @@ export default function StudyStopwatchWidget() {
   const progressPercent = Math.min(100, Math.round((todaySeconds / 600) * 100));
 
   const { formattedShort, formattedDetailed } = formatStudyTime(todaySeconds);
+
+  // Sync study context state (Học từ vựng / Luyện đọc / Luyện nghe vs Trang chủ)
+  useEffect(() => {
+    const updateContext = () => {
+      const active = isStudyContextActive(pathname, lastAudioActiveRef.current);
+      setIsInStudyContext(active);
+    };
+
+    updateContext();
+    const interval = window.setInterval(updateContext, 500);
+    return () => window.clearInterval(interval);
+  }, [pathname]);
 
   // Listen for user activity (Mouse, Keyboard, Scroll, Touch)
   useEffect(() => {
@@ -170,10 +222,17 @@ export default function StudyStopwatchWidget() {
     };
   }, []);
 
-  // Timer interval: 100% automatic - ticks every 1s when active or playing audio, pauses on idle >90s
+  // Timer interval: 100% automatic - ONLY ticks when actively studying (Học từ / Luyện đọc / Luyện nghe)
+  // Pauses when on home dashboard overview or idle >90s
   useEffect(() => {
     const interval = window.setInterval(() => {
       const audioActive = isAudioActiveCheck(lastAudioActiveRef.current);
+      const isStudying = isStudyContextActive(pathname, lastAudioActiveRef.current);
+
+      // CRITICAL: Do NOT count time if user is just on the home dashboard overview!
+      if (!isStudying) {
+        return;
+      }
 
       // If document is in background, ONLY count if audio is playing!
       if (document.visibilityState !== 'visible' && !audioActive) {
@@ -196,7 +255,7 @@ export default function StudyStopwatchWidget() {
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [pathname]);
 
   // Click outside to close expanded popover
   useEffect(() => {
@@ -254,6 +313,8 @@ export default function StudyStopwatchWidget() {
         className={`flex items-center gap-2 px-3 py-1.5 rounded-full border-2 transition-all cursor-pointer shadow-xs hover:shadow-md ${
           isOpen
             ? 'bg-[#213a34] text-white border-[#213a34] ring-2 ring-[#213a34]/20'
+            : !isInStudyContext
+            ? 'bg-white/95 backdrop-blur-md border-gray-200 text-gray-500 hover:border-gray-300'
             : isGoalReached
             ? 'bg-white/95 backdrop-blur-md border-emerald-500/40 hover:border-emerald-600 text-[#213a34]'
             : isIdle
@@ -261,7 +322,9 @@ export default function StudyStopwatchWidget() {
             : 'bg-white/95 backdrop-blur-md border-[#213a34]/15 hover:border-[#213a34]/35 text-[#213a34]'
         }`}
         title={
-          isIdle
+          !isInStudyContext
+            ? 'Trang chủ không tính giờ học. Hãy vào Học từ vựng, Luyện đọc hoặc Luyện nghe để tính giờ.'
+            : isIdle
             ? 'Đang tạm dừng do không tương tác >90s. Di chuột hoặc bấm phím để tiếp tục.'
             : 'Đang tự động đếm giờ học. Nhấn để xem chi tiết & mục tiêu hôm nay.'
         }
@@ -269,7 +332,9 @@ export default function StudyStopwatchWidget() {
         {/* Status Dot */}
         <span
           className={`w-2 h-2 rounded-full shrink-0 ${
-            isIdle
+            !isInStudyContext
+              ? 'bg-gray-300'
+              : isIdle
               ? 'bg-amber-400 animate-ping'
               : 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]'
           }`}
@@ -278,17 +343,31 @@ export default function StudyStopwatchWidget() {
         {/* Stopwatch Icon */}
         <Timer
           className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-            isOpen ? 'text-[#f8d467] scale-110' : isIdle ? 'text-amber-500' : 'text-[#eb6a52]'
+            isOpen
+              ? 'text-[#f8d467] scale-110'
+              : !isInStudyContext
+              ? 'text-gray-400'
+              : isIdle
+              ? 'text-amber-500'
+              : 'text-[#eb6a52]'
           }`}
         />
 
         {/* Digital Time Display */}
-        <span className="font-mono text-xs font-black tracking-tight shrink-0">
+        <span
+          className={`font-mono text-xs font-black tracking-tight shrink-0 ${
+            !isInStudyContext && !isOpen ? 'text-gray-600' : ''
+          }`}
+        >
           {formattedShort}
         </span>
 
-        {/* Idle Badge when active but idle */}
-        {isIdle ? (
+        {/* Status Badge */}
+        {!isInStudyContext ? (
+          <span className="text-[10px] font-bold text-gray-400 shrink-0">
+            Trang chủ
+          </span>
+        ) : isIdle ? (
           <span className="text-[10px] font-black px-1.5 py-0.2 rounded-full shrink-0 bg-amber-100 text-amber-800 animate-in fade-in flex items-center gap-0.5">
             <Coffee className="w-2.5 h-2.5" /> Nghỉ
           </span>
@@ -328,15 +407,25 @@ export default function StudyStopwatchWidget() {
                 </h3>
                 <span
                   className={`inline-flex items-center gap-1 text-[11px] font-bold ${
-                    isIdle ? 'text-amber-600' : 'text-emerald-600'
+                    !isInStudyContext
+                      ? 'text-gray-500'
+                      : isIdle
+                      ? 'text-amber-600'
+                      : 'text-emerald-600'
                   }`}
                 >
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
-                      isIdle ? 'bg-amber-500 animate-ping' : 'bg-emerald-500 animate-pulse'
+                      !isInStudyContext
+                        ? 'bg-gray-400'
+                        : isIdle
+                        ? 'bg-amber-500 animate-ping'
+                        : 'bg-emerald-500 animate-pulse'
                     }`}
                   />
-                  {isIdle
+                  {!isInStudyContext
+                    ? 'Trang chủ (vào học từ hoặc làm bài để tính giờ)'
+                    : isIdle
                     ? 'Treo máy >90s (chạm chuột để học tiếp)'
                     : 'Đang tự động đếm giờ (học thật)'}
                 </span>
@@ -404,14 +493,18 @@ export default function StudyStopwatchWidget() {
           {/* Smart Automatic Tracking Info Badge */}
           <div className="p-3 rounded-2xl bg-[#e9f2ed]/70 border border-[#213a34]/10 flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-xl bg-[#213a34] text-[#f8d467] flex items-center justify-center shrink-0 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5" />
+              {isInStudyContext ? <Sparkles className="w-3.5 h-3.5" /> : <BookOpen className="w-3.5 h-3.5" />}
             </div>
             <div className="min-w-0">
               <div className="text-xs font-black text-[#213a34] flex items-center gap-1">
-                Tự động tính giờ học 100%
+                {isInStudyContext
+                  ? 'Đang trong bài học — Tự động tính giờ'
+                  : 'Trang chủ — Tạm dừng tính giờ'}
               </div>
               <p className="text-[11px] text-gray-600 leading-snug mt-0.5">
-                Web tự nhận diện khi học từ, làm bài & nghe audio. Tự động tạm dừng khi rời máy quá 90 giây.
+                {isInStudyContext
+                  ? 'Hệ thống đang tự động đếm giờ học thật và tự dừng khi rời máy >90 giây.'
+                  : 'Trang chủ không tính giờ học. Thời gian chỉ tự động tính khi bạn vào Học từ vựng, Luyện đọc TOEIC hoặc Luyện nghe.'}
               </p>
             </div>
           </div>
