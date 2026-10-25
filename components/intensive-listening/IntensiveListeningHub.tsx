@@ -215,16 +215,27 @@ export function IntensiveListeningHub() {
       if (savedAutoAdvance !== null) {
         setAutoAdvance(savedAutoAdvance === 'true');
       }
+
+      const savedTab = localStorage.getItem('toeic_intensive_active_tab') as PracticeTab | null;
+      if (savedTab && ['quiz', 'transcript', 'dictation'].includes(savedTab)) {
+        setActiveTab(savedTab);
+      }
     } catch (e) {
       console.error('Error loading intensive listening preferences', e);
     }
   }, []);
 
+  const handleTabChange = (tab: PracticeTab) => {
+    setActiveTab(tab);
+    try {
+      localStorage.setItem('toeic_intensive_active_tab', tab);
+    } catch {}
+  };
+
   // Handler: Change Test
   const handleSelectTest = (testId: number) => {
     if (testId === currentTestId) return;
     setCurrentTestId(testId);
-    setActiveTab('quiz');
     const newTestData = getIntensiveDataByTestId(testId);
 
     try {
@@ -280,7 +291,6 @@ export function IntensiveListeningHub() {
   // Handler: Select an item in current test
   const handleSelectItem = (id: string) => {
     setCurrentItemId(id);
-    setActiveTab('quiz'); // Luôn tự động chuyển về Tab 1: Làm trắc nghiệm khi chuyển câu mới
     const targetItem = currentTestData.find((i) => i.id === id);
     try {
       localStorage.setItem('toeic_intensive_current_test', String(currentTestId));
@@ -604,7 +614,7 @@ export function IntensiveListeningHub() {
               hasNext={hasNext}
               hasPrev={hasPrev}
               activeTab={activeTab}
-              onChangeTab={setActiveTab}
+              onChangeTab={handleTabChange}
             />
           </div>
 

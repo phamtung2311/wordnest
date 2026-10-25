@@ -65,6 +65,18 @@ export function IntensiveAudioPlayer({
   // Speed options
   const speeds = [0.75, 0.9, 1.0, 1.25];
 
+  // Track activeTab in ref to avoid re-running audioSrc effect on tab changes
+  const activeTabRef = useRef(activeTab);
+  activeTabRef.current = activeTab;
+
+  // Auto pause question audio when switching to dictation tab
+  useEffect(() => {
+    if (activeTab === 'dictation' && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  }, [activeTab]);
+
   // Auto reset and play on audioSrc change
   useEffect(() => {
     if (!audioRef.current) return;
@@ -72,6 +84,12 @@ export function IntensiveAudioPlayer({
     setCurrentTime(0);
     setIsPlaying(false);
     audioRef.current.load();
+
+    // Do NOT auto-play full question audio if user is currently in dictation tab
+    if (activeTabRef.current === 'dictation') {
+      return;
+    }
+
     const playPromise = audioRef.current.play();
     if (playPromise !== undefined) {
       playPromise
