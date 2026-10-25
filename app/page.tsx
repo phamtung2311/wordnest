@@ -31,9 +31,11 @@ import {
   WalletCards,
   Volume2,
   X,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
+import { setDailyGoalMinutes } from '@/lib/studyTimeService';
 import {
   getRedirectResult,
   onAuthStateChanged,
@@ -79,6 +81,7 @@ type Deck = {
 type StudyProgress = {
   dailySeconds: Record<string, number>;
   completedDays?: Record<string, boolean>;
+  targetMinutes?: number;
 };
 type TranslationExercise = {
   id: number;
@@ -242,7 +245,7 @@ const legacyStarterDecks: Deck[] = [
   },
 ];
 const starterDecks: Deck[] = [];
-const emptyProgress: StudyProgress = { dailySeconds: {}, completedDays: {} };
+const emptyProgress: StudyProgress = { dailySeconds: {}, completedDays: {}, targetMinutes: 10 };
 const defaultLifeData: LifeData = {
   habits: [
     { id: 'water', name: 'Uống đủ nước', emoji: '💧', doneDates: [] },
@@ -294,8 +297,12 @@ function normalizeLifeData(incoming: Partial<LifeData>): LifeData {
 }
 
 function completedStudyDay(progress: StudyProgress, key: string) {
+  const goalMinutes =
+    typeof progress.targetMinutes === 'number' && progress.targetMinutes > 0
+      ? progress.targetMinutes
+      : 10;
   return (
-    (progress.dailySeconds[key] ?? 0) >= 600 ||
+    (progress.dailySeconds[key] ?? 0) >= goalMinutes * 60 ||
     progress.completedDays?.[key] === true
   );
 }
@@ -319,7 +326,11 @@ function mergeStudyProgress(
     )
       completedDays[key] = true;
   }
-  return { dailySeconds, completedDays };
+  const targetMinutes =
+    second.targetMinutes && second.targetMinutes > 0
+      ? second.targetMinutes
+      : first.targetMinutes;
+  return { dailySeconds, completedDays, targetMinutes };
 }
 
 function calculateStreak(progress: StudyProgress) {
@@ -565,6 +576,8 @@ export default function Home() {
   const [showAddWord, setShowAddWord] = useState(false);
   const [prefillWord, setPrefillWord] = useState('');
   const [showAddDeck, setShowAddDeck] = useState(false);
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [customGoalInput, setCustomGoalInput] = useState('');
   const [showDeleteDeck, setShowDeleteDeck] = useState(false);
   const [showRetryOptions, setShowRetryOptions] = useState(false);
   const [showLearningOptions, setShowLearningOptions] = useState(false);
@@ -979,15 +992,18 @@ export default function Home() {
       : undefined;
   const currentWordPhonetic =
     currentWord?.phonetic || currentWordFallback?.phonetic;
-  const currentWordPartOfSpeech =
-    currentWord?.partOfSpeech || currentWordFallback?.partOfSpeech;
+  const dailyGoalMinutes =
+    typeof progress.targetMinutes === 'number' && progress.targetMinutes > 0
+      ? progress.targetMinutes
+      : 10;
+  const dailyGoalSeconds = dailyGoalMinutes * 60;
   const todaySeconds = progress.dailySeconds[dateKey()] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
   const completedAllDueToday = progress.completedDays?.[dateKey()] === true;
   const todayCompleted = completedStudyDay(progress, dateKey());
   const todayPercent = todayCompleted
     ? 100
-    : Math.min(100, Math.round((todaySeconds / 600) * 100));
+    : Math.min(100, Math.round((todaySeconds / dailyGoalSeconds) * 100));
   const progressDates = new Set([
     ...Object.keys(progress.dailySeconds),
     ...Object.keys(progress.completedDays ?? {}),
@@ -2305,9 +2321,20 @@ export default function Home() {
               <div className="progress-heading">
                 <div>
                   <p className="eyebrow">Tiến độ học</p>
-                  <h1 className="font-display text-4xl font-black tracking-tight">
-                    Mục tiêu 10 phút mỗi ngày
-                  </h1>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="font-display text-4xl font-black tracking-tight">
+                      Mục tiêu {dailyGoalMinutes} phút mỗi ngày
+                    </h1>
+                    <button
+                      type="button"
+                      onClick={() => setShowGoalModal(true)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#eb6a52]/10 text-[#eb6a52] hover:bg-[#eb6a52]/20 transition-colors cursor-pointer"
+                      title="Thay đổi thời gian mục tiêu mỗi ngày"
+                    >
+                      <SlidersHorizontal className="w-3.5 h-3.5" />
+                      Đổi mục tiêu
+                    </button>
+                  </div>
                   <p>
                     Thời gian được tính khi bạn đang học một thẻ từ và mở trang
                     trên màn hình.
@@ -2337,7 +2364,7 @@ export default function Home() {
                       <span>
                         {todayCompleted
                           ? 'Đã điểm danh ✓'
-                          : `${Math.min(todayMinutes, 10)}/10 phút`}
+                          : `${Math.min(todayMinutes, dailyGoalMinutes)}/${dailyGoalMinutes} phút`}
                       </span>
                     </div>
                     <div
@@ -2358,9 +2385,9 @@ export default function Home() {
                         ? 'Đăng nhập Google để lưu tiến độ.'
                         : completedAllDueToday
                           ? 'Đã học hết các từ cần học hôm nay ✓'
-                          : todaySeconds >= 600
-                            ? 'Đã học đủ 10 phút hôm nay ✓'
-                            : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}
+                          : todaySeconds >= dailyGoalSeconds
+                            ? `Đã học đủ ${dailyGoalMinutes} phút hôm nay ✓`
+                            : `Học thêm ${Math.max(1, Math.ceil((dailyGoalSeconds - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}
                     </p>
                     <div className="flex items-center gap-1 text-[11px] font-bold text-[#eb6a52] mt-1.5 group-hover:underline">
                       <span>Xem lịch sử học các ngày</span>
@@ -2581,6 +2608,85 @@ export default function Home() {
               Tạo bộ từ
             </Button>
           </form>
+        </Modal>
+      )}
+      {showGoalModal && (
+        <Modal
+          title="Cài đặt mục tiêu học tập"
+          onClose={() => setShowGoalModal(false)}
+        >
+          <div className="space-y-4">
+            <p className="text-sm text-[#4a5f57]">
+              Chọn thời gian mục tiêu bạn muốn rèn luyện mỗi ngày:
+            </p>
+            <div className="grid grid-cols-4 gap-2">
+              {[5, 10, 15, 20, 25, 30, 45, 60].map((mins) => (
+                <button
+                  key={mins}
+                  type="button"
+                  onClick={() => {
+                    const updated = setDailyGoalMinutes(mins);
+                    setProgress(updated);
+                    setShowGoalModal(false);
+                  }}
+                  className={`py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+                    dailyGoalMinutes === mins
+                      ? 'bg-[#213a34] text-white shadow-md ring-2 ring-[#213a34]/20'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {mins} phút
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-2 pt-3 border-t border-gray-100">
+              <label className="text-xs font-bold text-[#213a34]">
+                Hoặc nhập số phút tùy chỉnh:
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="1"
+                  max="720"
+                  value={customGoalInput}
+                  onChange={(e) => setCustomGoalInput(e.target.value)}
+                  placeholder={`Ví dụ: ${dailyGoalMinutes}`}
+                  className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#213a34]"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = parseInt(customGoalInput);
+                      if (!isNaN(val) && val > 0) {
+                        const updated = setDailyGoalMinutes(val);
+                        setProgress(updated);
+                        setShowGoalModal(false);
+                        setCustomGoalInput('');
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const val = parseInt(customGoalInput);
+                    if (!isNaN(val) && val > 0) {
+                      const updated = setDailyGoalMinutes(val);
+                      setProgress(updated);
+                      setShowGoalModal(false);
+                      setCustomGoalInput('');
+                    }
+                  }}
+                  className="px-5 rounded-xl bg-[#213a34] font-bold text-white cursor-pointer"
+                >
+                  Lưu
+                </Button>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-500 bg-[#f5f0e6] p-3 rounded-xl border border-[#213a34]/10 leading-relaxed">
+              💡 <b>Gợi ý:</b> Bắt đầu với 10 - 15 phút mỗi ngày sẽ giúp duy trì chuỗi học (streak) bền vững nhất. Hệ thống sẽ tự động đồng bộ mục tiêu này với đồng hồ bấm giờ góc trên màn hình.
+            </p>
+          </div>
         </Modal>
       )}
       <MobileBottomNav

@@ -19,6 +19,7 @@ import {
   FileText,
   RotateCcw,
   Sparkles,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 import {
@@ -30,6 +31,8 @@ import {
   updateDateSeconds,
   emptyProgress,
   StudyProgress,
+  getDailyGoalMinutes,
+  setDailyGoalMinutes,
 } from '@/lib/studyTimeService';
 
 type FilterRange = '7' | '14' | '30' | 'all';
@@ -47,10 +50,14 @@ export default function StudyHistoryPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [modalDate, setModalDate] = useState(getTodayKey());
   const [modalMinutes, setModalMinutes] = useState('15');
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [customGoalInput, setCustomGoalInput] = useState('');
 
   const todayKey = getTodayKey();
   const todaySeconds = progress.dailySeconds[todayKey] ?? 0;
   const streak = calculateStreak(progress);
+  const dailyGoalMinutes = getDailyGoalMinutes(progress);
+  const dailyGoalSeconds = dailyGoalMinutes * 60;
 
   // All recorded dates with study seconds > 0 or completedDays
   const allRecordedDates = useMemo(() => {
@@ -74,10 +81,10 @@ export default function StudyHistoryPage() {
     ]);
     return Array.from(dates).filter(
       (d) =>
-        (progress.dailySeconds[d] ?? 0) >= 600 ||
+        (progress.dailySeconds[d] ?? 0) >= dailyGoalSeconds ||
         progress.completedDays?.[d] === true,
     ).length;
-  }, [progress]);
+  }, [progress, dailyGoalSeconds]);
 
   const totalDaysWithStudy = useMemo(() => {
     return Object.values(progress.dailySeconds).filter((s) => s > 0).length;
@@ -145,16 +152,16 @@ export default function StudyHistoryPage() {
         dateStr,
         label: i === 0 ? 'Hôm nay' : `${dayOfWeekShort} ${day}`,
         seconds: secs,
-        isGoalMet: secs >= 600 || progress.completedDays?.[dateStr] === true,
+        isGoalMet: secs >= dailyGoalSeconds || progress.completedDays?.[dateStr] === true,
       });
     }
     return list;
-  }, [progress, filterRange]);
+  }, [progress, filterRange, dailyGoalSeconds]);
 
   const maxChartSeconds = useMemo(() => {
-    const maxInDays = Math.max(...chartDays.map((d) => d.seconds), 600);
+    const maxInDays = Math.max(...chartDays.map((d) => d.seconds), dailyGoalSeconds);
     return Math.ceil(maxInDays / 300) * 300; // Round up to nearest 5 minutes
-  }, [chartDays]);
+  }, [chartDays, dailyGoalSeconds]);
 
   const handleSaveCustomTime = () => {
     const mins = parseFloat(modalMinutes);
@@ -222,22 +229,33 @@ export default function StudyHistoryPage() {
               Lịch sử thời gian học
             </h1>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">
-              Thống kê chi tiết thời gian học mỗi ngày, chuỗi ngày liên tiếp và tiến độ đạt mục tiêu 10 phút.
+              Thống kê chi tiết thời gian học mỗi ngày, chuỗi ngày liên tiếp và tiến độ đạt mục tiêu {dailyGoalMinutes} phút.
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setModalDate(todayKey);
-              setModalMinutes('15');
-              setShowAddModal(true);
-            }}
-            className="self-start sm:self-auto flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#213a34] hover:bg-[#2c4e46] text-white text-xs sm:text-sm font-black shadow-sm transition-all active:scale-95 cursor-pointer"
-          >
-            <Plus className="w-4 h-4 text-[#f8d467]" />
-            <span>Ghi nhận thời gian học</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setShowGoalModal(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white hover:bg-gray-50 border-2 border-[#213a34]/15 text-[#213a34] text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Đổi thời gian mục tiêu mỗi ngày"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-[#eb6a52]" />
+              <span>Mục tiêu: {dailyGoalMinutes}p</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setModalDate(todayKey);
+                setModalMinutes('15');
+                setShowAddModal(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#213a34] hover:bg-[#2c4e46] text-white text-xs sm:text-sm font-black shadow-sm transition-all active:scale-95 cursor-pointer"
+            >
+              <Plus className="w-4 h-4 text-[#f8d467]" />
+              <span>Ghi nhận thời gian học</span>
+            </button>
+          </div>
         </div>
 
         {/* Top 4 KPI Summary Cards */}
@@ -270,10 +288,10 @@ export default function StudyHistoryPage() {
               {formatStudyTime(todaySeconds).formattedShort}
             </div>
             <p className="text-[11px] font-semibold text-gray-500">
-              {todaySeconds >= 600 ? (
-                <span className="text-emerald-700 font-bold">✓ Đã đạt mục tiêu 10 phút</span>
+              {todaySeconds >= dailyGoalSeconds ? (
+                <span className="text-emerald-700 font-bold">✓ Đã đạt mục tiêu {dailyGoalMinutes} phút</span>
               ) : (
-                `Tiến độ: ${Math.round((todaySeconds / 600) * 100)}% (${Math.floor(todaySeconds / 60)}/10 phút)`
+                `Tiến độ: ${Math.round((todaySeconds / dailyGoalSeconds) * 100)}% (${Math.floor(todaySeconds / 60)}/${dailyGoalMinutes} phút)`
               )}
             </p>
           </div>
@@ -297,7 +315,7 @@ export default function StudyHistoryPage() {
           {/* Card 4: Ngày đạt mục tiêu */}
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 border-[#213a34]/12 shadow-sm space-y-1">
             <div className="flex items-center justify-between text-gray-500">
-              <span className="text-xs font-bold">Ngày hoàn thành 10m</span>
+              <span className="text-xs font-bold">Ngày hoàn thành {dailyGoalMinutes}m</span>
               <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
                 <Award className="w-4 h-4 text-emerald-600" />
               </span>
@@ -320,7 +338,7 @@ export default function StudyHistoryPage() {
                 <span>Biểu đồ thời gian học gần đây</span>
               </h2>
               <p className="text-xs text-gray-500 mt-0.5">
-                Đường đứt nét màu xanh hiển thị mốc mục tiêu 10 phút mỗi ngày (600 giây).
+                Đường đứt nét màu xanh hiển thị mốc mục tiêu {dailyGoalMinutes} phút mỗi ngày ({dailyGoalSeconds} giây).
               </p>
             </div>
 
@@ -376,15 +394,15 @@ export default function StudyHistoryPage() {
           {/* Chart Canvas */}
           <div className="pt-6 pb-2">
             <div className="relative h-48 sm:h-56 flex items-end justify-between gap-2 sm:gap-4 px-2 border-b border-gray-200">
-              {/* Target Line at 10 Minutes (600s) */}
+              {/* Target Line at {dailyGoalMinutes} Minutes ({dailyGoalSeconds}s) */}
               <div
                 className="absolute left-0 right-0 border-b-2 border-dashed border-emerald-500/80 pointer-events-none z-10"
                 style={{
-                  bottom: `${Math.min(95, Math.max(10, (600 / maxChartSeconds) * 100))}%`,
+                  bottom: `${Math.min(95, Math.max(10, (dailyGoalSeconds / maxChartSeconds) * 100))}%`,
                 }}
               >
                 <span className="absolute -top-5 right-2 text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300">
-                  🎯 Mục tiêu: 10 phút
+                  🎯 Mục tiêu: {dailyGoalMinutes} phút
                 </span>
               </div>
 
@@ -456,8 +474,8 @@ export default function StudyHistoryPage() {
           <div className="space-y-2.5">
             {displayedDates.map((dateStr) => {
               const seconds = progress.dailySeconds[dateStr] ?? 0;
-              const isGoalMet = seconds >= 600 || progress.completedDays?.[dateStr] === true;
-              const percent = Math.min(100, Math.round((seconds / 600) * 100));
+              const isGoalMet = seconds >= dailyGoalSeconds || progress.completedDays?.[dateStr] === true;
+              const percent = Math.min(100, Math.round((seconds / dailyGoalSeconds) * 100));
               const { formattedDetailed, formattedShort } = formatStudyTime(seconds);
 
               return (
@@ -520,7 +538,7 @@ export default function StudyHistoryPage() {
                     <div className="w-28 sm:w-36 flex flex-col gap-1">
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-500">
                         <span>{percent}%</span>
-                        <span>{Math.floor(seconds / 60)}/10m</span>
+                        <span>{Math.floor(seconds / 60)}/{dailyGoalMinutes}m</span>
                       </div>
                       <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
                         <div
@@ -537,7 +555,7 @@ export default function StudyHistoryPage() {
                     {/* Status Badge */}
                     {isGoalMet ? (
                       <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
-                        ✓ Đạt chuẩn 10m
+                        ✓ Đạt chuẩn {dailyGoalMinutes}m
                       </span>
                     ) : seconds > 0 ? (
                       <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
@@ -646,6 +664,100 @@ export default function StudyHistoryPage() {
                 Lưu thời gian
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Goal Settings Modal */}
+      {showGoalModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl border-2 border-[#213a34]/15 space-y-4 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                  <SlidersHorizontal className="w-5 h-5 text-[#eb6a52]" />
+                </span>
+                <div>
+                  <h3 className="font-display font-black text-lg text-[#213a34]">
+                    Cài đặt mục tiêu học tập
+                  </h3>
+                  <p className="text-xs text-gray-500">Mục tiêu hiện tại: {dailyGoalMinutes} phút/ngày</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGoalModal(false)}
+                className="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700">Mục tiêu phổ biến (phút/ngày):</label>
+              <div className="grid grid-cols-4 gap-2">
+                {[5, 10, 15, 20, 25, 30, 45, 60].map((mins) => (
+                  <button
+                    key={mins}
+                    type="button"
+                    onClick={() => {
+                      setDailyGoalMinutes(mins);
+                      setShowGoalModal(false);
+                    }}
+                    className={`py-2 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+                      dailyGoalMinutes === mins
+                        ? 'bg-[#213a34] text-white shadow-xs ring-2 ring-[#213a34]/20'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {mins}p
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1.5 pt-2 border-t border-gray-100">
+              <label className="text-xs font-bold text-gray-700">Hoặc nhập số phút tùy chỉnh:</label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="1"
+                  max="720"
+                  value={customGoalInput}
+                  onChange={(e) => setCustomGoalInput(e.target.value)}
+                  placeholder={`Ví dụ: ${dailyGoalMinutes}`}
+                  className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#213a34]"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = parseInt(customGoalInput);
+                      if (!isNaN(val) && val > 0) {
+                        setDailyGoalMinutes(val);
+                        setShowGoalModal(false);
+                        setCustomGoalInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = parseInt(customGoalInput);
+                    if (!isNaN(val) && val > 0) {
+                      setDailyGoalMinutes(val);
+                      setShowGoalModal(false);
+                      setCustomGoalInput('');
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#213a34] text-white text-sm font-bold hover:bg-[#2c4c44] cursor-pointer"
+                >
+                  Lưu
+                </button>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-500 bg-[#f5f0e6] p-3 rounded-xl border border-[#213a34]/10 leading-relaxed">
+              💡 <b>Gợi ý:</b> Thay đổi mục tiêu sẽ tự động cập nhật biểu đồ và vạch mục tiêu hàng ngày trên toàn hệ thống.
+            </p>
           </div>
         </div>
       )}

@@ -54,7 +54,7 @@ console.log('  ✓ formatTaskTime handles all permutations correctly');
 
 // 3. Test Study Time Service calculation logic
 console.log('\n--- Test Group 3: Study Time Service Calculation ---');
-import { formatStudyTime, calculateStreak, getTodayKey } from '../lib/studyTimeService.ts';
+import { formatStudyTime, calculateStreak, getTodayKey, getDailyGoalMinutes, setDailyGoalMinutes } from '../lib/studyTimeService.ts';
 
 const zeroTime = formatStudyTime(0);
 assert.strictEqual(zeroTime.formattedShort, '00:00');
@@ -81,7 +81,15 @@ const testProgress = {
   }
 };
 assert.strictEqual(calculateStreak(testProgress), 1, 'Streak should be 1');
-console.log(`  ✓ formatStudyTime & calculateStreak validated (Today: ${todayStr})`);
+
+// Test Customizable Daily Goal
+assert.strictEqual(getDailyGoalMinutes(), 10, 'Default goal should be 10 minutes');
+const pCustomGoal = setDailyGoalMinutes(20);
+assert.strictEqual(getDailyGoalMinutes(pCustomGoal), 20, 'Goal should be updated to 20 minutes');
+assert.strictEqual(pCustomGoal.targetMinutes, 20);
+setDailyGoalMinutes(10); // Restore to default 10
+assert.strictEqual(getDailyGoalMinutes(), 10);
+console.log(`  ✓ formatStudyTime, calculateStreak & customizable daily goal validated (Today: ${todayStr})`);
 
 // 4. Test TOEIC Practice & Listening Test Data Integrity
 console.log('\n--- Test Group 4: TOEIC Practice & Listening Test Data Integrity ---');

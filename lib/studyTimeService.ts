@@ -4,11 +4,15 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 export interface StudyProgress {
   dailySeconds: Record<string, number>;
   completedDays?: Record<string, boolean>;
+  targetMinutes?: number;
 }
+
+export const DEFAULT_GOAL_MINUTES = 10;
 
 export const emptyProgress: StudyProgress = {
   dailySeconds: {},
   completedDays: {},
+  targetMinutes: DEFAULT_GOAL_MINUTES,
 };
 
 export function getTodayKey(date = new Date()): string {
@@ -35,6 +39,10 @@ export function getSavedProgress(): StudyProgress {
       cachedProgressData = {
         dailySeconds: parsed.dailySeconds || {},
         completedDays: parsed.completedDays || {},
+        targetMinutes:
+          typeof parsed.targetMinutes === 'number' && parsed.targetMinutes > 0
+            ? Math.round(parsed.targetMinutes)
+            : DEFAULT_GOAL_MINUTES,
       };
       return cachedProgressData;
     }
@@ -76,6 +84,36 @@ export function saveProgress(data: StudyProgress, syncToCloud = true): void {
   }
 }
 
+export function getDailyGoalMinutes(progress?: StudyProgress): number {
+  const p = progress || getSavedProgress();
+  const val = Number(p.targetMinutes);
+  return Number.isFinite(val) && val > 0 ? Math.round(val) : DEFAULT_GOAL_MINUTES;
+}
+
+export function setDailyGoalMinutes(minutes: number): StudyProgress {
+  const current = getSavedProgress();
+  const validMinutes = Math.max(1, Math.min(720, Math.round(minutes)));
+  const targetSeconds = validMinutes * 60;
+  const today = getTodayKey();
+  const todaySeconds = current.dailySeconds[today] ?? 0;
+  const nextCompletedDays = { ...(current.completedDays || {}) };
+
+  if (todaySeconds >= targetSeconds) {
+    nextCompletedDays[today] = true;
+  } else {
+    delete nextCompletedDays[today];
+  }
+
+  const next: StudyProgress = {
+    ...current,
+    targetMinutes: validMinutes,
+    completedDays: nextCompletedDays,
+  };
+
+  saveProgress(next);
+  return next;
+}
+
 export function getTodaySeconds(): number {
   const progress = getSavedProgress();
   return progress.dailySeconds[getTodayKey()] ?? 0;
@@ -85,9 +123,10 @@ export function incrementTodaySeconds(): StudyProgress {
   const current = getSavedProgress();
   const today = getTodayKey();
   const nextSeconds = (current.dailySeconds[today] ?? 0) + 1;
+  const targetSeconds = getDailyGoalMinutes(current) * 60;
 
   const nextCompletedDays = { ...(current.completedDays || {}) };
-  if (nextSeconds >= 600) {
+  if (nextSeconds >= targetSeconds) {
     nextCompletedDays[today] = true;
   }
 
@@ -128,9 +167,10 @@ export function addTodaySeconds(secondsToAdd: number): StudyProgress {
   const current = getSavedProgress();
   const today = getTodayKey();
   const nextSeconds = Math.max(0, (current.dailySeconds[today] ?? 0) + secondsToAdd);
+  const targetSeconds = getDailyGoalMinutes(current) * 60;
 
   const nextCompletedDays = { ...(current.completedDays || {}) };
-  if (nextSeconds >= 600) {
+  if (nextSeconds >= targetSeconds) {
     nextCompletedDays[today] = true;
   } else {
     delete nextCompletedDays[today];
@@ -188,9 +228,10 @@ export function formatStudyTime(totalSeconds: number) {
 export function updateDateSeconds(dateKey: string, seconds: number): StudyProgress {
   const current = getSavedProgress();
   const nextSeconds = Math.max(0, seconds);
+  const targetSeconds = getDailyGoalMinutes(current) * 60;
 
   const nextCompletedDays = { ...(current.completedDays || {}) };
-  if (nextSeconds >= 600) {
+  if (nextSeconds >= targetSeconds) {
     nextCompletedDays[dateKey] = true;
   } else {
     delete nextCompletedDays[dateKey];
@@ -214,8 +255,9 @@ export function updateDateSeconds(dateKey: string, seconds: number): StudyProgre
 }
 
 export function calculateStreak(progress: StudyProgress): number {
+  const targetSeconds = getDailyGoalMinutes(progress) * 60;
   const isCompleted = (key: string) =>
-    (progress.dailySeconds[key] ?? 0) >= 600 || progress.completedDays?.[key] === true;
+    (progress.dailySeconds[key] ?? 0) >= targetSeconds || progress.completedDays?.[key] === true;
 
   const cursor = new Date();
   const todayKey = getTodayKey(cursor);

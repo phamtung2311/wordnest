@@ -31,6 +31,7 @@ import {
   formatStudyTime,
   calculateStreak,
   emptyProgress,
+  getDailyGoalMinutes,
 } from '@/lib/studyTimeService';
 import {
   WordItem,
@@ -124,7 +125,9 @@ export function QuickActionDock() {
   const todaySeconds = progress.dailySeconds[todayKey] ?? 0;
   const streak = calculateStreak(progress);
   const todayMinutes = Math.floor(todaySeconds / 60);
-  const todayProgressPercent = Math.min(100, Math.round((todaySeconds / 600) * 100));
+  const dailyGoalMinutes = getDailyGoalMinutes(progress);
+  const dailyGoalSeconds = dailyGoalMinutes * 60;
+  const todayProgressPercent = Math.min(100, Math.round((todaySeconds / dailyGoalSeconds) * 100));
 
   // Current tasks for selected date
   const currentTasks = lifeData.dailyTasks?.[selectedDate] || [];
@@ -276,12 +279,12 @@ export function QuickActionDock() {
                   {formatStudyTime(todaySeconds).formattedShort}
                 </div>
                 <div className="mt-2 text-xs font-bold text-[#637770]">
-                  {todaySeconds >= 600 ? (
+                  {todaySeconds >= dailyGoalSeconds ? (
                     <span className="text-emerald-700 font-extrabold flex items-center justify-center gap-1">
-                      <Check size={14} /> Đã hoàn thành 10 phút hôm nay!
+                      <Check size={14} /> Đã hoàn thành {dailyGoalMinutes} phút hôm nay!
                     </span>
                   ) : (
-                    <span>Mục tiêu: {todayMinutes}/10 phút</span>
+                    <span>Mục tiêu: {todayMinutes}/{dailyGoalMinutes} phút</span>
                   )}
                 </div>
               </div>

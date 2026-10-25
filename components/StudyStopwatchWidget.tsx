@@ -12,6 +12,7 @@ import {
   Sparkles,
   Coffee,
   BookOpen,
+  SlidersHorizontal,
 } from 'lucide-react';
 import {
   getSavedProgress,
@@ -22,6 +23,8 @@ import {
   addTodaySeconds,
   formatStudyTime,
   emptyProgress,
+  getDailyGoalMinutes,
+  setDailyGoalMinutes,
 } from '@/lib/studyTimeService';
 
 function isAudioActiveCheck(lastAudioActiveTimestamp: number): boolean {
@@ -107,6 +110,8 @@ export default function StudyStopwatchWidget() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customMinutes, setCustomMinutes] = useState('');
+  const [showGoalSelector, setShowGoalSelector] = useState(false);
+  const [customGoalInput, setCustomGoalInput] = useState('');
   const [isIdle, setIsIdle] = useState(false);
   const [isInStudyContext, setIsInStudyContext] = useState(false);
   const lastActiveRef = useRef<number>(Date.now());
@@ -116,8 +121,10 @@ export default function StudyStopwatchWidget() {
   const today = getTodayKey();
   const todaySeconds = progress.dailySeconds[today] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
-  const isGoalReached = todaySeconds >= 600; // 10 minutes = 600 seconds
-  const progressPercent = Math.min(100, Math.round((todaySeconds / 600) * 100));
+  const dailyGoalMinutes = getDailyGoalMinutes(progress);
+  const dailyGoalSeconds = dailyGoalMinutes * 60;
+  const isGoalReached = todaySeconds >= dailyGoalSeconds;
+  const progressPercent = Math.min(100, Math.round((todaySeconds / dailyGoalSeconds) * 100));
 
   const { formattedShort, formattedDetailed } = formatStudyTime(todaySeconds);
 
@@ -379,7 +386,7 @@ export default function StudyStopwatchWidget() {
                 : 'bg-emerald-100 text-emerald-800'
             }`}
           >
-            ✓ 10m
+            ✓ {dailyGoalMinutes}m
           </span>
         ) : (
           <span
@@ -387,7 +394,7 @@ export default function StudyStopwatchWidget() {
               isOpen ? 'text-gray-300' : 'text-gray-500'
             }`}
           >
-            {todayMinutes}/10m
+            {todayMinutes}/{dailyGoalMinutes}m
           </span>
         )}
       </div>
@@ -455,16 +462,91 @@ export default function StudyStopwatchWidget() {
           </div>
 
           {/* Goal Progress Section */}
-          <div className="space-y-1.5 bg-[#fbf9f5] rounded-2xl p-3.5 border border-[#213a34]/8">
+          <div className="space-y-2 bg-[#fbf9f5] rounded-2xl p-3.5 border border-[#213a34]/8">
             <div className="flex items-center justify-between text-xs font-black text-[#213a34]">
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <Award className="w-3.5 h-3.5 text-[#eb6a52]" />
-                Mục tiêu 10 phút/ngày
+                Mục tiêu {dailyGoalMinutes} phút/ngày
               </span>
-              <span className={isGoalReached ? 'text-emerald-600 font-bold' : 'text-gray-500'}>
-                {isGoalReached ? 'Đã đạt ✓' : `${Math.min(todayMinutes, 10)}/10 phút`}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={isGoalReached ? 'text-emerald-600 font-bold' : 'text-gray-500'}>
+                  {isGoalReached ? 'Đã đạt ✓' : `${Math.min(todayMinutes, dailyGoalMinutes)}/${dailyGoalMinutes} phút`}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowGoalSelector(!showGoalSelector)}
+                  className="px-1.5 py-0.5 rounded-md text-[#eb6a52] hover:bg-[#eb6a52]/10 transition-colors text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer"
+                  title="Thay đổi thời gian mục tiêu mỗi ngày"
+                >
+                  <SlidersHorizontal className="w-3 h-3" />
+                  <span className="underline">{showGoalSelector ? 'Đóng' : 'Đổi'}</span>
+                </button>
+              </div>
             </div>
+
+            {/* Inline Goal Selector */}
+            {showGoalSelector && (
+              <div className="p-2.5 rounded-xl bg-white border border-[#213a34]/15 shadow-xs space-y-2 animate-in fade-in duration-150">
+                <div className="flex items-center justify-between text-[11px] font-bold text-[#213a34]">
+                  <span>Chọn mục tiêu hàng ngày:</span>
+                  <span className="text-gray-400 font-normal">Hiện tại: {dailyGoalMinutes}p</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[5, 10, 15, 20, 25, 30, 45, 60].map((mins) => (
+                    <button
+                      key={mins}
+                      type="button"
+                      onClick={() => {
+                        setDailyGoalMinutes(mins);
+                        setShowGoalSelector(false);
+                      }}
+                      className={`py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        dailyGoalMinutes === mins
+                          ? 'bg-[#213a34] text-white shadow-xs'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {mins}p
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1.5 pt-1.5 border-t border-gray-100">
+                  <input
+                    type="number"
+                    min="1"
+                    max="720"
+                    value={customGoalInput}
+                    onChange={(e) => setCustomGoalInput(e.target.value)}
+                    placeholder="Số phút khác..."
+                    className="w-full text-xs px-2.5 py-1 rounded-lg border border-gray-200 focus:outline-none focus:border-[#213a34]"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = parseInt(customGoalInput);
+                        if (!isNaN(val) && val > 0) {
+                          setDailyGoalMinutes(val);
+                          setShowGoalSelector(false);
+                          setCustomGoalInput('');
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const val = parseInt(customGoalInput);
+                      if (!isNaN(val) && val > 0) {
+                        setDailyGoalMinutes(val);
+                        setShowGoalSelector(false);
+                        setCustomGoalInput('');
+                      }
+                    }}
+                    className="px-3 py-1 rounded-lg bg-[#213a34] text-white text-xs font-bold shrink-0 hover:bg-[#2c4c44] cursor-pointer"
+                  >
+                    Lưu
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Progress Bar */}
             <div className="h-2.5 w-full bg-gray-200/80 rounded-full overflow-hidden p-0.5">
@@ -482,10 +564,10 @@ export default function StudyStopwatchWidget() {
               {isGoalReached ? (
                 <span className="text-emerald-700 font-bold flex items-center gap-1">
                   <Check className="w-3 h-3 text-emerald-600" />
-                  Bạn đã hoàn thành mục tiêu 10 phút học hôm nay!
+                  Bạn đã hoàn thành mục tiêu {dailyGoalMinutes} phút học hôm nay!
                 </span>
               ) : (
-                `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút để hoàn thành mục tiêu hôm nay.`
+                `Học thêm ${Math.max(1, Math.ceil((dailyGoalSeconds - todaySeconds) / 60))} phút để hoàn thành mục tiêu hôm nay.`
               )}
             </p>
           </div>
