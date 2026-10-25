@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useSyncExternalStore } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Timer,
   Play,
@@ -11,6 +12,7 @@ import {
   Plus,
   Flame,
   Award,
+  BarChart2,
 } from 'lucide-react';
 import {
   getSavedProgress,
@@ -25,6 +27,7 @@ import {
 } from '@/lib/studyTimeService';
 
 export default function StudyStopwatchWidget() {
+  const router = useRouter();
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -359,6 +362,19 @@ export default function StudyStopwatchWidget() {
               )}
             </div>
           </div>
+
+          {/* History Link Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(false);
+              router.push('/study-history');
+            }}
+            className="w-full py-2 px-3 rounded-xl bg-[#e9f2ed] hover:bg-[#d5e5db] text-[#213a34] font-black text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <BarChart2 className="w-3.5 h-3.5 text-[#eb6a52]" />
+            <span>Xem lịch sử học các ngày trong quá khứ →</span>
+          </button>
 
           {/* Sync Note Footer */}
           <div className="text-[10px] text-gray-400 text-center border-t border-gray-100 pt-2.5">

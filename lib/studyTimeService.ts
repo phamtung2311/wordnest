@@ -182,3 +182,52 @@ export function formatStudyTime(totalSeconds: number) {
     formattedDetailed,
   };
 }
+
+export function updateDateSeconds(dateKey: string, seconds: number): StudyProgress {
+  const current = getSavedProgress();
+  const nextSeconds = Math.max(0, seconds);
+
+  const nextCompletedDays = { ...(current.completedDays || {}) };
+  if (nextSeconds >= 600) {
+    nextCompletedDays[dateKey] = true;
+  } else {
+    delete nextCompletedDays[dateKey];
+  }
+
+  const nextDaily = { ...current.dailySeconds };
+  if (nextSeconds > 0) {
+    nextDaily[dateKey] = nextSeconds;
+  } else {
+    delete nextDaily[dateKey];
+  }
+
+  const next: StudyProgress = {
+    ...current,
+    dailySeconds: nextDaily,
+    completedDays: nextCompletedDays,
+  };
+
+  saveProgress(next);
+  return next;
+}
+
+export function calculateStreak(progress: StudyProgress): number {
+  const isCompleted = (key: string) =>
+    (progress.dailySeconds[key] ?? 0) >= 600 || progress.completedDays?.[key] === true;
+
+  const cursor = new Date();
+  const todayKey = getTodayKey(cursor);
+
+  // If today isn't completed yet, check if yesterday was completed
+  if (!isCompleted(todayKey)) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  let streak = 0;
+  while (isCompleted(getTodayKey(cursor))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+

@@ -2242,8 +2242,12 @@ export default function Home() {
                 )}
               </div>
               <div className="progress-grid">
-                <article className="today-progress">
-                  <div className="progress-icon">
+                <article
+                  onClick={() => router.push('/study-history')}
+                  className="today-progress cursor-pointer hover:shadow-[7px_7px_0_#eb6a52] hover:-translate-y-0.5 transition-all group"
+                  title="Nhấn để xem toàn bộ lịch sử thời gian học các ngày trong quá khứ"
+                >
+                  <div className="progress-icon group-hover:scale-110 transition-transform">
                     <Timer />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -2277,6 +2281,10 @@ export default function Home() {
                             ? 'Đã học đủ 10 phút hôm nay ✓'
                             : `Học thêm ${Math.max(1, Math.ceil((600 - todaySeconds) / 60))} phút hoặc học hết từ đến hạn để điểm danh.`}
                     </p>
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-[#eb6a52] mt-1.5 group-hover:underline">
+                      <span>Xem lịch sử học các ngày</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
                   </div>
                 </article>
                 <article className="progress-stat">
