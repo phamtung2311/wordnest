@@ -132,6 +132,8 @@ export function addTodaySeconds(secondsToAdd: number): StudyProgress {
   const nextCompletedDays = { ...(current.completedDays || {}) };
   if (nextSeconds >= 600) {
     nextCompletedDays[today] = true;
+  } else {
+    delete nextCompletedDays[today];
   }
 
   const next: StudyProgress = {

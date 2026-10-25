@@ -471,9 +471,9 @@ export function IntensiveListeningHub() {
   );
 
   return (
-    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#faf8f5] text-[#14362d] flex flex-col font-sans pb-16 lg:pb-0">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-[#213a34]/10 shadow-xs shrink-0">
+      <header className="sticky top-0 z-30 bg-[#faf8f5]/85 backdrop-blur-md border-b border-[#14362d]/8 shadow-xs shrink-0">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3 md:pr-36">
           {/* Left: Back & Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -492,7 +492,7 @@ export function IntensiveListeningHub() {
                   }
                 }, 100);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black text-[#213a34] bg-[#e9f2ed] hover:bg-[#d5e5db] active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black text-[#14362d] bg-white hover:bg-gray-50 border border-[#14362d]/10 active:scale-95 transition-all shrink-0 cursor-pointer shadow-xs"
               title="Quay lại Trang chủ"
             >
               <ArrowLeft className="w-4 h-4 shrink-0" />

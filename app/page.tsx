@@ -32,6 +32,8 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import { AppHeader } from '@/components/navigation/AppHeader';
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 import {
   getRedirectResult,
   onAuthStateChanged,
@@ -1338,6 +1340,34 @@ export default function Home() {
     setShowLearningOptions(false);
   }
 
+  useEffect(() => {
+    if (!activeDeck) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable) {
+        return;
+      }
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setRevealed((prev) => !prev);
+      } else if (e.key === '1') {
+        e.preventDefault();
+        chooseAgain();
+      } else if (e.key === '2') {
+        e.preventDefault();
+        chooseLearning();
+      } else if (e.key === '3') {
+        e.preventDefault();
+        chooseKnown();
+      } else if (e.key.toLowerCase() === 'r' && currentWord) {
+        e.preventDefault();
+        speak(currentWord.term, currentLanguage);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeDeck, currentWord, currentLanguage]);
+
   async function signInGoogle() {
     setAuthError('');
     if (window.location.hostname.endsWith('chatgpt.site')) {
@@ -1535,14 +1565,17 @@ export default function Home() {
 
   if (activeDeck && currentDeck) {
     return (
-      <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-        <Header
+      <main className="min-h-screen bg-[#faf8f5] text-[#14362d] pb-24 lg:pb-12">
+        <AppHeader
           compact
           user={user}
           authReady={authReady}
           syncStatus={syncStatus}
           onSignIn={signInGoogle}
           onSignOut={signOutGoogle}
+          streak={currentStreak}
+          todayMinutes={todayMinutes}
+          todaySeconds={todaySeconds}
           onHome={() => {
             setActiveDeck(null);
             setStudyQueue([]);
@@ -1613,7 +1646,8 @@ export default function Home() {
                 </span>
               </div>
               {currentWord ? (
-                <div className="flashcard">
+                <>
+                  <div className="flashcard">
                   <button
                     onClick={() => speak(currentWord.term, currentLanguage)}
                     className={`sound ${audioStatus === 'loading' ? 'loading' : ''}`}
@@ -1778,10 +1812,9 @@ export default function Home() {
                     ) : (
                       <Button
                         onClick={() => setRevealed(true)}
-                        variant="outline"
-                        className="mt-8 h-11 rounded-full border-2 border-[#213a34]/20 bg-transparent px-6 font-bold"
+                        className="mt-8 h-12 rounded-full bg-[#14362d] text-white px-8 font-black hover:bg-[#1a473b] shadow-md transition-all active:scale-95"
                       >
-                        Xem nghĩa
+                        Xem nghĩa (Space)
                       </Button>
                     )}
                   </div>
@@ -1895,7 +1928,19 @@ export default function Home() {
                       </div>
                     </div>
                   )}
-                </div>
+                  </div>
+                  <div className="hidden sm:flex items-center justify-center gap-2.5 mt-3 text-[11px] font-bold text-[#637770]">
+                    <span className="flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-[#14362d]/10 shadow-xs">
+                      <kbd className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">Space</kbd> {revealed ? 'Lật lại' : 'Xem nghĩa'}
+                    </span>
+                    <span className="flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-[#14362d]/10 shadow-xs">
+                      <kbd className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">1, 2, 3</kbd> Mức độ nhớ
+                    </span>
+                    <span className="flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-[#14362d]/10 shadow-xs">
+                      <kbd className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">R</kbd> Nghe lại
+                    </span>
+                  </div>
+                </>
               ) : (
                 <div className="empty-state">
                   <div className="text-6xl">
@@ -2055,6 +2100,23 @@ export default function Home() {
             </div>
           </Modal>
         )}
+        <MobileBottomNav
+          onHome={() => {
+            setActiveDeck(null);
+            setStudyQueue([]);
+            window.location.hash = 'home';
+          }}
+          onLibrary={() => {
+            setActiveDeck(null);
+            setStudyQueue([]);
+            window.location.hash = 'library';
+          }}
+          onLife={() => {
+            setActiveDeck(null);
+            setStudyQueue([]);
+            window.location.hash = 'life';
+          }}
+        />
       </main>
     );
   }
@@ -2063,13 +2125,16 @@ export default function Home() {
     deck.name.toLowerCase().includes(search.toLowerCase()),
   );
   return (
-    <main className="min-h-screen bg-[#f5f0e6] text-[#213a34]">
-      <Header
+    <main className="min-h-screen bg-[#faf8f5] text-[#14362d] pb-24 lg:pb-12">
+      <AppHeader
         user={user}
         authReady={authReady}
         syncStatus={syncStatus}
         onSignIn={signInGoogle}
         onSignOut={signOutGoogle}
+        streak={currentStreak}
+        todayMinutes={todayMinutes}
+        todaySeconds={todaySeconds}
         onHome={() => window.location.hash = 'home'}
         onLibrary={() => window.location.hash = 'library'}
         onLife={() => window.location.hash = 'life'}
@@ -2156,65 +2221,65 @@ export default function Home() {
               </div>
 
               {/* Quick TOEIC Exam Practice Hub */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <button
                   type="button"
                   onClick={() => router.push('/practice-test')}
-                  className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#213a34]/10 hover:border-[#f29f77] shadow-sm hover:shadow-md transition-all text-left group"
+                  className="flex items-center justify-between p-4 bg-white rounded-3xl border border-[#14362d]/8 hover:border-[#14362d]/25 shadow-sm hover:shadow-md transition-all text-left group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-[#e9f2ed] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                      <FileText className="w-6 h-6 text-[#f29f77]" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-[#f4f8f5] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <FileText className="w-6 h-6 text-[#14362d]" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[#eb6a52] block">Luyện thi ETS 2026/24/23</span>
-                      <h3 className="font-black text-[#213a34] text-base leading-snug">Luyện Đề TOEIC Reading</h3>
-                      <p className="text-xs text-gray-500 font-medium">100 câu Part 5, 6, 7 · Giao diện tối ưu điện thoại</p>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#e11d48] block">Luyện thi ETS 2026/24/23</span>
+                      <h3 className="font-black text-[#14362d] text-base leading-snug">Luyện Đề Reading</h3>
+                      <p className="text-xs text-[#637770] font-medium">100 câu Part 5, 6, 7 · Tự lưu tiến trình</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#213a34] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#14362d] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => router.push('/listening-test')}
-                  className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#213a34]/10 hover:border-[#f29f77] shadow-sm hover:shadow-md transition-all text-left group"
+                  className="flex items-center justify-between p-4 bg-white rounded-3xl border border-[#14362d]/8 hover:border-[#14362d]/25 shadow-sm hover:shadow-md transition-all text-left group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-[#e9f2ed] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                      <Headphones className="w-6 h-6 text-[#f29f77]" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-[#fef3c7] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Headphones className="w-6 h-6 text-[#b45309]" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[#eb6a52] block">Luyện nghe kèm Audio</span>
-                      <h3 className="font-black text-[#213a34] text-base leading-snug">Luyện Đề TOEIC Listening</h3>
-                      <p className="text-xs text-gray-500 font-medium">100 câu Part 1-4 · Audio tua ±5s trên điện thoại</p>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#b45309] block">Luyện nghe kèm Audio</span>
+                      <h3 className="font-black text-[#14362d] text-base leading-snug">Luyện Đề Listening</h3>
+                      <p className="text-xs text-[#637770] font-medium">100 câu Part 1-4 · Audio tua ±5s</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#213a34] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#14362d] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => router.push('/intensive-listening')}
-                  className="flex items-center justify-between p-4 bg-[#213a34] text-white rounded-2xl border-2 border-[#213a34] hover:border-[#f8d467] shadow-sm hover:shadow-md transition-all text-left group"
+                  className="flex items-center justify-between p-4 bg-[#14362d] text-white rounded-3xl border border-[#14362d] hover:border-[#f59e0b] shadow-sm hover:shadow-lg transition-all text-left group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                      <Headphones className="w-6 h-6 text-[#f8d467]" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Sparkles className="w-6 h-6 text-[#f59e0b]" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[#f8d467] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b] block">
                         {recentIntensive ? 'Đang học dở' : 'Mới · STUDY4 Style'}
                       </span>
                       <h3 className="font-black text-white text-base leading-snug">Luyện Nghe Chi Tiết</h3>
                       <p className="text-xs text-white/80 font-medium">
                         {recentIntensive
                           ? `Tiếp tục: ${recentIntensive.testShortTitle} · ${recentIntensive.itemRange}`
-                          : 'Audio cắt lẻ · Song ngữ · Chép chính tả'}
+                          : 'Cắt lẻ audio · Song ngữ · Chép chính tả'}
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                  <ChevronRight className="w-5 h-5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                 </button>
               </div>
             </div>
@@ -2502,6 +2567,11 @@ export default function Home() {
           </form>
         </Modal>
       )}
+      <MobileBottomNav
+        onHome={() => (window.location.hash = 'home')}
+        onLibrary={() => (window.location.hash = 'library')}
+        onLife={() => (window.location.hash = 'life')}
+      />
     </main>
   );
 }

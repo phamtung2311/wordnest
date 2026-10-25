@@ -1,8 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Headphones, History, FileText } from 'lucide-react';
+import { ArrowLeft, Headphones, History, FileText, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 
 type TestHistory = {
   testId: string;
@@ -14,6 +15,7 @@ export default function ListeningTestSelectionPage() {
   const router = useRouter();
   const [history, setHistory] = useState<TestHistory[]>([]);
   const [inProgress, setInProgress] = useState<Record<string, boolean>>({});
+  const [selectedYear, setSelectedYear] = useState<'2026' | '2024' | '2023'>('2026');
 
   useEffect(() => {
     try {
@@ -38,155 +40,159 @@ export default function ListeningTestSelectionPage() {
   const tests2024 = Array.from({ length: 10 }, (_, i) => ({ id: `2024-${i + 1}`, name: `ETS 2024 Đề ${i + 1}` }));
   const tests2023 = Array.from({ length: 10 }, (_, i) => ({ id: `2023-${i + 1}`, name: `ETS 2023 Đề ${i + 1}` }));
 
+  const currentTests = selectedYear === '2026' ? tests2026 : selectedYear === '2024' ? tests2024 : tests2023;
+
   const getTestName = (testId: string) => {
     if (testId.startsWith('2024-')) return `ETS 2024 Đề ${testId.replace('2024-', '')}`;
     if (testId.startsWith('2023-')) return `ETS 2023 Đề ${testId.replace('2023-', '')}`;
     return `ETS 2026 Đề ${testId}`;
   };
 
+  const getLatestScore = (testId: string) => {
+    const item = history.find((h) => String(h.testId) === String(testId));
+    return item ? item.score : null;
+  };
+
   return (
-    <div className="min-h-screen bg-[#f5f0e6] p-3 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[#faf8f5] text-[#14362d] p-4 sm:p-6 md:p-8 pb-28 lg:pb-12">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
+        {/* Top bar */}
+        <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => router.push('/')}
-            className="flex items-center text-xs sm:text-sm text-[#213a34] hover:text-[#213a34]/70 font-bold transition-colors bg-white/80 backdrop-blur px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-[#213a34]/10 shadow-sm"
+            className="flex items-center text-xs sm:text-sm text-[#14362d] hover:text-[#14362d]/70 font-black transition-all bg-white px-4 py-2 rounded-full border border-[#14362d]/8 shadow-sm hover:shadow"
           >
             <ArrowLeft className="w-4 h-4 mr-1.5" />
             Trang chủ
           </button>
 
-          <button
-            onClick={() => router.push('/practice-test')}
-            className="flex items-center text-xs sm:text-sm text-[#213a34] hover:bg-[#e9f2ed] font-extrabold transition-colors bg-[#f8d467] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-[#213a34]/15 shadow-sm"
-          >
-            <FileText className="w-4 h-4 mr-1.5" />
-            Luyện Reading TOEIC
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push('/practice-test')}
+              className="flex items-center text-xs sm:text-sm text-[#14362d] font-black transition-all bg-[#f4f8f5] hover:bg-[#e9f2ed] px-4 py-2 rounded-full border border-[#14362d]/10 shadow-sm"
+            >
+              <FileText className="w-4 h-4 mr-1.5 text-[#14362d]" />
+              Luyện Reading TOEIC
+            </button>
+            <button
+              onClick={() => router.push('/intensive-listening')}
+              className="flex items-center text-xs sm:text-sm text-white font-black transition-all bg-[#14362d] hover:bg-[#1a473b] px-4 py-2 rounded-full shadow-sm"
+            >
+              <Sparkles className="w-4 h-4 mr-1.5 text-[#f59e0b]" />
+              Luyện nghe chi tiết
+            </button>
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-[#213a34]/10 mb-6 sm:mb-8">
+        {/* Hero Card */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#14362d]/8 mb-6">
           <div className="text-center mb-6">
-            <span className="inline-flex items-center gap-1.5 bg-[#e9f2ed] text-[#213a34] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-2">
-              <Headphones className="w-3.5 h-3.5 text-[#f29f77]" /> TOEIC Listening (100 câu + Audio)
+            <span className="inline-flex items-center gap-1.5 bg-[#fef3c7] text-[#92400e] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3 border border-amber-200">
+              <Headphones className="w-4 h-4 text-[#b45309]" /> TOEIC Listening · 100 câu + Audio tua ±5s
             </span>
-            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-black text-[#213a34] mb-1">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-black text-[#14362d] mb-1.5 tracking-tight">
               Luyện Đề TOEIC Listening
             </h1>
-            <p className="text-xs sm:text-sm text-gray-500">
-              Nghe audio mượt mà trên điện thoại · Tua ±5s & đổi tốc độ đọc
+            <p className="text-xs sm:text-sm text-[#637770] font-medium">
+              Audio giọng chuẩn đề thi ETS · Tối ưu trải nghiệm làm bài trên điện thoại
             </p>
           </div>
 
-          {/* Section: ETS 2026 */}
-          <div className="mb-6">
-            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
-              <span>Bộ đề ETS 2026</span>
-              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
-              {tests2026.map((test) => (
-                <button
-                  key={test.id}
-                  onClick={() => router.push(`/listening-test/${test.id}`)}
-                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
-                >
-                  {inProgress[test.id] && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
-                      Đang làm
-                    </span>
-                  )}
-                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
-                    <Headphones className="w-5 h-5 text-[#f29f77]" />
-                  </div>
-                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
-                </button>
-              ))}
-            </div>
+          {/* Year Switcher Segmented Tabs */}
+          <div className="flex items-center justify-center p-1 bg-[#faf8f5] rounded-2xl max-w-sm mx-auto mb-6 border border-[#14362d]/8">
+            <button
+              onClick={() => setSelectedYear('2026')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+                selectedYear === '2026'
+                  ? 'bg-white text-[#14362d] shadow-sm'
+                  : 'text-[#637770] hover:text-[#14362d]'
+              }`}
+            >
+              🌟 ETS 2026 (10 đề)
+            </button>
+            <button
+              onClick={() => setSelectedYear('2024')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+                selectedYear === '2024'
+                  ? 'bg-white text-[#14362d] shadow-sm'
+                  : 'text-[#637770] hover:text-[#14362d]'
+              }`}
+            >
+              📘 ETS 2024 (10 đề)
+            </button>
+            <button
+              onClick={() => setSelectedYear('2023')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+                selectedYear === '2023'
+                  ? 'bg-white text-[#14362d] shadow-sm'
+                  : 'text-[#637770] hover:text-[#14362d]'
+              }`}
+            >
+              📙 ETS 2023 (10 đề)
+            </button>
           </div>
 
-          {/* Section: ETS 2024 */}
-          <div className="mb-6">
-            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
-              <span>Bộ đề ETS 2024</span>
-              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
-              {tests2024.map((test) => (
-                <button
-                  key={test.id}
-                  onClick={() => router.push(`/listening-test/${test.id}`)}
-                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
-                >
-                  {inProgress[test.id] && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
-                      Đang làm
-                    </span>
-                  )}
-                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
-                    <Headphones className="w-5 h-5 text-[#f29f77]" />
-                  </div>
-                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Test Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            {currentTests.map((test) => {
+              const score = getLatestScore(test.id);
+              const hasProgress = inProgress[test.id];
 
-          {/* Section: ETS 2023 */}
-          <div>
-            <h2 className="font-bold text-base sm:text-lg mb-3 text-[#213a34] flex items-center justify-between">
-              <span>Bộ đề ETS 2023</span>
-              <span className="text-xs text-gray-400 font-semibold">10 đề</span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
-              {tests2023.map((test) => (
+              return (
                 <button
                   key={test.id}
                   onClick={() => router.push(`/listening-test/${test.id}`)}
-                  className="flex flex-col items-center justify-center bg-[#e9f2ed] hover:bg-[#d5e5db] transition-transform active:scale-95 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#213a34]/10 group relative"
+                  className="flex flex-col items-center justify-center bg-[#faf8f5] hover:bg-white transition-all hover:-translate-y-1 hover:shadow-md active:scale-95 rounded-2xl p-4 border border-[#14362d]/8 group relative text-center"
                 >
-                  {inProgress[test.id] && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-[#f29f77] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                  {hasProgress && (
+                    <span className="absolute -top-2 -right-2 bg-[#f59e0b] text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-10 border border-white">
                       Đang làm
                     </span>
                   )}
-                  <div className="bg-white p-2.5 rounded-full mb-2 shadow-sm group-hover:scale-110 transition-transform">
-                    <Headphones className="w-5 h-5 text-[#f29f77]" />
+                  {score !== null && !hasProgress && (
+                    <span className="absolute -top-2 -right-2 bg-emerald-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                      {score}/100
+                    </span>
+                  )}
+                  <div className="bg-white p-3 rounded-2xl mb-2.5 shadow-sm group-hover:scale-110 transition-transform border border-[#14362d]/6">
+                    <Headphones className="w-5 h-5 text-[#b45309]" />
                   </div>
-                  <span className="font-black text-[#213a34] text-center text-xs sm:text-sm">{test.name}</span>
+                  <span className="font-black text-[#14362d] text-xs sm:text-sm">{test.name}</span>
+                  <span className="text-[10px] text-[#637770] mt-0.5 font-bold">100 câu + Audio</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
 
+        {/* History Table */}
         {history.length > 0 && (
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-[#213a34]/10">
-            <h2 className="font-display text-lg sm:text-xl font-black text-[#213a34] mb-4 flex items-center">
-              <History className="w-5 h-5 mr-2 text-[#f29f77]" /> Lịch sử làm bài
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#14362d]/8">
+            <h2 className="font-display text-lg sm:text-xl font-black text-[#14362d] mb-4 flex items-center">
+              <History className="w-5 h-5 mr-2 text-[#b45309]" /> Lịch sử luyện nghe gần đây
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b-2 border-gray-100">
-                    <th className="pb-2.5 text-gray-500 font-bold">Thời gian</th>
-                    <th className="pb-2.5 text-gray-500 font-bold">Đề thi</th>
-                    <th className="pb-2.5 text-gray-500 font-bold text-right sm:text-left">Điểm số</th>
+                  <tr className="border-b border-gray-100">
+                    <th className="pb-2.5 text-[#637770] font-bold">Thời gian</th>
+                    <th className="pb-2.5 text-[#637770] font-bold">Đề thi</th>
+                    <th className="pb-2.5 text-[#637770] font-bold text-right sm:text-left">Điểm số</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {history.map((h, idx) => (
-                    <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                      <td className="py-3 text-gray-600 whitespace-nowrap">
+                  {history.slice(0, 15).map((h, idx) => (
+                    <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-[#faf8f5] transition-colors">
+                      <td className="py-3 text-[#637770] whitespace-nowrap">
                         {new Date(h.date).toLocaleString('vi-VN', { 
                           hour: '2-digit', minute: '2-digit', 
-                          day: '2-digit', month: '2-digit' 
+                          day: '2-digit', month: '2-digit'
                         })}
                       </td>
-                      <td className="py-3 font-bold text-[#213a34]">{getTestName(String(h.testId))}</td>
+                      <td className="py-3 font-black text-[#14362d]">{getTestName(String(h.testId))}</td>
                       <td className="py-3 text-right sm:text-left">
-                        <span className="bg-[#e9f2ed] text-[#213a34] font-black px-2.5 py-0.5 rounded-full text-xs">
-                          {h.score}/100
+                        <span className="bg-[#fef3c7] text-[#92400e] font-black px-2.5 py-1 rounded-full text-xs border border-amber-200">
+                          {h.score}/100 câu
                         </span>
                       </td>
                     </tr>
@@ -197,6 +203,8 @@ export default function ListeningTestSelectionPage() {
           </div>
         )}
       </div>
+
+      <MobileBottomNav />
     </div>
   );
 }

@@ -13,6 +13,8 @@ import {
   Flame,
   Award,
   BarChart2,
+  Sparkles,
+  Coffee,
 } from 'lucide-react';
 import {
   getSavedProgress,
@@ -25,6 +27,18 @@ import {
   formatStudyTime,
   emptyProgress,
 } from '@/lib/studyTimeService';
+
+function isAudioPlaying(): boolean {
+  if (typeof document === 'undefined') return false;
+  const audios = document.querySelectorAll('audio');
+  for (const a of audios) {
+    if (!a.paused && !a.ended && a.currentTime > 0) return true;
+  }
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis.speaking) {
+    return true;
+  }
+  return false;
+}
 
 export default function StudyStopwatchWidget() {
   const router = useRouter();
@@ -43,6 +57,11 @@ export default function StudyStopwatchWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(true);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customMinutes, setCustomMinutes] = useState('');
+  const [isIdle, setIsIdle] = useState(false);
+  const [autoIdleEnabled, setAutoIdleEnabled] = useState(true);
+  const lastActiveRef = useRef<number>(Date.now());
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const today = getTodayKey();
@@ -53,27 +72,62 @@ export default function StudyStopwatchWidget() {
 
   const { formattedShort, formattedDetailed } = formatStudyTime(todaySeconds);
 
-  // Load timer running preference from localStorage
+  // Load timer running & auto idle preferences from localStorage
   useEffect(() => {
     try {
       const savedRunning = localStorage.getItem('wordnest_stopwatch_running');
       if (savedRunning !== null) {
         setIsRunning(savedRunning === 'true');
       }
+      const savedIdle = localStorage.getItem('wordnest_auto_pause_idle');
+      if (savedIdle !== null) {
+        setAutoIdleEnabled(savedIdle === 'true');
+      }
     } catch {}
   }, []);
 
-  // Timer interval: ticks every 1s when active and visible
+  // Listen for user activity (Mouse, Keyboard, Scroll, Touch)
+  useEffect(() => {
+    const handleActivity = () => {
+      lastActiveRef.current = Date.now();
+      setIsIdle((prev) => (prev ? false : prev));
+    };
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'wheel'];
+    events.forEach((evt) => window.addEventListener(evt, handleActivity, { passive: true }));
+
+    return () => {
+      events.forEach((evt) => window.removeEventListener(evt, handleActivity));
+    };
+  }, []);
+
+  // Timer interval: ticks every 1s when active, visible, and not idle
   useEffect(() => {
     if (!isRunning) return;
 
     const interval = window.setInterval(() => {
       if (document.visibilityState !== 'visible') return;
+
+      if (autoIdleEnabled) {
+        const audioActive = isAudioPlaying();
+        if (audioActive) {
+          lastActiveRef.current = Date.now();
+          setIsIdle((prev) => (prev ? false : prev));
+        } else {
+          const inactiveDuration = Date.now() - lastActiveRef.current;
+          if (inactiveDuration >= 90000) {
+            setIsIdle(true);
+            return; // AFK / Inactive: Stop counting!
+          }
+        }
+      }
+
+      setIsIdle(false);
       incrementTodaySeconds();
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, [isRunning]);
+  }, [isRunning, autoIdleEnabled]);
 
   // Click outside to close expanded popover
   useEffect(() => {
@@ -110,6 +164,15 @@ export default function StudyStopwatchWidget() {
     } catch {}
   };
 
+  const toggleAutoIdle = () => {
+    const nextVal = !autoIdleEnabled;
+    setAutoIdleEnabled(nextVal);
+    if (!nextVal) setIsIdle(false);
+    try {
+      localStorage.setItem('wordnest_auto_pause_idle', String(nextVal));
+    } catch {}
+  };
+
   const handleReset = () => {
     resetTodaySeconds();
     setShowResetConfirm(false);
@@ -117,6 +180,14 @@ export default function StudyStopwatchWidget() {
 
   const handleAddMinutes = (mins: number) => {
     addTodaySeconds(mins * 60);
+  };
+
+  const handleCustomAdjust = (multiplier: 1 | -1) => {
+    const mins = parseFloat(customMinutes);
+    if (isNaN(mins) || mins <= 0) return;
+    handleAddMinutes(mins * multiplier);
+    setCustomMinutes('');
+    setShowCustomInput(false);
   };
 
   if (!mounted) return null;
@@ -134,23 +205,33 @@ export default function StudyStopwatchWidget() {
             ? 'bg-[#213a34] text-white border-[#213a34] ring-2 ring-[#213a34]/20'
             : isGoalReached
             ? 'bg-white/95 backdrop-blur-md border-emerald-500/40 hover:border-emerald-600 text-[#213a34]'
+            : isIdle
+            ? 'bg-white/95 backdrop-blur-md border-amber-400/50 hover:border-amber-500 text-[#213a34]'
             : 'bg-white/95 backdrop-blur-md border-[#213a34]/15 hover:border-[#213a34]/35 text-[#213a34]'
         }`}
-        title="Nhấn để xem chi tiết đồng hồ bấm giờ học & mục tiêu hôm nay"
+        title={
+          !isRunning
+            ? 'Đang tạm dừng thủ công. Nhấn để xem chi tiết.'
+            : isIdle
+            ? 'Đang tạm dừng do không tương tác >90s. Di chuột hoặc bấm phím để tiếp tục.'
+            : 'Đang tự động đếm giờ học. Nhấn để xem chi tiết & mục tiêu hôm nay.'
+        }
       >
         {/* Status Dot */}
         <span
           className={`w-2 h-2 rounded-full shrink-0 ${
-            isRunning
-              ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]'
-              : 'bg-amber-400'
+            !isRunning
+              ? 'bg-gray-400'
+              : isIdle
+              ? 'bg-amber-400 animate-ping'
+              : 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]'
           }`}
         />
 
         {/* Stopwatch Icon */}
         <Timer
           className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-            isOpen ? 'text-[#f8d467] scale-110' : 'text-[#eb6a52]'
+            isOpen ? 'text-[#f8d467] scale-110' : isIdle ? 'text-amber-500' : 'text-[#eb6a52]'
           }`}
         />
 
@@ -159,8 +240,12 @@ export default function StudyStopwatchWidget() {
           {formattedShort}
         </span>
 
-        {/* Goal Indicator Badge */}
-        {isGoalReached ? (
+        {/* Idle Badge when active but idle */}
+        {isRunning && isIdle ? (
+          <span className="text-[10px] font-black px-1.5 py-0.2 rounded-full shrink-0 bg-amber-100 text-amber-800 animate-in fade-in flex items-center gap-0.5">
+            <Coffee className="w-2.5 h-2.5" /> Nghỉ
+          </span>
+        ) : isGoalReached ? (
           <span
             className={`text-[10px] font-black px-1.5 py-0.2 rounded-full shrink-0 ${
               isOpen
@@ -214,15 +299,27 @@ export default function StudyStopwatchWidget() {
                 </h3>
                 <span
                   className={`inline-flex items-center gap-1 text-[11px] font-bold ${
-                    isRunning ? 'text-emerald-600' : 'text-amber-600'
+                    !isRunning
+                      ? 'text-gray-500'
+                      : isIdle
+                      ? 'text-amber-600'
+                      : 'text-emerald-600'
                   }`}
                 >
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
-                      isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                      !isRunning
+                        ? 'bg-gray-400'
+                        : isIdle
+                        ? 'bg-amber-500 animate-ping'
+                        : 'bg-emerald-500 animate-pulse'
                     }`}
                   />
-                  {isRunning ? 'Đang tự động đếm giờ' : 'Đang tạm dừng'}
+                  {!isRunning
+                    ? 'Đang tạm dừng thủ công'
+                    : isIdle
+                    ? 'Treo máy >90s (chạm chuột để học tiếp)'
+                    : 'Đang tự động đếm giờ (học thật)'}
                 </span>
               </div>
             </div>
@@ -310,13 +407,67 @@ export default function StudyStopwatchWidget() {
               )}
             </button>
 
-            {/* Quick Add Minutes & Reset */}
-            <div className="flex items-center justify-between gap-1.5 pt-1">
-              <div className="flex items-center gap-1">
+            {/* Quick Adjust Minutes & Reset */}
+            <div className="pt-2 border-t border-gray-100 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black uppercase tracking-wider text-gray-500">
+                  Điều chỉnh thời gian
+                </span>
+                {/* Reset Button */}
+                {showResetConfirm ? (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="px-2 py-0.5 rounded-lg text-[10px] font-black text-white bg-red-600 hover:bg-red-700 cursor-pointer transition-colors"
+                    >
+                      Xóa về 0
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowResetConfirm(false)}
+                      className="px-2 py-0.5 rounded-lg text-[10px] font-bold text-gray-600 hover:bg-gray-100 cursor-pointer"
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowResetConfirm(true)}
+                    className="flex items-center gap-1 text-[11px] font-bold text-gray-400 hover:text-red-600 px-1.5 py-0.5 rounded-lg transition-colors cursor-pointer"
+                    title="Đặt lại thời gian học hôm nay về 0"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Đặt lại về 0</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Adjustment Grid: -10, -5, +5, +10 */}
+              <div className="grid grid-cols-4 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleAddMinutes(-10)}
+                  disabled={todaySeconds === 0}
+                  className="py-1.5 px-1.5 rounded-xl text-[11px] font-black text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/60 disabled:opacity-40 disabled:pointer-events-none transition-all active:scale-95 cursor-pointer text-center"
+                  title="Giảm 10 phút (khi quên tắt tính giờ)"
+                >
+                  -10 phút
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddMinutes(-5)}
+                  disabled={todaySeconds === 0}
+                  className="py-1.5 px-1.5 rounded-xl text-[11px] font-black text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/60 disabled:opacity-40 disabled:pointer-events-none transition-all active:scale-95 cursor-pointer text-center"
+                  title="Giảm 5 phút (khi quên tắt tính giờ)"
+                >
+                  -5 phút
+                </button>
                 <button
                   type="button"
                   onClick={() => handleAddMinutes(5)}
-                  className="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-700 bg-gray-100 hover:bg-[#e9f2ed] hover:text-[#213a34] transition-colors cursor-pointer"
+                  className="py-1.5 px-1.5 rounded-xl text-[11px] font-black text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 transition-all active:scale-95 cursor-pointer text-center"
                   title="Cộng thêm 5 phút"
                 >
                   +5 phút
@@ -324,43 +475,95 @@ export default function StudyStopwatchWidget() {
                 <button
                   type="button"
                   onClick={() => handleAddMinutes(10)}
-                  className="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-700 bg-gray-100 hover:bg-[#e9f2ed] hover:text-[#213a34] transition-colors cursor-pointer"
+                  className="py-1.5 px-1.5 rounded-xl text-[11px] font-black text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 transition-all active:scale-95 cursor-pointer text-center"
                   title="Cộng thêm 10 phút"
                 >
                   +10 phút
                 </button>
               </div>
 
-              {/* Reset Button */}
-              {showResetConfirm ? (
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="px-2 py-1 rounded-lg text-[11px] font-black text-white bg-red-600 hover:bg-red-700 cursor-pointer transition-colors"
-                  >
-                    Xóa
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowResetConfirm(false)}
-                    className="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-600 hover:bg-gray-100 cursor-pointer"
-                  >
-                    Hủy
-                  </button>
-                </div>
-              ) : (
+              {/* Custom Minutes Expander */}
+              {!showCustomInput ? (
                 <button
                   type="button"
-                  onClick={() => setShowResetConfirm(true)}
-                  className="flex items-center gap-1 text-[11px] font-bold text-gray-400 hover:text-red-600 px-2 py-1 rounded-lg transition-colors cursor-pointer"
-                  title="Đặt lại thời gian học hôm nay về 0"
+                  onClick={() => setShowCustomInput(true)}
+                  className="w-full text-center text-[11px] font-bold text-gray-500 hover:text-[#213a34] py-0.5 transition-colors cursor-pointer"
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Đặt lại</span>
+                  ✎ Nhập số phút tùy chỉnh khác
                 </button>
+              ) : (
+                <div className="flex items-center gap-1.5 p-2 rounded-xl bg-gray-50 border border-gray-200 animate-in fade-in duration-150">
+                  <input
+                    type="number"
+                    min="1"
+                    max="600"
+                    placeholder="Số phút..."
+                    value={customMinutes}
+                    onChange={(e) => setCustomMinutes(e.target.value)}
+                    className="w-20 px-2 py-1 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-800 outline-none focus:border-[#213a34]"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleCustomAdjust(-1)}
+                    disabled={!customMinutes || todaySeconds === 0}
+                    className="flex-1 py-1 px-1.5 rounded-lg text-[10px] font-black text-rose-700 bg-rose-100 hover:bg-rose-200 disabled:opacity-40 transition-colors cursor-pointer"
+                  >
+                    - Giảm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCustomAdjust(1)}
+                    disabled={!customMinutes}
+                    className="flex-1 py-1 px-1.5 rounded-lg text-[10px] font-black text-emerald-800 bg-emerald-100 hover:bg-emerald-200 disabled:opacity-40 transition-colors cursor-pointer"
+                  >
+                    + Cộng
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCustomInput(false);
+                      setCustomMinutes('');
+                    }}
+                    className="text-gray-400 hover:text-gray-600 p-1 text-xs"
+                    title="Đóng"
+                  >
+                    ✕
+                  </button>
+                </div>
               )}
             </div>
+          </div>
+
+          {/* Smart Anti-Idle Setting */}
+          <div className="p-3 rounded-2xl bg-gray-50 border border-gray-200/80 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-black text-[#213a34]">Chống treo máy thông minh</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-black ${autoIdleEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'}`}>
+                  {autoIdleEnabled ? 'ĐANG BẬT' : 'TẮT'}
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
+                {autoIdleEnabled
+                  ? 'Tự dừng khi không chạm chuột/phím >90 giây (khi nghe audio đề thi vẫn tính bình thường).'
+                  : 'Bấm giờ liên tục bất kể có thao tác hay không.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={toggleAutoIdle}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                autoIdleEnabled ? 'bg-[#213a34]' : 'bg-gray-300'
+              }`}
+              title={autoIdleEnabled ? 'Bấm để tắt chống treo máy' : 'Bấm để bật chống treo máy'}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  autoIdleEnabled ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
 
           {/* History Link Button */}

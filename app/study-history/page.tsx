@@ -20,6 +20,7 @@ import {
   RotateCcw,
   Sparkles,
 } from 'lucide-react';
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 import {
   getSavedProgress,
   subscribeProgress,
@@ -35,12 +36,6 @@ type FilterRange = '7' | '14' | '30' | 'all';
 
 export default function StudyHistoryPage() {
   const router = useRouter();
-
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
 
   const progress = useSyncExternalStore(
     subscribeProgress,
@@ -169,17 +164,15 @@ export default function StudyHistoryPage() {
     setShowAddModal(false);
   };
 
-  if (!mounted) return null;
-
   return (
-    <div className="min-h-screen bg-[#f5f0e6] text-[#213a34] font-sans pb-16">
+    <div className="min-h-screen bg-[#faf8f5] text-[#14362d] font-sans pb-28 lg:pb-12">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-[#213a34]/10 shadow-xs">
+      <header className="sticky top-0 z-30 bg-[#faf8f5]/85 backdrop-blur-md border-b border-[#14362d]/8 shadow-xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e9f2ed] hover:bg-[#d5e5db] text-[#213a34] font-black text-xs sm:text-sm transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white hover:bg-gray-50 text-[#14362d] font-black text-xs sm:text-sm border border-[#14362d]/10 shadow-xs transition-all cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Trang chủ</span>
@@ -188,11 +181,11 @@ export default function StudyHistoryPage() {
             <div className="h-5 w-[1px] bg-gray-200 hidden sm:block" />
 
             <div className="flex items-center gap-2">
-              <span className="grid size-8 place-items-center rounded-xl bg-[#213a34] text-[#f8d467] shadow-xs">
+              <span className="grid size-8 place-items-center rounded-xl bg-[#14362d] text-[#f59e0b] shadow-xs">
                 <BookOpen size={17} />
               </span>
               <span className="font-display text-base sm:text-lg font-black hidden sm:inline">
-                Word<span className="text-[#eb6a52]">Nest</span>
+                Word<span className="text-[#f59e0b]">Nest</span>
               </span>
             </div>
           </div>
@@ -656,6 +649,8 @@ export default function StudyHistoryPage() {
           </div>
         </div>
       )}
+
+      <MobileBottomNav />
     </div>
   );
 }
