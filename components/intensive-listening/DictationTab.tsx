@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { DialogueLine } from '@/data/intensive_listening_test1';
 import {
   Volume2,
@@ -65,8 +65,18 @@ export function DictationTab({
 
   // Current line cleaned of option letters (A), (B), (C), (D)
   const rawCurrentLine = transcript[currentSentenceIdx] || transcript[0];
-  const currentLine = cleanLineForDictation(rawCurrentLine);
-  const targetWords = currentLine ? currentLine.text.split(/\s+/).filter(Boolean) : [];
+  const currentLine = useMemo(() => cleanLineForDictation(rawCurrentLine), [rawCurrentLine]);
+  const targetWords = useMemo(
+    () => (currentLine ? currentLine.text.split(/\s+/).filter(Boolean) : []),
+    [currentLine]
+  );
+
+  // Keep references to latest state so callbacks don't re-create when typing
+  const userInputRef = useRef(userInput);
+  userInputRef.current = userInput;
+
+  const hintIndexRef = useRef(hintIndex);
+  hintIndexRef.current = hintIndex;
 
   // Reset when sentence changes
   useEffect(() => {
@@ -82,7 +92,7 @@ export function DictationTab({
 
   // Speech synthesis for the current line
   const speakCurrentLine = useCallback(() => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !currentLine) return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !currentLine?.text) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(currentLine.text);
@@ -113,7 +123,7 @@ export function DictationTab({
     if (!targetWords || targetWords.length === 0) return;
 
     // Words user already typed
-    const currentWords = userInput.trim().split(/\s+/).filter(Boolean);
+    const currentWords = userInputRef.current.trim().split(/\s+/).filter(Boolean);
 
     // Count how many consecutive words from the start match targetWords
     let matchedCount = 0;
@@ -125,7 +135,7 @@ export function DictationTab({
       matchedCount++;
     }
 
-    const nextIdx = Math.max(matchedCount, hintIndex);
+    const nextIdx = Math.max(matchedCount, hintIndexRef.current);
 
     if (nextIdx < targetWords.length) {
       const newIndex = nextIdx + 1;
@@ -143,7 +153,7 @@ export function DictationTab({
         }
       }, 0);
     }
-  }, [userInput, hintIndex, targetWords]);
+  }, [targetWords]);
 
   // Global listener for Ctrl (replay) and Tab (hint next word)
   useEffect(() => {
@@ -170,9 +180,11 @@ export function DictationTab({
     };
   }, [triggerReplay, triggerHint]);
 
-  // Play audio on load of line
+  // Track sentence index so typing in textarea NEVER triggers speech
+  const prevSentenceIdxRef = useRef<number>(-1);
   useEffect(() => {
-    if (currentLine) {
+    if (prevSentenceIdxRef.current !== currentSentenceIdx) {
+      prevSentenceIdxRef.current = currentSentenceIdx;
       speakCurrentLine();
     }
   }, [currentSentenceIdx, speakCurrentLine]);
