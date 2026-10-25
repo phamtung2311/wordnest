@@ -474,7 +474,7 @@ export function IntensiveListeningHub() {
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#f5f0e6] text-[#213a34] flex flex-col font-sans">
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-[#213a34]/10 shadow-xs shrink-0">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3 md:pr-36">
           {/* Left: Back & Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <a

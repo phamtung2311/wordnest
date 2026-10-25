@@ -1042,21 +1042,18 @@ export default function Home() {
     };
   }, [activeDeck, currentWord?.id]);
 
+  // Sync real-time study progress with global StudyStopwatchWidget
   useEffect(() => {
-    if (!user || !currentWord) return;
-    const interval = window.setInterval(() => {
-      if (document.visibilityState !== 'visible') return;
-      const today = dateKey();
-      setProgress((current) => ({
-        ...current,
-        dailySeconds: {
-          ...current.dailySeconds,
-          [today]: (current.dailySeconds[today] ?? 0) + 1,
-        },
-      }));
-    }, 1000);
-    return () => window.clearInterval(interval);
-  }, [user?.uid, currentWord?.id]);
+    const handleProgressUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<StudyProgress>;
+      if (customEvent.detail) {
+        setProgress(customEvent.detail);
+      }
+    };
+    window.addEventListener('wordnest-progress-updated', handleProgressUpdate);
+    return () =>
+      window.removeEventListener('wordnest-progress-updated', handleProgressUpdate);
+  }, []);
 
   useEffect(() => {
     if (activeDeck === null) return;
@@ -4080,7 +4077,7 @@ function Header({
             </button>
           </nav>
         )}
-        <div className="account-area">
+        <div className="account-area md:mr-36">
           {user ? (
             <>
               <span className={`sync-state ${syncStatus}`}>

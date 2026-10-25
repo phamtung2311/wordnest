@@ -735,7 +735,7 @@ export default function ListeningTestPlayPage() {
         }
       >
         {/* Desktop Header */}
-        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-5 bg-white shrink-0">
+        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-5 bg-white shrink-0 lg:pr-36">
           <div>
             <h2 className="font-display text-xl font-black text-[#213a34]">Listening {testTitle}</h2>
             <p className="text-xs text-gray-500 font-bold mt-0.5">
