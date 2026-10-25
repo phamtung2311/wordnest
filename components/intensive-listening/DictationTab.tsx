@@ -29,6 +29,21 @@ function cleanWord(w: string) {
     .trim();
 }
 
+// Strip leading option letters like (A), (B), (C), (D) or A., B. for clean dictation practice
+function cleanLineForDictation(line?: DialogueLine): DialogueLine {
+  if (!line) {
+    return { id: '', speaker: '', text: '', vietnamese: '' };
+  }
+  return {
+    ...line,
+    text: line.text.replace(/^\([A-Da-d]\)\s*/, '').replace(/^[A-Da-d]\.\s*/, '').trim(),
+    vietnamese: (line.vietnamese || '')
+      .replace(/^\([A-Da-d]\)\s*/, '')
+      .replace(/^[A-Da-d]\.\s*/, '')
+      .trim(),
+  };
+}
+
 export function DictationTab({
   transcript,
   imageUrl,
@@ -42,13 +57,15 @@ export function DictationTab({
   const [completedSentences, setCompletedSentences] = useState<Record<number, boolean>>({});
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [isReplaying, setIsReplaying] = useState(false);
+  const [isHinting, setIsHinting] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPlayTimeRef = useRef<number>(0);
 
-  // Current line
-  const currentLine = transcript[currentSentenceIdx] || transcript[0];
-  const targetWords = currentLine ? currentLine.text.split(/\s+/) : [];
+  // Current line cleaned of option letters (A), (B), (C), (D)
+  const rawCurrentLine = transcript[currentSentenceIdx] || transcript[0];
+  const currentLine = cleanLineForDictation(rawCurrentLine);
+  const targetWords = currentLine ? currentLine.text.split(/\s+/).filter(Boolean) : [];
 
   // Reset when sentence changes
   useEffect(() => {
@@ -86,12 +103,53 @@ export function DictationTab({
     }, 350);
   }, [speakCurrentLine]);
 
-  // Global listener for Ctrl key to replay audio in dictation
+  // Give hint: reveal the exact next word
+  const handleGiveHint = useCallback(() => {
+    if (!targetWords || targetWords.length === 0) return;
+
+    // Words user already typed
+    const currentWords = userInput.trim().split(/\s+/).filter(Boolean);
+
+    // Count how many consecutive words from the start match targetWords
+    let matchedCount = 0;
+    while (
+      matchedCount < currentWords.length &&
+      matchedCount < targetWords.length &&
+      cleanWord(currentWords[matchedCount]) === cleanWord(targetWords[matchedCount])
+    ) {
+      matchedCount++;
+    }
+
+    const nextIdx = Math.max(matchedCount, hintIndex);
+
+    if (nextIdx < targetWords.length) {
+      const newIndex = nextIdx + 1;
+      setHintIndex(newIndex);
+      const hintText = targetWords.slice(0, newIndex).join(' ');
+      setUserInput(hintText + ' ');
+      setIsHinting(true);
+      setTimeout(() => setIsHinting(false), 300);
+
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          const len = textareaRef.current.value.length;
+          textareaRef.current.setSelectionRange(len, len);
+        }
+      }, 0);
+    }
+  }, [userInput, hintIndex, targetWords]);
+
+  // Global listener for Ctrl (replay) and Tab (hint next word)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Replay audio when pressing Ctrl key
       if ((e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') && !e.repeat) {
         triggerReplay();
+      } else if (e.key === 'Tab') {
+        // Tab key gives next word hint without shifting focus away
+        e.preventDefault();
+        handleGiveHint();
       } else if (e.ctrlKey && e.key !== 'Control') {
         // If combo shortcut like Ctrl+C, Ctrl+V, Ctrl+A was pressed, cancel speech so it won't interrupt
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -105,7 +163,7 @@ export function DictationTab({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [triggerReplay]);
+  }, [triggerReplay, handleGiveHint]);
 
   // Play audio on load of line
   useEffect(() => {
@@ -113,21 +171,6 @@ export function DictationTab({
       speakCurrentLine();
     }
   }, [currentSentenceIdx, speakCurrentLine]);
-
-  // Give hint: reveal words up to hintIndex + 1
-  const handleGiveHint = () => {
-    if (hintIndex < targetWords.length) {
-      const nextWord = targetWords[hintIndex];
-      const newIndex = hintIndex + 1;
-      setHintIndex(newIndex);
-      // Append or set hint in input
-      const hintText = targetWords.slice(0, newIndex).join(' ');
-      setUserInput(hintText + ' ');
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-      }
-    }
-  };
 
   // Check answer comparing user input with target sentence
   const handleCheck = () => {
@@ -297,7 +340,9 @@ export function DictationTab({
             </span>
             {currentLine.speaker && (
               <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-[#e9f2ed] text-[#213a34]">
-                {currentLine.speaker}
+                {rawCurrentLine?.id?.match(/-([abcABC])$/)
+                  ? `Đáp án (${rawCurrentLine.id.slice(-1).toUpperCase()}): ${currentLine.speaker}`
+                  : currentLine.speaker}
               </span>
             )}
           </div>
@@ -328,6 +373,11 @@ export function DictationTab({
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={(e) => {
+              if (e.key === 'Tab') {
+                e.preventDefault();
+                handleGiveHint();
+                return;
+              }
               if (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') {
                 e.preventDefault();
                 triggerReplay();
@@ -343,11 +393,15 @@ export function DictationTab({
           />
 
           <div className="flex flex-wrap items-center justify-between text-xs text-gray-500 font-medium px-1 gap-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span>Bấm <kbd className="px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 font-mono text-[11px] font-bold text-gray-700">Enter</kbd> để kiểm tra</span>
               <span className="text-gray-300">·</span>
               <span className="text-emerald-800 font-bold flex items-center gap-1">
-                Bấm <kbd className="px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-300 font-mono text-[11px] font-black text-emerald-800">Ctrl</kbd> để phát lại audio
+                Bấm <kbd className="px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-300 font-mono text-[11px] font-black text-emerald-800">Ctrl</kbd> phát lại
+              </span>
+              <span className="text-gray-300">·</span>
+              <span className="text-amber-800 font-bold flex items-center gap-1">
+                Bấm <kbd className="px-1.5 py-0.5 rounded bg-amber-100 border border-amber-300 font-mono text-[11px] font-black text-amber-800">Tab</kbd> gợi ý 1 từ
               </span>
             </div>
             <span>{userInput.trim().split(/\s+/).filter(Boolean).length} / {targetWords.length} từ</span>
@@ -409,10 +463,18 @@ export function DictationTab({
               type="button"
               onClick={handleGiveHint}
               disabled={hintIndex >= targetWords.length}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-[#f5f0e6] hover:bg-[#e7e0d3] text-[#213a34] border border-[#213a34]/10 disabled:opacity-40 transition-colors"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border transition-all cursor-pointer ${
+                isHinting
+                  ? 'bg-amber-100 text-amber-900 border-amber-400 scale-105 shadow-xs'
+                  : 'bg-[#f5f0e6] hover:bg-[#e7e0d3] text-[#213a34] border-[#213a34]/10 disabled:opacity-40'
+              }`}
+              title="Bấm nút hoặc nhấn phím Tab để hiện gợi ý 1 từ tiếp theo"
             >
-              <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+              <Lightbulb className={`w-3.5 h-3.5 text-amber-500 ${isHinting ? 'animate-bounce' : ''}`} />
               <span>Gợi ý ({hintIndex}/{targetWords.length})</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-black/10 text-[10px] font-mono text-gray-700">
+                Tab
+              </kbd>
             </button>
 
             {/* Show Answer Button */}

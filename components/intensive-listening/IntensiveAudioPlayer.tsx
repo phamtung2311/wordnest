@@ -444,7 +444,7 @@ export function IntensiveAudioPlayer({
           <Keyboard className="w-3 h-3 text-[#eb6a52]" />
           <span>
             {activeTab === 'dictation'
-              ? 'Ctrl: Phát lại câu · Enter: Kiểm tra · 1/2/3: Đổi tab'
+              ? 'Ctrl: Phát lại · Tab: Gợi ý · Enter: Kiểm tra · 1/2/3: Đổi tab'
               : 'Space: Dừng/Phát · ←/→: Tua 5s · 1/2/3: Đổi tab'}
           </span>
         </div>

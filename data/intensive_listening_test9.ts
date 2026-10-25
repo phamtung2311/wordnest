@@ -460,20 +460,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-7-A",
         "speaker": "Speaker B",
-        "text": "(A) A couple of bowls.",
-        "vietnamese": "(A) Một vài chiếc bát."
+        "text": "A couple of bowls.",
+        "vietnamese": "Một vài chiếc bát."
       },
       {
         "id": "p2-7-B",
         "speaker": "Speaker B",
-        "text": "(B) I hadn't noticed.",
-        "vietnamese": "(B) Tôi đã không để ý."
+        "text": "I hadn't noticed.",
+        "vietnamese": "Tôi đã không để ý."
       },
       {
         "id": "p2-7-C",
         "speaker": "Speaker B",
-        "text": "(C) Yes, thank you.",
-        "vietnamese": "(C) Vâng, cảm ơn bạn."
+        "text": "Yes, thank you.",
+        "vietnamese": "Vâng, cảm ơn bạn."
       }
     ],
     "questions": [
@@ -526,20 +526,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-8-A",
         "speaker": "Speaker B",
-        "text": "(A) No, the deadline is tomorrow.",
-        "vietnamese": "(A) Không, hạn chót là ngày mai."
+        "text": "No, the deadline is tomorrow.",
+        "vietnamese": "Không, hạn chót là ngày mai."
       },
       {
         "id": "p2-8-B",
         "speaker": "Speaker B",
-        "text": "(B) Yes, it is very expensive.",
-        "vietnamese": "(B) Vâng, nó rất đắt tiền."
+        "text": "Yes, it is very expensive.",
+        "vietnamese": "Vâng, nó rất đắt tiền."
       },
       {
         "id": "p2-8-C",
         "speaker": "Speaker B",
-        "text": "(C) Did you check the batteries?",
-        "vietnamese": "(C) Bạn đã kiểm tra pin chưa?"
+        "text": "Did you check the batteries?",
+        "vietnamese": "Bạn đã kiểm tra pin chưa?"
       }
     ],
     "questions": [
@@ -592,20 +592,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-9-A",
         "speaker": "Speaker B",
-        "text": "(A) Please change the ink cartridge.",
-        "vietnamese": "(A) Xin hãy thay hộp mực."
+        "text": "Please change the ink cartridge.",
+        "vietnamese": "Xin hãy thay hộp mực."
       },
       {
         "id": "p2-9-B",
         "speaker": "Speaker B",
-        "text": "(B) By hiring a consulting firm.",
-        "vietnamese": "(B) Bằng cách thuê một công ty tư vấn."
+        "text": "By hiring a consulting firm.",
+        "vietnamese": "Bằng cách thuê một công ty tư vấn."
       },
       {
         "id": "p2-9-C",
         "speaker": "Speaker B",
-        "text": "(C) His office is on the third floor.",
-        "vietnamese": "(C) Văn phòng của ông ấy ở tầng ba."
+        "text": "His office is on the third floor.",
+        "vietnamese": "Văn phòng của ông ấy ở tầng ba."
       }
     ],
     "questions": [
@@ -658,20 +658,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-10-A",
         "speaker": "Speaker B",
-        "text": "(A) I can pick up some today.",
-        "vietnamese": "(A) Hôm nay tôi có thể ghé lấy một ít."
+        "text": "I can pick up some today.",
+        "vietnamese": "Hôm nay tôi có thể ghé lấy một ít."
       },
       {
         "id": "p2-10-B",
         "speaker": "Speaker B",
-        "text": "(B) Yes, it was a lot.",
-        "vietnamese": "(B) Đúng vậy, tốn rất nhiều tiền."
+        "text": "Yes, it was a lot.",
+        "vietnamese": "Đúng vậy, tốn rất nhiều tiền."
       },
       {
         "id": "p2-10-C",
         "speaker": "Speaker B",
-        "text": "(C) OK, I'll close the door.",
-        "vietnamese": "(C) Được rồi, tôi sẽ đóng cửa lại."
+        "text": "OK, I'll close the door.",
+        "vietnamese": "Được rồi, tôi sẽ đóng cửa lại."
       }
     ],
     "questions": [
@@ -724,20 +724,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-11-A",
         "speaker": "Speaker B",
-        "text": "(A) On Treetown Avenue.",
-        "vietnamese": "(A) Trên đại lộ Treetown."
+        "text": "On Treetown Avenue.",
+        "vietnamese": "Trên đại lộ Treetown."
       },
       {
         "id": "p2-11-B",
         "speaker": "Speaker B",
-        "text": "(B) Next Tuesday.",
-        "vietnamese": "(B) Thứ Ba tuần tới."
+        "text": "Next Tuesday.",
+        "vietnamese": "Thứ Ba tuần tới."
       },
       {
         "id": "p2-11-C",
         "speaker": "Speaker B",
-        "text": "(C) OK, thanks for the update.",
-        "vietnamese": "(C) Được rồi, cảm ơn vì thông tin cập nhật."
+        "text": "OK, thanks for the update.",
+        "vietnamese": "Được rồi, cảm ơn vì thông tin cập nhật."
       }
     ],
     "questions": [
@@ -790,20 +790,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-12-A",
         "speaker": "Speaker B",
-        "text": "(A) The shipping and receiving department.",
-        "vietnamese": "(A) Bộ phận giao và nhận hàng."
+        "text": "The shipping and receiving department.",
+        "vietnamese": "Bộ phận giao và nhận hàng."
       },
       {
         "id": "p2-12-B",
         "speaker": "Speaker B",
-        "text": "(B) My dentist has an office downtown.",
-        "vietnamese": "(B) Nha sĩ của tôi có phòng khám ở trung tâm thành phố."
+        "text": "My dentist has an office downtown.",
+        "vietnamese": "Nha sĩ của tôi có phòng khám ở trung tâm thành phố."
       },
       {
         "id": "p2-12-C",
         "speaker": "Speaker B",
-        "text": "(C) Sure, I'll do that now.",
-        "vietnamese": "(C) Chắc chắn rồi, tôi sẽ làm việc đó ngay bây giờ."
+        "text": "Sure, I'll do that now.",
+        "vietnamese": "Chắc chắn rồi, tôi sẽ làm việc đó ngay bây giờ."
       }
     ],
     "questions": [
@@ -856,20 +856,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-13-A",
         "speaker": "Speaker B",
-        "text": "(A) Good, because I'm busy at the moment.",
-        "vietnamese": "(A) Tốt quá, vì lúc này tôi đang bận."
+        "text": "Good, because I'm busy at the moment.",
+        "vietnamese": "Tốt quá, vì lúc này tôi đang bận."
       },
       {
         "id": "p2-13-B",
         "speaker": "Speaker B",
-        "text": "(B) I haven't seen that show either.",
-        "vietnamese": "(B) Tôi cũng chưa xem buổi biểu diễn đó."
+        "text": "I haven't seen that show either.",
+        "vietnamese": "Tôi cũng chưa xem buổi biểu diễn đó."
       },
       {
         "id": "p2-13-C",
         "speaker": "Speaker B",
-        "text": "(C) About 200 dollars.",
-        "vietnamese": "(C) Khoảng 200 đô la."
+        "text": "About 200 dollars.",
+        "vietnamese": "Khoảng 200 đô la."
       }
     ],
     "questions": [
@@ -922,20 +922,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-14-A",
         "speaker": "Speaker B",
-        "text": "(A) He doesn't mind.",
-        "vietnamese": "(A) Anh ấy không để tâm đâu."
+        "text": "He doesn't mind.",
+        "vietnamese": "Anh ấy không để tâm đâu."
       },
       {
         "id": "p2-14-B",
         "speaker": "Speaker B",
-        "text": "(B) It's on my business card.",
-        "vietnamese": "(B) Nó có trên danh thiếp của tôi."
+        "text": "It's on my business card.",
+        "vietnamese": "Nó có trên danh thiếp của tôi."
       },
       {
         "id": "p2-14-C",
         "speaker": "Speaker B",
-        "text": "(C) No, I'm fine.",
-        "vietnamese": "(C) Không, tôi ổn."
+        "text": "No, I'm fine.",
+        "vietnamese": "Không, tôi ổn."
       }
     ],
     "questions": [
@@ -988,20 +988,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-15-A",
         "speaker": "Speaker B",
-        "text": "(A) No, I don't have any coins.",
-        "vietnamese": "(A) Không, tôi không có đồng xu nào."
+        "text": "No, I don't have any coins.",
+        "vietnamese": "Không, tôi không có đồng xu nào."
       },
       {
         "id": "p2-15-B",
         "speaker": "Speaker B",
-        "text": "(B) The one on Eighth Street.",
-        "vietnamese": "(B) Trạm ở đường số 8."
+        "text": "The one on Eighth Street.",
+        "vietnamese": "Trạm ở đường số 8."
       },
       {
         "id": "p2-15-C",
         "speaker": "Speaker B",
-        "text": "(C) An extra bag for groceries.",
-        "vietnamese": "(C) Một chiếc túi thêm đựng hàng tạp hóa."
+        "text": "An extra bag for groceries.",
+        "vietnamese": "Một chiếc túi thêm đựng hàng tạp hóa."
       }
     ],
     "questions": [
@@ -1054,20 +1054,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-16-A",
         "speaker": "Speaker B",
-        "text": "(A) The famous singer Bradley Patel.",
-        "vietnamese": "(A) Ca sĩ nổi tiếng Bradley Patel."
+        "text": "The famous singer Bradley Patel.",
+        "vietnamese": "Ca sĩ nổi tiếng Bradley Patel."
       },
       {
         "id": "p2-16-B",
         "speaker": "Speaker B",
-        "text": "(B) Some seats near the stage.",
-        "vietnamese": "(B) Một số chỗ ngồi gần sân khấu."
+        "text": "Some seats near the stage.",
+        "vietnamese": "Một số chỗ ngồi gần sân khấu."
       },
       {
         "id": "p2-16-C",
         "speaker": "Speaker B",
-        "text": "(C) The corner of Main Street and First Avenue.",
-        "vietnamese": "(C) Góc phố Main và Đại lộ số 1."
+        "text": "The corner of Main Street and First Avenue.",
+        "vietnamese": "Góc phố Main và Đại lộ số 1."
       }
     ],
     "questions": [
@@ -1120,20 +1120,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-17-A",
         "speaker": "Speaker B",
-        "text": "(A) Tomorrow after lunch.",
-        "vietnamese": "(A) Ngày mai sau bữa trưa."
+        "text": "Tomorrow after lunch.",
+        "vietnamese": "Ngày mai sau bữa trưa."
       },
       {
         "id": "p2-17-B",
         "speaker": "Speaker B",
-        "text": "(B) It was about two hours long.",
-        "vietnamese": "(B) Nó kéo dài khoảng hai tiếng đồng hồ."
+        "text": "It was about two hours long.",
+        "vietnamese": "Nó kéo dài khoảng hai tiếng đồng hồ."
       },
       {
         "id": "p2-17-C",
         "speaker": "Speaker B",
-        "text": "(C) I prefer to use local suppliers.",
-        "vietnamese": "(C) Tôi thích sử dụng các nhà cung cấp địa phương hơn."
+        "text": "I prefer to use local suppliers.",
+        "vietnamese": "Tôi thích sử dụng các nhà cung cấp địa phương hơn."
       }
     ],
     "questions": [
@@ -1186,20 +1186,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-18-A",
         "speaker": "Speaker B",
-        "text": "(A) Dinner is at eight.",
-        "vietnamese": "(A) Bữa tối diễn ra lúc 8 giờ."
+        "text": "Dinner is at eight.",
+        "vietnamese": "Bữa tối diễn ra lúc 8 giờ."
       },
       {
         "id": "p2-18-B",
         "speaker": "Speaker B",
-        "text": "(B) We're waiting for the final cost estimate.",
-        "vietnamese": "(B) Chúng tôi đang chờ bản ước tính chi phí cuối cùng."
+        "text": "We're waiting for the final cost estimate.",
+        "vietnamese": "Chúng tôi đang chờ bản ước tính chi phí cuối cùng."
       },
       {
         "id": "p2-18-C",
         "speaker": "Speaker B",
-        "text": "(C) There's a store nearby.",
-        "vietnamese": "(C) Có một cửa hàng ở gần đây."
+        "text": "There's a store nearby.",
+        "vietnamese": "Có một cửa hàng ở gần đây."
       }
     ],
     "questions": [
@@ -1252,20 +1252,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-19-A",
         "speaker": "Speaker B",
-        "text": "(A) The conference center is on Walnut Avenue.",
-        "vietnamese": "(A) Trung tâm hội nghị nằm trên Đại lộ Walnut."
+        "text": "The conference center is on Walnut Avenue.",
+        "vietnamese": "Trung tâm hội nghị nằm trên Đại lộ Walnut."
       },
       {
         "id": "p2-19-B",
         "speaker": "Speaker B",
-        "text": "(B) Do you have a reservation?",
-        "vietnamese": "(B) Bạn có đặt chỗ trước không?"
+        "text": "Do you have a reservation?",
+        "vietnamese": "Bạn có đặt chỗ trước không?"
       },
       {
         "id": "p2-19-C",
         "speaker": "Speaker B",
-        "text": "(C) Yes, I left them at the front desk.",
-        "vietnamese": "(C) Rồi, tôi đã để chúng ở quầy lễ tân."
+        "text": "Yes, I left them at the front desk.",
+        "vietnamese": "Rồi, tôi đã để chúng ở quầy lễ tân."
       }
     ],
     "questions": [
@@ -1318,20 +1318,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-20-A",
         "speaker": "Speaker B",
-        "text": "(A) We'll do that at the end of the summer.",
-        "vietnamese": "(A) Chúng ta sẽ làm việc đó vào cuối mùa hè."
+        "text": "We'll do that at the end of the summer.",
+        "vietnamese": "Chúng ta sẽ làm việc đó vào cuối mùa hè."
       },
       {
         "id": "p2-20-B",
         "speaker": "Speaker B",
-        "text": "(B) Agreed—that painting looks good in this room!",
-        "vietnamese": "(B) Đồng ý—bức tranh đó trông rất đẹp trong phòng này!"
+        "text": "Agreed—that painting looks good in this room!",
+        "vietnamese": "Đồng ý—bức tranh đó trông rất đẹp trong phòng này!"
       },
       {
         "id": "p2-20-C",
         "speaker": "Speaker B",
-        "text": "(C) Put all the old files upstairs.",
-        "vietnamese": "(C) Hãy để tất cả các hồ sơ cũ lên trên gác."
+        "text": "Put all the old files upstairs.",
+        "vietnamese": "Hãy để tất cả các hồ sơ cũ lên trên gác."
       }
     ],
     "questions": [
@@ -1384,20 +1384,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-21-A",
         "speaker": "Speaker B",
-        "text": "(A) The keys are on my desk.",
-        "vietnamese": "(A) Chùm chìa khóa ở trên bàn của tôi."
+        "text": "The keys are on my desk.",
+        "vietnamese": "Chùm chìa khóa ở trên bàn của tôi."
       },
       {
         "id": "p2-21-B",
         "speaker": "Speaker B",
-        "text": "(B) Yes, she gave a nice speech.",
-        "vietnamese": "(B) Vâng, cô ấy đã có một bài phát biểu rất hay."
+        "text": "Yes, she gave a nice speech.",
+        "vietnamese": "Vâng, cô ấy đã có một bài phát biểu rất hay."
       },
       {
         "id": "p2-21-C",
         "speaker": "Speaker B",
-        "text": "(C) Here's the schedule.",
-        "vietnamese": "(C) Đây là lịch trình này."
+        "text": "Here's the schedule.",
+        "vietnamese": "Đây là lịch trình này."
       }
     ],
     "questions": [
@@ -1450,20 +1450,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-22-A",
         "speaker": "Speaker B",
-        "text": "(A) No, just me this time.",
-        "vietnamese": "(A) Không, lần này chỉ có mình tôi thôi."
+        "text": "No, just me this time.",
+        "vietnamese": "Không, lần này chỉ có mình tôi thôi."
       },
       {
         "id": "p2-22-B",
         "speaker": "Speaker B",
-        "text": "(B) From the florist down the street.",
-        "vietnamese": "(B) Từ tiệm hoa ở phía cuối phố."
+        "text": "From the florist down the street.",
+        "vietnamese": "Từ tiệm hoa ở phía cuối phố."
       },
       {
         "id": "p2-22-C",
         "speaker": "Speaker B",
-        "text": "(C) Let's discuss that at our next meeting.",
-        "vietnamese": "(C) Chúng ta hãy thảo luận việc đó ở cuộc họp tới."
+        "text": "Let's discuss that at our next meeting.",
+        "vietnamese": "Chúng ta hãy thảo luận việc đó ở cuộc họp tới."
       }
     ],
     "questions": [
@@ -1516,20 +1516,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-23-A",
         "speaker": "Speaker B",
-        "text": "(A) Try rebooting the computer.",
-        "vietnamese": "(A) Hãy thử khởi động lại máy tính."
+        "text": "Try rebooting the computer.",
+        "vietnamese": "Hãy thử khởi động lại máy tính."
       },
       {
         "id": "p2-23-B",
         "speaker": "Speaker B",
-        "text": "(B) Because an additional speaker was added.",
-        "vietnamese": "(B) Bởi vì có thêm một diễn giả được bổ sung."
+        "text": "Because an additional speaker was added.",
+        "vietnamese": "Bởi vì có thêm một diễn giả được bổ sung."
       },
       {
         "id": "p2-23-C",
         "speaker": "Speaker B",
-        "text": "(C) That's a good idea.",
-        "vietnamese": "(C) Đó là một ý kiến hay."
+        "text": "That's a good idea.",
+        "vietnamese": "Đó là một ý kiến hay."
       }
     ],
     "questions": [
@@ -1582,20 +1582,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-24-A",
         "speaker": "Speaker B",
-        "text": "(A) To pick up some coffee.",
-        "vietnamese": "(A) Để đi mua ít cà phê."
+        "text": "To pick up some coffee.",
+        "vietnamese": "Để đi mua ít cà phê."
       },
       {
         "id": "p2-24-B",
         "speaker": "Speaker B",
-        "text": "(B) I brought my car today.",
-        "vietnamese": "(B) Hôm nay tôi đã lái xe riêng đi làm."
+        "text": "I brought my car today.",
+        "vietnamese": "Hôm nay tôi đã lái xe riêng đi làm."
       },
       {
         "id": "p2-24-C",
         "speaker": "Speaker B",
-        "text": "(C) They weren't too expensive.",
-        "vietnamese": "(C) Chúng không quá đắt."
+        "text": "They weren't too expensive.",
+        "vietnamese": "Chúng không quá đắt."
       }
     ],
     "questions": [
@@ -1648,20 +1648,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-25-A",
         "speaker": "Speaker B",
-        "text": "(A) She moved to Singapore last year.",
-        "vietnamese": "(A) Cô ấy đã chuyển đến Singapore vào năm ngoái."
+        "text": "She moved to Singapore last year.",
+        "vietnamese": "Cô ấy đã chuyển đến Singapore vào năm ngoái."
       },
       {
         "id": "p2-25-B",
         "speaker": "Speaker B",
-        "text": "(B) The furniture store on Maple Street.",
-        "vietnamese": "(B) Cửa hàng đồ nội thất trên đường Maple."
+        "text": "The furniture store on Maple Street.",
+        "vietnamese": "Cửa hàng đồ nội thất trên đường Maple."
       },
       {
         "id": "p2-25-C",
         "speaker": "Speaker B",
-        "text": "(C) I'm about to go pick up the cake.",
-        "vietnamese": "(C) Tôi chuẩn bị phải đi lấy bánh ngọt rồi."
+        "text": "I'm about to go pick up the cake.",
+        "vietnamese": "Tôi chuẩn bị phải đi lấy bánh ngọt rồi."
       }
     ],
     "questions": [
@@ -1714,20 +1714,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-26-A",
         "speaker": "Speaker B",
-        "text": "(A) No, it's not too heavy.",
-        "vietnamese": "(A) Không, nó không quá nặng."
+        "text": "No, it's not too heavy.",
+        "vietnamese": "Không, nó không quá nặng."
       },
       {
         "id": "p2-26-B",
         "speaker": "Speaker B",
-        "text": "(B) Jacob's team has done some good work.",
-        "vietnamese": "(B) Nhóm của Jacob đã làm việc rất tốt."
+        "text": "Jacob's team has done some good work.",
+        "vietnamese": "Nhóm của Jacob đã làm việc rất tốt."
       },
       {
         "id": "p2-26-C",
         "speaker": "Speaker B",
-        "text": "(C) I already have some.",
-        "vietnamese": "(C) Tôi đã có một ít rồi."
+        "text": "I already have some.",
+        "vietnamese": "Tôi đã có một ít rồi."
       }
     ],
     "questions": [
@@ -1780,20 +1780,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-27-A",
         "speaker": "Speaker B",
-        "text": "(A) On the second floor.",
-        "vietnamese": "(A) Ở trên tầng hai."
+        "text": "On the second floor.",
+        "vietnamese": "Ở trên tầng hai."
       },
       {
         "id": "p2-27-B",
         "speaker": "Speaker B",
-        "text": "(B) Yes, she's done it for years.",
-        "vietnamese": "(B) Đúng vậy, cô ấy đã làm việc đó nhiều năm rồi."
+        "text": "Yes, she's done it for years.",
+        "vietnamese": "Đúng vậy, cô ấy đã làm việc đó nhiều năm rồi."
       },
       {
         "id": "p2-27-C",
         "speaker": "Speaker B",
-        "text": "(C) No, it shouldn't be too difficult.",
-        "vietnamese": "(C) Không, nó không quá khó khăn đâu."
+        "text": "No, it shouldn't be too difficult.",
+        "vietnamese": "Không, nó không quá khó khăn đâu."
       }
     ],
     "questions": [
@@ -1846,20 +1846,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-28-A",
         "speaker": "Speaker B",
-        "text": "(A) We're already over budget.",
-        "vietnamese": "(A) Chúng ta đã vượt quá ngân sách rồi."
+        "text": "We're already over budget.",
+        "vietnamese": "Chúng ta đã vượt quá ngân sách rồi."
       },
       {
         "id": "p2-28-B",
         "speaker": "Speaker B",
-        "text": "(B) Yes, it's a new printer.",
-        "vietnamese": "(B) Vâng, đó là một chiếc máy in mới."
+        "text": "Yes, it's a new printer.",
+        "vietnamese": "Vâng, đó là một chiếc máy in mới."
       },
       {
         "id": "p2-28-C",
         "speaker": "Speaker B",
-        "text": "(C) A retirement bonus.",
-        "vietnamese": "(C) Một khoản tiền thưởng nghỉ hưu."
+        "text": "A retirement bonus.",
+        "vietnamese": "Một khoản tiền thưởng nghỉ hưu."
       }
     ],
     "questions": [
@@ -1912,20 +1912,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-29-A",
         "speaker": "Speaker B",
-        "text": "(A) The car keys are on my desk.",
-        "vietnamese": "(A) Chìa khóa xe ở trên bàn của tôi."
+        "text": "The car keys are on my desk.",
+        "vietnamese": "Chìa khóa xe ở trên bàn của tôi."
       },
       {
         "id": "p2-29-B",
         "speaker": "Speaker B",
-        "text": "(B) Our filing cabinets are full.",
-        "vietnamese": "(B) Các tủ đựng hồ sơ của chúng tôi đã đầy."
+        "text": "Our filing cabinets are full.",
+        "vietnamese": "Các tủ đựng hồ sơ của chúng tôi đã đầy."
       },
       {
         "id": "p2-29-C",
         "speaker": "Speaker B",
-        "text": "(C) We're waiting for a few more people.",
-        "vietnamese": "(C) Chúng ta vẫn đang đợi thêm vài người nữa."
+        "text": "We're waiting for a few more people.",
+        "vietnamese": "Chúng ta vẫn đang đợi thêm vài người nữa."
       }
     ],
     "questions": [
@@ -1978,20 +1978,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-30-A",
         "speaker": "Speaker B",
-        "text": "(A) We need to find a new shipping partner.",
-        "vietnamese": "(A) Chúng ta cần phải tìm đối tác vận chuyển mới."
+        "text": "We need to find a new shipping partner.",
+        "vietnamese": "Chúng ta cần phải tìm đối tác vận chuyển mới."
       },
       {
         "id": "p2-30-B",
         "speaker": "Speaker B",
-        "text": "(B) Several customers are waiting to have their cars serviced.",
-        "vietnamese": "(B) Một số khách hàng đang đợi để bảo dưỡng xe."
+        "text": "Several customers are waiting to have their cars serviced.",
+        "vietnamese": "Một số khách hàng đang đợi để bảo dưỡng xe."
       },
       {
         "id": "p2-30-C",
         "speaker": "Speaker B",
-        "text": "(C) No, we don't need to eat.",
-        "vietnamese": "(C) Không, chúng ta không cần ăn."
+        "text": "No, we don't need to eat.",
+        "vietnamese": "Không, chúng ta không cần ăn."
       }
     ],
     "questions": [
@@ -2044,20 +2044,20 @@ export const test9IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p2-31-A",
         "speaker": "Speaker B",
-        "text": "(A) There's not enough space.",
-        "vietnamese": "(A) Làm gì có đủ chỗ cơ chứ."
+        "text": "There's not enough space.",
+        "vietnamese": "Làm gì có đủ chỗ cơ chứ."
       },
       {
         "id": "p2-31-B",
         "speaker": "Speaker B",
-        "text": "(B) The food is fantastic.",
-        "vietnamese": "(B) Thức ăn rất tuyệt vời."
+        "text": "The food is fantastic.",
+        "vietnamese": "Thức ăn rất tuyệt vời."
       },
       {
         "id": "p2-31-C",
         "speaker": "Speaker B",
-        "text": "(C) Turn left at the light.",
-        "vietnamese": "(C) Rẽ trái ở cột đèn giao thông."
+        "text": "Turn left at the light.",
+        "vietnamese": "Rẽ trái ở cột đèn giao thông."
       }
     ],
     "questions": [
