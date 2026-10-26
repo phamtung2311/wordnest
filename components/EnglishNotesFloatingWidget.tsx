@@ -186,7 +186,7 @@ export default function EnglishNotesFloatingWidget() {
                   Ghi chú Cấu trúc & Mẹo
                 </h3>
                 <span className="text-[10px] font-black bg-amber-400 text-[#213a34] px-1.5 py-0.2 rounded-md">
-                  {notes.length} mục
+                  {searchQuery ? `${filteredNotes.length}/${notes.length}` : notes.length} mục
                 </span>
               </div>
             </div>
@@ -217,8 +217,33 @@ export default function EnglishNotesFloatingWidget() {
             </div>
           </div>
 
-          {/* Quick Add Form + Search Bar */}
+          {/* Search Bar + Quick Add Form */}
           <div className="p-2.5 bg-[#f5f0e6] border-b border-[#213a34]/15 space-y-2 shrink-0">
+            {/* Always Visible Search Bar */}
+            <div className="relative">
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm kiếm cấu trúc, mẹo hoặc giải thích..."
+                className="w-full bg-white border border-[#213a34]/20 rounded-xl pl-8 pr-7 py-1.5 text-xs font-bold text-[#213a34] outline-none focus:border-[#213a34]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5 cursor-pointer"
+                  title="Xóa tìm kiếm"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+
             {/* Quick Add Row */}
             <form onSubmit={handleAddSubmit} className="flex flex-col sm:flex-row gap-1.5">
               <input
@@ -245,32 +270,6 @@ export default function EnglishNotesFloatingWidget() {
                 <span>Thêm</span>
               </button>
             </form>
-
-            {/* Quick Search (only if notes exist) */}
-            {notes.length > 2 && (
-              <div className="relative">
-                <Search
-                  size={12}
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Lọc nhanh theo từ khóa..."
-                  className="w-full bg-white/90 border border-[#213a34]/15 rounded-lg pl-7 pr-6 py-1 text-[11px] font-bold text-[#213a34] outline-none focus:bg-white"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={11} />
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
           {/* 2-COLUMN TABLE AREA */}
