@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, FileText, History, Headphones, Sparkles, ChevronRight, Award } from 'lucide-react';
+import { ArrowLeft, FileText, History, Headphones, Sparkles, ChevronRight, Award, RotateCcw, X, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 
@@ -16,6 +16,8 @@ export default function PracticeTestSelectionPage() {
   const [history, setHistory] = useState<TestHistory[]>([]);
   const [inProgress, setInProgress] = useState<Record<string, boolean>>({});
   const [selectedYear, setSelectedYear] = useState<'2026' | '2024' | '2023'>('2026');
+  const [resetModalTest, setResetModalTest] = useState<{ id: string; name: string } | null>(null);
+  const [resetToast, setResetToast] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -35,6 +37,54 @@ export default function PracticeTestSelectionPage() {
       setInProgress(progress);
     } catch (e) {}
   }, []);
+
+  const handleResetTestPart = (testId: string, part: 'part5' | 'part6' | 'part7' | 'all', openDirectly = false) => {
+    try {
+      const key = `toeic_reading_progress_${testId}`;
+      if (part === 'all') {
+        localStorage.removeItem(key);
+      } else {
+        const currentStr = localStorage.getItem(key);
+        if (currentStr) {
+          const answers = JSON.parse(currentStr);
+          if (part === 'part5') {
+            for (let i = 101; i <= 130; i++) delete answers[i];
+          } else if (part === 'part6') {
+            for (let i = 131; i <= 146; i++) delete answers[i];
+          } else if (part === 'part7') {
+            for (let i = 147; i <= 200; i++) delete answers[i];
+          }
+          if (Object.keys(answers).length > 0) {
+            localStorage.setItem(key, JSON.stringify(answers));
+          } else {
+            localStorage.removeItem(key);
+          }
+        }
+      }
+      
+      // Update inProgress state
+      const progress: Record<string, boolean> = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k?.startsWith('toeic_reading_progress_')) {
+          const id = k.replace('toeic_reading_progress_', '');
+          progress[id] = true;
+        }
+      }
+      setInProgress(progress);
+
+      const partLabel = part === 'part5' ? 'Part 5' : part === 'part6' ? 'Part 6' : part === 'part7' ? 'Part 7' : 'toàn bộ đề';
+      setResetToast(`Đã làm lại ${partLabel}!`);
+      setTimeout(() => setResetToast(null), 3000);
+      setResetModalTest(null);
+
+      if (openDirectly) {
+        router.push(`/practice-test/${testId}?part=${part}`);
+      }
+    } catch (e) {
+      console.error('Reset error:', e);
+    }
+  };
 
   const tests2026 = Array.from({ length: 10 }, (_, i) => ({ id: `${i + 1}`, name: `ETS 2026 Đề ${i + 1}` }));
   const tests2024 = Array.from({ length: 10 }, (_, i) => ({ id: `2024-${i + 1}`, name: `ETS 2024 Đề ${i + 1}` }));
@@ -132,11 +182,34 @@ export default function PracticeTestSelectionPage() {
               const hasProgress = inProgress[test.id];
 
               return (
-                <button
+                <div
                   key={test.id}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => router.push(`/practice-test/${test.id}`)}
-                  className="flex flex-col items-center justify-center bg-[#faf8f5] hover:bg-white transition-all hover:-translate-y-1 hover:shadow-md active:scale-95 rounded-2xl p-4 border border-[#14362d]/8 group relative text-center"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      router.push(`/practice-test/${test.id}`);
+                    }
+                  }}
+                  className="flex flex-col items-center justify-center bg-[#faf8f5] hover:bg-white transition-all hover:-translate-y-1 hover:shadow-md active:scale-95 rounded-2xl p-4 border border-[#14362d]/8 group relative text-center cursor-pointer select-none"
                 >
+                  {/* Reset Redo Button on card */}
+                  {(hasProgress || score !== null) && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setResetModalTest(test);
+                      }}
+                      className="absolute top-2 left-2 p-1.5 rounded-xl bg-white/95 hover:bg-amber-100 text-amber-700 border border-amber-200/80 shadow-xs transition-all z-10 opacity-70 hover:opacity-100 group-hover:opacity-100"
+                      title="Làm lại đề / Làm lại Part 5"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+
                   {hasProgress && (
                     <span className="absolute -top-2 -right-2 bg-[#f59e0b] text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-10 border border-white">
                       Đang làm
@@ -152,7 +225,7 @@ export default function PracticeTestSelectionPage() {
                   </div>
                   <span className="font-black text-[#14362d] text-xs sm:text-sm">{test.name}</span>
                   <span className="text-[10px] text-[#637770] mt-0.5 font-bold">100 câu</span>
-                </button>
+                </div>
               );
             })}
           </div>
@@ -196,6 +269,124 @@ export default function PracticeTestSelectionPage() {
           </div>
         )}
       </div>
+
+      {/* Reset Options Modal */}
+      {resetModalTest && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl border border-[#14362d]/10 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3.5 border-b border-gray-100 mb-4">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  Làm lại bài thi
+                </span>
+                <h3 className="font-display text-lg sm:text-xl font-black text-[#14362d] mt-1">
+                  {resetModalTest.name}
+                </h3>
+              </div>
+              <button
+                onClick={() => setResetModalTest(null)}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-[#637770] font-medium mb-4">
+              Chọn phần bạn muốn xoá đáp án đã chọn để bắt đầu làm lại:
+            </p>
+
+            <div className="space-y-2.5 mb-5">
+              {/* Option Part 5 */}
+              <div className="p-3.5 rounded-2xl bg-[#faf8f5] hover:bg-[#f4f8f5] border border-[#14362d]/8 transition-all flex items-center justify-between gap-3">
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-sm text-[#14362d]">Part 5 (Câu 101 - 130)</span>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.2 rounded-full">30 câu</span>
+                  </div>
+                  <p className="text-[11px] text-[#637770] mt-0.5">Ôn tập Ngữ pháp & Từ vựng</p>
+                </div>
+                <button
+                  onClick={() => handleResetTestPart(resetModalTest.id, 'part5', true)}
+                  className="px-3.5 py-2 rounded-xl bg-[#14362d] hover:bg-[#1f4e42] text-white text-xs font-black shadow-xs transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Làm lại ngay
+                </button>
+              </div>
+
+              {/* Option Part 6 */}
+              <div className="p-3.5 rounded-2xl bg-[#faf8f5] hover:bg-[#f4f8f5] border border-[#14362d]/8 transition-all flex items-center justify-between gap-3">
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-sm text-[#14362d]">Part 6 (Câu 131 - 146)</span>
+                    <span className="text-[10px] bg-blue-100 text-blue-800 font-extrabold px-1.5 py-0.2 rounded-full">16 câu</span>
+                  </div>
+                  <p className="text-[11px] text-[#637770] mt-0.5">Hoàn thành đoạn văn</p>
+                </div>
+                <button
+                  onClick={() => handleResetTestPart(resetModalTest.id, 'part6', true)}
+                  className="px-3.5 py-2 rounded-xl bg-[#14362d] hover:bg-[#1f4e42] text-white text-xs font-black shadow-xs transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Làm lại ngay
+                </button>
+              </div>
+
+              {/* Option Part 7 */}
+              <div className="p-3.5 rounded-2xl bg-[#faf8f5] hover:bg-[#f4f8f5] border border-[#14362d]/8 transition-all flex items-center justify-between gap-3">
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-sm text-[#14362d]">Part 7 (Câu 147 - 200)</span>
+                    <span className="text-[10px] bg-purple-100 text-purple-800 font-extrabold px-1.5 py-0.2 rounded-full">54 câu</span>
+                  </div>
+                  <p className="text-[11px] text-[#637770] mt-0.5">Đọc hiểu văn bản</p>
+                </div>
+                <button
+                  onClick={() => handleResetTestPart(resetModalTest.id, 'part7', true)}
+                  className="px-3.5 py-2 rounded-xl bg-[#14362d] hover:bg-[#1f4e42] text-white text-xs font-black shadow-xs transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Làm lại ngay
+                </button>
+              </div>
+
+              {/* Option Reset All */}
+              <div className="p-3.5 rounded-2xl bg-red-50/50 hover:bg-red-50 border border-red-200/60 transition-all flex items-center justify-between gap-3">
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-sm text-red-900">Toàn bộ 100 câu</span>
+                  </div>
+                  <p className="text-[11px] text-red-700/70 mt-0.5">Xóa tất cả Part 5, 6, 7 làm lại cả đề</p>
+                </div>
+                <button
+                  onClick={() => handleResetTestPart(resetModalTest.id, 'all', true)}
+                  className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black shadow-xs transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Xóa cả đề
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setResetModalTest(null)}
+                className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {resetToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#14362d] text-white px-4 py-2.5 rounded-full shadow-lg text-xs font-black flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          {resetToast}
+        </div>
+      )}
 
       <MobileBottomNav />
     </div>
