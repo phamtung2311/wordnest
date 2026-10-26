@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   Layers,
+  Lightbulb,
 } from 'lucide-react';
 
 interface AppHeaderProps {
@@ -210,6 +211,25 @@ export function AppHeader({
                           <span className="rounded-full bg-[#fef3c7] px-1.5 py-0.2 text-[9px] font-black text-[#92400e]">Study4</span>
                         </div>
                         <div className="text-[11px] text-[#637770]">Cắt lẻ audio · Song ngữ · Chép chính tả</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setToeicMenuOpen(false);
+                        window.dispatchEvent(new CustomEvent('wordnest-open-english-notes'));
+                      }}
+                      className="flex w-full items-start gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-[#f4f8f5] border-t border-gray-100"
+                    >
+                      <div className="rounded-lg bg-amber-50 p-2 text-amber-700">
+                        <Lightbulb size={16} className="text-amber-600 fill-amber-300" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs font-black text-[#14362d]">
+                          <span>Cấu trúc & Mẹo (Bong bóng)</span>
+                          <span className="rounded-full bg-amber-100 px-1.5 py-0.2 text-[9px] font-black text-amber-900">Mới</span>
+                        </div>
+                        <div className="text-[11px] text-[#637770]">Mẹo làm bài Part 1-7 · Ngữ pháp · Tra cứu nhanh</div>
                       </div>
                     </button>
                   </div>
@@ -410,6 +430,18 @@ export function AppHeader({
             >
               <Sparkles size={16} className="text-[#f59e0b]" />
               <span>Luyện Nghe Chi Tiết (Study4)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.dispatchEvent(new CustomEvent('wordnest-open-english-notes'));
+              }}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-black text-[#14362d] bg-amber-50/70 hover:bg-amber-100"
+            >
+              <Lightbulb size={16} className="text-amber-600 fill-amber-300" />
+              <span>Sổ tay Cấu trúc & Mẹo (Bong bóng)</span>
             </button>
 
             <button

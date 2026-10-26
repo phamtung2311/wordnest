@@ -56,6 +56,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { auth, db, googleProvider } from '@/lib/firebase';
 import { formatTaskTime } from '@/lib/lifeService';
+import { saveEnglishNotes } from '@/lib/englishNotesService';
 
 type Level = 'new' | 'learning' | 'known';
 type Language = 'en' | 'zh';
@@ -749,6 +750,10 @@ export default function Home() {
         );
         setProgress(mergedProgress);
         if (cloudLife) setLifeData(normalizeLifeData(cloudLife));
+        const cloudEnglishNotes = snapshot.data()?.englishNotes;
+        if (cloudEnglishNotes && Array.isArray(cloudEnglishNotes) && cloudEnglishNotes.length > 0) {
+          saveEnglishNotes(cloudEnglishNotes);
+        }
         if (storedDecks.length) {
           setDecks(storedDecks);
           syncedDecksRef.current = storedDecks;
