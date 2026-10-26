@@ -47,5 +47,9 @@ bo de 2023/
 __pycache__/
 *.pyc
 *.tsbuildinfo
-test1_2024_segments.json
+test*.json
 scripts/*.png
+data/cleaned_ocr_2023/
+data/extracted_2023/
+data/segments_2023/
+data/*.json

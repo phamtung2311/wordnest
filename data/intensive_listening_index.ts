@@ -8,7 +8,8 @@ import { test7IntensiveData } from './intensive_listening_test7';
 import { test8IntensiveData } from './intensive_listening_test8';
 import { test9IntensiveData } from './intensive_listening_test9';
 import { test10IntensiveData } from './intensive_listening_test10';
-import { test1_2024_IntensiveData } from './intensive_listening_2024_test1';
+import { intensiveTests2024 } from './intensive_listening_2024_list';
+import { intensiveTests2023 } from './intensive_listening_2023_list';
 import type { IntensiveListeningItem } from './intensive_listening_test1';
 
 export type {
@@ -131,16 +132,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     itemCount: test10IntensiveData.length,
     data: test10IntensiveData,
   },
-  {
-    id: 20241,
-    title: 'ETS TOEIC 2024 - Test 1',
-    shortTitle: 'Test 1',
-    description: 'Luyện nghe chi tiết Test 1 ETS 2024 (Virtual Timestamp Slicing)',
-    edition: 'ETS 2024',
-    badge: "'24 T1",
-    itemCount: test1_2024_IntensiveData.length,
-    data: test1_2024_IntensiveData,
-  },
+  ...intensiveTests2024,
+  ...intensiveTests2023,
 ];
 
 export function getIntensiveDataByTestId(testId: number): IntensiveListeningItem[] {

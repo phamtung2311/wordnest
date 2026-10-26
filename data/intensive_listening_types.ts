@@ -45,7 +45,20 @@ export interface IntensiveListeningItem {
   imageUrl?: string;
   image?: string;
   graphicImage?: string;
+  hasGraphic?: boolean;
   transcript: DialogueLine[];
   questions: QuestionItem[];
   vocabulary?: VocabItem[];
 }
+
+export interface IntensiveTestOption {
+  id: number;
+  title: string;
+  shortTitle: string;
+  description: string;
+  edition?: string;
+  badge?: string;
+  itemCount: number;
+  data: IntensiveListeningItem[];
+}
+

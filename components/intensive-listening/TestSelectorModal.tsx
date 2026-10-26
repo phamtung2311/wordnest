@@ -37,7 +37,7 @@ export function TestSelectorModal({
   onResetTest,
 }: TestSelectorModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedEdition, setSelectedEdition] = useState<'all' | 'ETS 2026' | 'ETS 2024'>('all');
+  const [selectedEdition, setSelectedEdition] = useState<string>('all');
   const [testStats, setTestStats] = useState<
     Record<number, { completed: number; total: number; percentage: number }>
   >({});
@@ -284,39 +284,27 @@ export function TestSelectorModal({
         <div className="p-4 bg-white border-b border-[#213a34]/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
           {/* Edition filter pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-            <button
-              type="button"
-              onClick={() => setSelectedEdition('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
-                selectedEdition === 'all'
-                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
-                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              Tất cả ({availableIntensiveTests.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedEdition('ETS 2026')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
-                selectedEdition === 'ETS 2026'
-                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
-                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              ETS 2026 (10)
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedEdition('ETS 2024')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
-                selectedEdition === 'ETS 2024'
-                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
-                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
-              }`}
-            >
-              ETS 2024 (1)
-            </button>
+            {[
+              { key: 'all', label: 'Tất cả', count: availableIntensiveTests.length },
+              { key: 'ETS 2026', label: 'ETS 2026', count: availableIntensiveTests.filter((t) => t.edition === 'ETS 2026').length },
+              { key: 'ETS 2024', label: 'ETS 2024', count: availableIntensiveTests.filter((t) => t.edition === 'ETS 2024').length },
+              { key: 'ETS 2023', label: 'ETS 2023', count: availableIntensiveTests.filter((t) => t.edition === 'ETS 2023').length },
+            ]
+              .filter((g) => g.key === 'all' || g.count > 0)
+              .map((group) => (
+                <button
+                  key={group.key}
+                  type="button"
+                  onClick={() => setSelectedEdition(group.key)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
+                    selectedEdition === group.key
+                      ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                      : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
+                  }`}
+                >
+                  {group.label} ({group.count})
+                </button>
+              ))}
           </div>
 
           <div className="flex items-center gap-3">
