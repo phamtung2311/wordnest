@@ -55,7 +55,9 @@ export class SafeWidgetBoundary extends Component<
 export default function FloatingWidgetsContainer() {
   const pathname = usePathname() || '/';
   const isTestPage =
-    pathname.startsWith('/practice-test') || pathname.startsWith('/listening-test');
+    pathname.startsWith('/practice-test') ||
+    pathname.startsWith('/listening-test') ||
+    pathname.startsWith('/intensive-listening');
 
   // Position: On practice & listening test pages, default to 'left' so the right answer sheet is completely unobstructed!
   // On other pages (home, vocab, etc.), default to 'right'.
