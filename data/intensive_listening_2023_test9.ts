@@ -2918,7 +2918,7 @@ export const test9_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "B",
-            "text": "The lighting in a room TEST9",
+            "text": "The lighting in a room",
             "vietnamese": "Ánh sáng trong phòng TEST9"
           },
           {
@@ -2957,12 +2957,12 @@ export const test9_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Look at some artwork GO ONTO THENEXT PAGE TEST9 137",
+            "text": "Look at some artwork",
             "vietnamese": "Xem một số tác phẩm nghệ thuật ĐI VÀO TRANG TIẾP THEO KIỂM TRA9 137"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Look at some artwork GO ONTO THENEXT PAGE TEST9 137\" (Xem một số tác phẩm nghệ thuật ĐI VÀO TRANG TIẾP THEO KIỂM TRA9 137)."
+        "explanation": "Đáp án đúng là (D): \"Look at some artwork\" (Xem một số tác phẩm nghệ thuật ĐI VÀO TRANG TIẾP THEO KIỂM TRA9 137)."
       }
     ],
     "vocabulary": [
@@ -3915,7 +3915,7 @@ export const test9_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Aresume TEST GOONTOTHENEXTPAGE",
+            "text": "Aresume TEST",
             "vietnamese": "Tiếp tục KIỂM TRA GONTOTHENEXTPAGE"
           }
         ],
@@ -4768,7 +4768,7 @@ export const test9_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Technological innovations are expected. GOONTOTHENEXTPAGE TEST9141",
+            "text": "Technological innovations are expected.",
             "vietnamese": "Những đổi mới công nghệ được mong đợi. KIỂM TRA GONTOTHENEXTPAGE9141"
           }
         ],

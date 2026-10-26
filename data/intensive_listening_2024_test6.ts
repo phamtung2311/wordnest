@@ -5691,7 +5691,7 @@ export const test6_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Meal vouchers heListeningtest. TEST6101 1000 TEST07",
+            "text": "Meal vouchers",
             "vietnamese": "Phiếu ăn miễn phí (meal vouchers)"
           }
         ],

@@ -2365,8 +2365,8 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-2",
         "speaker": "Man",
-        "text": "A. Oh no.",
-        "vietnamese": "A. Ồ không."
+        "text": "Oh no.",
+        "vietnamese": "Ồ không."
       },
       {
         "id": "p3-32-3",
@@ -2377,8 +2377,8 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-4",
         "speaker": "Man",
-        "text": "A. I know.",
-        "vietnamese": "A. Tôi biết."
+        "text": "I know.",
+        "vietnamese": "Tôi biết."
       },
       {
         "id": "p3-32-5",
@@ -2389,8 +2389,8 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-6",
         "speaker": "Man",
-        "text": "A. Right.",
-        "vietnamese": "A. Đúng rồi."
+        "text": "Right.",
+        "vietnamese": "Đúng rồi."
       },
       {
         "id": "p3-32-7",
@@ -2407,8 +2407,8 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-9",
         "speaker": "Woman",
-        "text": "A. Yes of course.",
-        "vietnamese": "A. Tất nhiên là có."
+        "text": "Yes of course.",
+        "vietnamese": "Tất nhiên là có."
       },
       {
         "id": "p3-32-10",
@@ -3030,7 +3030,7 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "To collect some data TEST10",
+            "text": "To collect some data",
             "vietnamese": "Để thu thập một số dữ liệu TEST10"
           }
         ],
@@ -3059,7 +3059,7 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "It maintains strong customer relations. GOON TOTHENEXTPAGE TEST10151",
+            "text": "It maintains strong customer relations.",
             "vietnamese": "Nó duy trì mối quan hệ khách hàng mạnh mẽ. KIỂM TRA GOON TOTHENEXTPAGE10151"
           }
         ],
@@ -4438,12 +4438,12 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A voucher will be provided. TEST10 GOONTOTHENEXTPAGE",
+            "text": "A voucher will be provided.",
             "vietnamese": "Một chứng từ sẽ được cung cấp. TEST10 GONTOTHENEXTPAGE"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"A voucher will be provided. TEST10 GOONTOTHENEXTPAGE\" (Một chứng từ sẽ được cung cấp. TEST10 GONTOTHENEXTPAGE)."
+        "explanation": "Đáp án đúng là (D): \"A voucher will be provided.\" (Một chứng từ sẽ được cung cấp. TEST10 GONTOTHENEXTPAGE)."
       }
     ],
     "vocabulary": [
@@ -5438,7 +5438,7 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
         "options": [
           {
             "key": "A",
-            "text": "Fishing TEST10",
+            "text": "Fishing",
             "vietnamese": "KIỂM TRA câu cá10"
           },
           {
@@ -5482,7 +5482,7 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Supportinglocal businesses GO ON TO THENEXT PAGE",
+            "text": "Supportinglocal businesses",
             "vietnamese": "Hỗ trợ các doanh nghiệp địa phương ĐẾN TRANG TIẾP THEO"
           }
         ],
@@ -6566,7 +6566,7 @@ export const test10_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Networking opportunities TEST10",
+            "text": "Networking opportunities",
             "vietnamese": "Cơ hội kết nối TEST10"
           }
         ],

@@ -2399,8 +2399,8 @@ export const test7_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-1",
         "speaker": "Woman",
-        "text": "A. Fernando, I know we were hoping to have the walls in the office repainted next month.",
-        "vietnamese": "A. Fernando, tôi biết chúng tôi đã hy vọng sơn lại các bức tường trong văn phòng vào tháng tới."
+        "text": "Fernando, I know we were hoping to have the walls in the office repainted next month.",
+        "vietnamese": "Fernando, tôi biết chúng tôi đã hy vọng sơn lại các bức tường trong văn phòng vào tháng tới."
       },
       {
         "id": "p3-32-2",
@@ -2411,8 +2411,8 @@ export const test7_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-3",
         "speaker": "Woman",
-        "text": "A. I think it will be fine.",
-        "vietnamese": "A. Tôi nghĩ nó sẽ ổn thôi."
+        "text": "I think it will be fine.",
+        "vietnamese": "Tôi nghĩ nó sẽ ổn thôi."
       },
       {
         "id": "p3-32-4",
@@ -3040,7 +3040,7 @@ export const test7_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A manual is not accurate. GOON TOTHENEXTPAGE TEST7109",
+            "text": "A manual is not accurate.",
             "vietnamese": "Hướng dẫn sử dụng không chính xác. KIỂM TRA GOON TOTHENEXTPAGE7109"
           }
         ],
@@ -4372,12 +4372,12 @@ export const test7_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Clean the windows GOONTOTHENEXTPAGE TEST7 111 Frame 1 Frame 2 Frame3 Frame4",
+            "text": "Clean the windows",
             "vietnamese": "Lau cửa sổ GONTOTHENEXTPAGE TEST7 111 Khung 1 Khung 2 Khung 3 Khung 4"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Clean the windows GOONTOTHENEXTPAGE TEST7 111 Frame 1 Frame 2 Frame3 Frame4\" (Lau cửa sổ GONTOTHENEXTPAGE TEST7 111 Khung 1 Khung 2 Khung 3 Khung 4)."
+        "explanation": "Đáp án đúng là (D): \"Clean the windows\" (Lau cửa sổ GONTOTHENEXTPAGE TEST7 111 Khung 1 Khung 2 Khung 3 Khung 4)."
       }
     ],
     "vocabulary": [
@@ -5402,7 +5402,7 @@ export const test7_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "By subscribing to a newsletter GOON TOTHENEXTPAGE",
+            "text": "By subscribing to a newsletter",
             "vietnamese": "Bằng cách đăng ký nhận bản tin GOON TOTHENEXTPAGE"
           }
         ],

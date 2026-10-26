@@ -2979,7 +2979,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 43,
-        "question": "According to the woman, what can be found on a website? Go on to the next page.",
+        "question": "According to the woman, what can be found on a website?",
         "vietnameseQuestion": "Người phụ nữ nói họ sẽ nhận được gì từ nhà cung cấp?",
         "options": [
           {
@@ -2999,7 +2999,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Discount coupons GO ONTOTHENEXTPAGE TEST 8 123",
+            "text": "Discount coupons",
             "vietnamese": "Bảo hành mở rộng"
           }
         ],
@@ -4011,7 +4011,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 64,
-        "question": "What does the woman ask about? Go on to the next page.",
+        "question": "What does the woman ask about?",
         "vietnameseQuestion": "Người phụ nữ hỏi về điều gì?",
         "options": [
           {
@@ -4031,7 +4031,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A delivery date GOONTOTHENEXTPAGE TEST 8 125",
+            "text": "A delivery date",
             "vietnamese": "Ngày giao hàng"
           }
         ],
@@ -4925,7 +4925,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 82,
-        "question": "What will the listeners most likely do next? Go on to the next page.",
+        "question": "What will the listeners most likely do next?",
         "vietnameseQuestion": "Người nghe nhiều khả năng nhất sẽ làm gì tiếp theo?",
         "options": [
           {
@@ -4945,7 +4945,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Take a group photograph GOONTOTHENEXTPAGE TEST8 127",
+            "text": "Take a group photograph",
             "vietnamese": "Chụp ảnh tập thể"
           }
         ],
@@ -5694,7 +5694,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Names of sponsors This is the end of the Listening test. SESSION TIME PLACE RemoteWorkforces 9:00-10:00 SkyRoom TeamCollaboration 10:00-11:00 LandmarkRoom 11:00-12:15 Lunch Cafeteria 12:30-1:30 Innovation Tools OrionRoom Problem-Solving 1:30-2:30 VistaRoom",
+            "text": "Names of sponsors",
             "vietnamese": "Tên các nhà tài trợ"
           }
         ],
@@ -5838,7 +5838,7 @@ export const test8_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Problem-Solving TEST 8 129",
+            "text": "Problem-Solving",
             "vietnamese": "Problem-Solving"
           }
         ],

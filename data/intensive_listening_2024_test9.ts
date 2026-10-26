@@ -2903,7 +2903,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 43,
-        "question": "What will Ms. Taylor most likely ask the man for? Go on to the next page.",
+        "question": "What will Ms. Taylor most likely ask the man for?",
         "vietnameseQuestion": "Người đàn ông đồng ý làm điều gì?",
         "options": [
           {
@@ -2923,7 +2923,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Free delivery GO ONTOTHENEXTPAGE TEST9137",
+            "text": "Free delivery",
             "vietnamese": "Gửi thông báo toàn công ty"
           }
         ],
@@ -3902,7 +3902,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 64,
-        "question": "What can cabin guests receive free of charge? Go on to the next page.",
+        "question": "What can cabin guests receive free of charge?",
         "vietnameseQuestion": "Người phụ nữ sẽ gửi tài liệu cho bộ phận nào?",
         "options": [
           {
@@ -3922,7 +3922,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A guided tour GO ONTOTHENEXTPAGE TEST9139",
+            "text": "A guided tour",
             "vietnamese": "Phòng kế toán"
           }
         ],
@@ -4778,7 +4778,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 82,
-        "question": "What does the speaker mean when he says, I've talked to your team leads about the issue? Go on to the next page.",
+        "question": "What does the speaker mean when he says, I've talked to your team leads about the issue?",
         "vietnameseQuestion": "Người nói có ý gì khi nói 'Tôi đã trao đổi với các trưởng nhóm về vấn đề này'?",
         "options": [
           {
@@ -4798,7 +4798,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "An extra expense will be approved. GO ONTOTHENEXTPAGE TEST9 141",
+            "text": "An extra expense will be approved.",
             "vietnamese": "Chi phí phát sinh sẽ được phê duyệt."
           }
         ],
@@ -5709,7 +5709,7 @@ export const test9_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A debate TEST9 143",
+            "text": "A debate",
             "vietnamese": "Một buổi tranh luận trực tiếp"
           }
         ],

@@ -2908,7 +2908,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 43,
-        "question": "What will the woman most likely do next? Go on to the next page.",
+        "question": "What will the woman most likely do next?",
         "vietnameseQuestion": "Người đàn ông đề nghị hỗ trợ việc gì?",
         "options": [
           {
@@ -2928,7 +2928,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Fill out some paperwork GO ON TOTHENEXT PAGE TEST 10 151",
+            "text": "Fill out some paperwork",
             "vietnamese": "In tài liệu phát tay"
           }
         ],
@@ -3896,7 +3896,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 64,
-        "question": "What does the woman say she will ask for? Go on to the next page.",
+        "question": "What does the woman say she will ask for?",
         "vietnameseQuestion": "Ai sẽ là người phê duyệt đơn đề xuất mua sắm?",
         "options": [
           {
@@ -3916,7 +3916,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A safety barricade TEST 10 GO ONTOTHENEXTPAGE TEST10153",
+            "text": "A safety barricade",
             "vietnamese": "Tổng giám đốc"
           }
         ],
@@ -4747,7 +4747,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "B",
-            "text": "Distribute samples TEST 10",
+            "text": "Distribute samples",
             "vietnamese": "Phát mẫu thử"
           },
           {
@@ -4766,7 +4766,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
       },
       {
         "num": 82,
-        "question": "What does the speaker say attendees can do with their tickets? Go on to the next page.",
+        "question": "What does the speaker say attendees can do with their tickets?",
         "vietnameseQuestion": "Người nói cho biết người tham quan có thể làm gì với vé vào cửa của mình?",
         "options": [
           {
@@ -4786,7 +4786,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Purchaserefreshments GO ON TO THENEXT PAGE TEST10155",
+            "text": "Purchaserefreshments",
             "vietnamese": "Mua đồ ăn nhẹ"
           }
         ],
@@ -5541,7 +5541,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A discount This is the end of the Listening test. Hours of Operation Monday-Wednesday: 9:30 A.M.-7:00 pM. Thursday: 9:30 A.M.-9:00 PM. Friday: 9:30 A.M.-9:00 P.M. Saturday: 10:00 A.M.-5:00 P.M. Sunday: Closed",
+            "text": "A discount",
             "vietnamese": "Chiết khấu giảm giá (bulk discount)"
           }
         ],
@@ -5696,7 +5696,7 @@ export const test10_2024_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Sunday TEST 10 TEST10 157",
+            "text": "Sunday",
             "vietnamese": "Chủ Nhật"
           }
         ],

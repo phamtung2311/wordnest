@@ -2414,8 +2414,8 @@ export const test6_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-1",
         "speaker": "Woman",
-        "text": "A. Hello, I've come to close my bank account.",
-        "vietnamese": "A. Xin chào, tôi đến để đóng tài khoản ngân hàng của mình."
+        "text": "Hello, I've come to close my bank account.",
+        "vietnamese": "Xin chào, tôi đến để đóng tài khoản ngân hàng của mình."
       },
       {
         "id": "p3-32-2",
@@ -4385,7 +4385,7 @@ export const test6_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "It is reasonably priced. GOONTOTHENEXTPAGE TEST6 97 Item 3 Item 4 Item 2 Item1",
+            "text": "It is reasonably priced.",
             "vietnamese": "Nó có giá hợp lý. GONTOTHENEXTPAGE TEST6 97 Mục 3 Mục 4 Mục 2 Mục1"
           }
         ],
@@ -5245,7 +5245,7 @@ export const test6_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "B",
-            "text": "Aday off TEST6",
+            "text": "Aday off",
             "vietnamese": "Một ngày nghỉ TEST6"
           },
           {
@@ -5416,12 +5416,12 @@ export const test6_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Its location GO ONTO THENEXT PAGE",
+            "text": "Its location",
             "vietnamese": "Vị trí của nó ĐI VÀO TRANG TIẾP THEO"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Its location GO ONTO THENEXT PAGE\" (Vị trí của nó ĐI VÀO TRANG TIẾP THEO)."
+        "explanation": "Đáp án đúng là (D): \"Its location\" (Vị trí của nó ĐI VÀO TRANG TIẾP THEO)."
       }
     ],
     "vocabulary": [

@@ -21,17 +21,68 @@ import {
 function formatQuestionText(text: string): string {
   if (!text) return '';
   return text
+    // Strip trailing scan/page/test artifacts
+    .replace(
+      /\s*(?:GO\s*ON\s*TO\s*THE\s*NEXT\s*PAGE|GOONTOTHENEXTPAGE|GOON\s*TOTHENEXTPAGE|GO\s*ONTO\s*THENEXT\s*PAGE|TEST\s*\d+|This is the\s*end of the Listening test|heListeningtest).*$/i,
+      ''
+    )
+    // Strip trailing scan page numbers like ' 40', ' 42', ' 44'
+    .replace(/\s+\d{2}$/, '')
+    // Strip leading A. or B.
+    .replace(/^[A-Z]\.\s+/, '')
+    .replace(/([.?!])\s+[A-Z]\.\s+/g, '$1 ')
+    // Fix common concatenated questions
     .replace(/Whatproblemdoes\s*/gi, 'What problem does ')
     .replace(/Whatproblemdoestheman\s*/gi, 'What problem does the man ')
     .replace(/Whatproblemdoesthewoman\s*/gi, 'What problem does the woman ')
     .replace(/Whatproblemdoesthespeaker\s*/gi, 'What problem does the speaker ')
+    .replace(/Whatproblemarethespeakersdiscussing\s*/gi, 'What problem are the speakers discussing')
     .replace(/the womanmention/gi, 'the woman mention')
     .replace(/the manmention/gi, 'the man mention')
     .replace(/the speakermention/gi, 'the speaker mention')
+    .replace(/Whydo the speakersmention/gi, 'Why do the speakers mention')
+    .replace(/Whatdothespeakers likeabout/gi, 'What do the speakers like about')
+    .replace(/Whatdoesthewomanoffertodo/gi, 'What does the woman offer to do')
+    .replace(/Whatdoesthespeakers'companyproduce/gi, "What does the speakers' company produce")
+    .replace(/Whatis the woman concerned about/gi, 'What is the woman concerned about')
+    .replace(/Whatwill themandonext/gi, 'What will the man do next')
+    .replace(/Whywill theCEObepleased/gi, 'Why will the CEO be pleased')
+    .replace(/Whatismarkedonsomemaps/gi, 'What is marked on some maps')
+    .replace(/Whodoes thewomansayshewill senda reminder to/gi, 'Who does the woman say she will send a reminder to')
+    .replace(/Whydoesthespeakersay,"myapartmentis on a very high floor"/gi, 'Why does the speaker say, "my apartment is on a very high floor"')
+    .replace(/Whatdoes the speaker imply when hesays, "IsawthereviewsfromToronto"/gi, 'What does the speaker imply when he says, "I saw the reviews from Toronto"')
+    .replace(/What does theman mean when he says, suppose no one willreally be disappointed"/gi, 'What does the man mean when he says, "I suppose no one will really be disappointed"')
+    .replace(/What does the speaker mean when she says,"It's been a mixed bag"/gi, 'What does the speaker mean when she says, "It\'s been a mixed bag"')
+    .replace(/Where does the speaker most likelywork/gi, 'Where does the speaker most likely work')
+    .replace(/Where isthe announcementmost likely being made/gi, 'Where is the announcement most likely being made')
+    .replace(/What doesthespeaker say about some Shopsmartproducts/gi, 'What does the speaker say about some Shopsmart products')
+    // Fix common concatenated options
+    .replace(/Tohelpacustomerchooseaproduct/gi, 'To help a customer choose a product')
+    .replace(/Tocheck on a customer's satisfaction/gi, "To check on a customer's satisfaction")
+    .replace(/To inform a customer of aprice estimate/gi, 'To inform a customer of a price estimate')
+    .replace(/Send workerstothewoman's house/gi, "Send workers to the woman's house")
+    .replace(/Afasterpaceofwork/gi, 'A faster pace of work')
+    .replace(/Additionalemployees/gi, 'Additional employees')
+    .replace(/Therearenot enough peopleworking there/gi, 'There are not enough people working there')
+    .replace(/It ismoremodernthanthelocal airport/gi, 'It is more modern than the local airport')
+    .replace(/Givehimadiscountonhisreservation/gi, 'Give him a discount on his reservation')
+    .replace(/Thecostthemanhasestimated/gi, 'The cost the man has estimated')
+    .replace(/Customerfeedback/gi, 'Customer feedback')
+    .replace(/Performancereviews/gi, 'Performance reviews')
+    .replace(/Arealestatefirm/gi, 'A real estate firm')
+    .replace(/Asalesstrategy/gi, 'A sales strategy')
+    .replace(/Aperformancehasbeen canceled/gi, 'A performance has been canceled')
+    .replace(/Locationswhereworkcanbedone/gi, 'Locations where work can be done')
+    .replace(/Deliverfirewood/gi, 'Deliver firewood')
+    .replace(/Abaseballplayer/gi, 'A baseball player')
+    .replace(/Customerreviews have beenpositive/gi, 'Customer reviews have been positive')
+    .replace(/There isno timetocreate centerpieces/gi, 'There is no time to create centerpieces')
+    .replace(/It was designed manyyears ago/gi, 'It was designed many years ago')
     .replace(/Torentafacility/gi, 'To rent a facility')
     .replace(/Torequestapricelist/gi, 'To request a price list')
     .replace(/Toschedulearepair/gi, 'To schedule a repair')
-    .replace(/Tohireaphotographer/gi, 'To hire a photographer');
+    .replace(/Tohireaphotographer/gi, 'To hire a photographer')
+    .trim();
 }
 
 type Part34LayoutMode = 'grid3' | 'compact2' | 'list';
@@ -340,6 +391,11 @@ export function QuizTab({
                             </span>
                             <span className="text-xs sm:text-[13px] font-semibold leading-snug break-words flex-1">
                               {formatQuestionText(optionDisplayText)}
+                              {showTranslation && opt.vietnamese && (
+                                <span className="block text-[11px] text-gray-500 font-normal mt-0.5">
+                                  {formatQuestionText(opt.vietnamese)}
+                                </span>
+                              )}
                             </span>
                           </div>
 
@@ -363,7 +419,7 @@ export function QuizTab({
                     </div>
                     {q.explanation && (
                       <p className="text-gray-700 text-[11px] sm:text-xs leading-relaxed font-medium">
-                        {q.explanation}
+                        {formatQuestionText(q.explanation)}
                       </p>
                     )}
                   </div>
@@ -559,12 +615,12 @@ export function QuizTab({
                     </span>
                   )}
                   <p className="font-bold text-[#213a34] leading-relaxed flex-1">
-                    {line.text}
+                    {formatQuestionText(line.text)}
                   </p>
                 </div>
                 {showTranslation && line.vietnamese && (
                   <p className="text-[11px] text-gray-500 font-medium ml-8 mt-0.5">
-                    {line.vietnamese}
+                    {formatQuestionText(line.vietnamese)}
                   </p>
                 )}
               </div>

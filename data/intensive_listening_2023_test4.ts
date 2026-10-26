@@ -3041,7 +3041,7 @@ export const test4_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "She sent her laptop to be serviced. GO ONTO THENEXT PAGE",
+            "text": "She sent her laptop to be serviced.",
             "vietnamese": "Cô ấy đã gửi máy tính xách tay của mình để được bảo trì. ĐI VÀO TRANG TIẾP THEO"
           }
         ],
@@ -4281,7 +4281,7 @@ export const test4_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Friday GOONTOTHENEXTPAGE TEST4 69 MonacoHotel Host your business event with us! x Package Number ofguests 125 Bronze Silver 150 Gold 175 Platinum 200",
+            "text": "Friday",
             "vietnamese": "Thứ sáu GONTOTHENEXTPAGE TEST4 69 MonacoHotel Tổ chức sự kiện kinh doanh của bạn với chúng tôi! x Số lượng gói 125 Đồng Bạc 150 Vàng 175 Bạch kim 200"
           }
         ],
@@ -5346,7 +5346,7 @@ export const test4_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "By joining a mailing list GO ONTOTHENEXTPAGE",
+            "text": "By joining a mailing list",
             "vietnamese": "Bằng cách tham gia danh sách gửi thư ĐI ONTOTHENEXTPAGE"
           }
         ],
@@ -6391,7 +6391,7 @@ export const test4_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Return to their desks This is theend of the Listening test. TEST473",
+            "text": "Return to their desks",
             "vietnamese": "Quay trở lại bàn của họ Đây là phần cuối của bài kiểm tra Nghe. TEST473"
           }
         ],

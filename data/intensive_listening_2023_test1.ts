@@ -3014,12 +3014,12 @@ export const test1_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A better seat GOONTOTHENEXTPAGE",
+            "text": "A better seat",
             "vietnamese": "Một chỗ ngồi tốt hơn GONTOTHENEXTPAGE"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"A better seat GOONTOTHENEXTPAGE\" (Một chỗ ngồi tốt hơn GONTOTHENEXTPAGE)."
+        "explanation": "Đáp án đúng là (D): \"A better seat\" (Một chỗ ngồi tốt hơn GONTOTHENEXTPAGE)."
       }
     ],
     "vocabulary": [
@@ -4285,7 +4285,7 @@ export const test1_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Store her bags in a locker GOONTOTHENEXTPAGE",
+            "text": "Store her bags in a locker",
             "vietnamese": "Cất túi xách của cô ấy vào tủ khóa GONTOTHENEXTPAGE"
           }
         ],
@@ -5393,7 +5393,7 @@ export const test1_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Look up an account number GOONTOTHENEXTPAGE TEST129",
+            "text": "Look up an account number",
             "vietnamese": "Tra cứu số tài khoản GONTOTHENEXTPAGE TEST129"
           }
         ],

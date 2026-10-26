@@ -2853,7 +2853,7 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
         "options": [
           {
             "key": "A",
-            "text": "A marketing agent TEST3",
+            "text": "A marketing agent",
             "vietnamese": "Đại lý tiếp thị TEST3"
           },
           {
@@ -3129,12 +3129,12 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "To go out to lunch GOONTOTHENEXTPAGE",
+            "text": "To go out to lunch",
             "vietnamese": "Để đi ăn trưa GONTOTHENEXTPAGE"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"To go out to lunch GOONTOTHENEXTPAGE\" (Để đi ăn trưa GONTOTHENEXTPAGE)."
+        "explanation": "Đáp án đúng là (D): \"To go out to lunch\" (Để đi ăn trưa GONTOTHENEXTPAGE)."
       }
     ],
     "vocabulary": [
@@ -4372,12 +4372,12 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Arrange for the truck to arrive early GOONTOTHENEXTPAGE",
+            "text": "Arrange for the truck to arrive early",
             "vietnamese": "Sắp xếp xe đến sớm GONTOTHENEXTPAGE"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Arrange for the truck to arrive early GOONTOTHENEXTPAGE\" (Sắp xếp xe đến sớm GONTOTHENEXTPAGE)."
+        "explanation": "Đáp án đúng là (D): \"Arrange for the truck to arrive early\" (Sắp xếp xe đến sớm GONTOTHENEXTPAGE)."
       }
     ],
     "vocabulary": [
@@ -5393,12 +5393,12 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "By calling a phone number GOONTOTHENEXTPAGE TEST3 57",
+            "text": "By calling a phone number",
             "vietnamese": "Bằng cách gọi tới số điện thoại GONTOTHENEXTPAGE TEST3 57"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"By calling a phone number GOONTOTHENEXTPAGE TEST3 57\" (Bằng cách gọi tới số điện thoại GONTOTHENEXTPAGE TEST3 57)."
+        "explanation": "Đáp án đúng là (D): \"By calling a phone number\" (Bằng cách gọi tới số điện thoại GONTOTHENEXTPAGE TEST3 57)."
       }
     ],
     "vocabulary": [

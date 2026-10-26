@@ -3085,7 +3085,7 @@ export const test8_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "C",
-            "text": "To register a business TEST8",
+            "text": "To register a business",
             "vietnamese": "Để đăng ký kinh doanh TEST8"
           },
           {
@@ -3148,7 +3148,7 @@ export const test8_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Print a mailing label GOONTOTHENEXTPAGE TEST8123",
+            "text": "Print a mailing label",
             "vietnamese": "In nhãn gửi thư GONTOTHENEXTPAGE TEST8123"
           }
         ],
@@ -4503,7 +4503,7 @@ export const test8_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A receipt TEST GOONTOTHENEXTPAGE",
+            "text": "A receipt TEST",
             "vietnamese": "KIỂM TRA biên nhận GONTOTHENEXTPAGE"
           }
         ],
@@ -5534,12 +5534,12 @@ export const test8_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Ameeting with a supervisor GOON TOTHENEXTPAGE TEST8127",
+            "text": "Ameeting with a supervisor",
             "vietnamese": "Gặp gỡ người giám sát GOON TOTHENEXTPAGE TEST8127"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Ameeting with a supervisor GOON TOTHENEXTPAGE TEST8127\" (Gặp gỡ người giám sát GOON TOTHENEXTPAGE TEST8127)."
+        "explanation": "Đáp án đúng là (D): \"Ameeting with a supervisor\" (Gặp gỡ người giám sát GOON TOTHENEXTPAGE TEST8127)."
       }
     ],
     "vocabulary": [

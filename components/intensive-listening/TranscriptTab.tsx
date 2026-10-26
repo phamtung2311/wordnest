@@ -18,6 +18,11 @@ import {
 import { AddToDeckModal, type VocabCandidate } from './AddToDeckModal';
 import { getSavedTermsSet, normalizeTerm } from '@/lib/vocabService';
 
+function cleanTranscriptText(text: string): string {
+  if (!text) return '';
+  return text.replace(/^[A-Z]\.\s+/, '').replace(/([.?!])\s+[A-Z]\.\s+/g, '$1 ').trim();
+}
+
 interface TranscriptTabProps {
   transcript: DialogueLine[];
   vocabulary: VocabItem[];
@@ -206,13 +211,13 @@ export function TranscriptTab({
 
           {/* English Sentence */}
           <p className="font-bold text-[#213a34] text-xs sm:text-sm leading-relaxed select-text">
-            {line.text}
+            {cleanTranscriptText(line.text)}
           </p>
 
           {/* Vietnamese Translation */}
           {showTranslation && line.vietnamese && (
             <p className="text-[11px] sm:text-xs text-gray-600 font-medium leading-relaxed mt-1 pt-1 border-t border-gray-100/90 select-text">
-              {line.vietnamese}
+              {cleanTranscriptText(line.vietnamese)}
             </p>
           )}
         </div>

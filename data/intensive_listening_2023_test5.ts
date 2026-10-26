@@ -2394,8 +2394,8 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-1",
         "speaker": "Woman",
-        "text": "A. Hi Martin it's Lillian.",
-        "vietnamese": "A. Xin chào Martin, Lillian đây."
+        "text": "Hi Martin it's Lillian.",
+        "vietnamese": "Xin chào Martin, Lillian đây."
       },
       {
         "id": "p3-32-2",
@@ -2412,20 +2412,20 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-32-4",
         "speaker": "Man",
-        "text": "A. I just need directions to the festival site. It's in a park, right?",
-        "vietnamese": "A. Tôi chỉ cần chỉ đường đến địa điểm lễ hội. Nó ở trong công viên phải không?"
+        "text": "I just need directions to the festival site. It's in a park, right?",
+        "vietnamese": "Tôi chỉ cần chỉ đường đến địa điểm lễ hội. Nó ở trong công viên phải không?"
       },
       {
         "id": "p3-32-5",
         "speaker": "Woman",
-        "text": "A. Yes. Just know that once you get there, our table will be the one closest to the entrance.",
-        "vietnamese": "A. Vâng. Chỉ cần biết rằng khi bạn đến đó, bàn của chúng tôi sẽ là bàn gần lối vào nhất."
+        "text": "Yes. Just know that once you get there, our table will be the one closest to the entrance.",
+        "vietnamese": "Vâng. Chỉ cần biết rằng khi bạn đến đó, bàn của chúng tôi sẽ là bàn gần lối vào nhất."
       },
       {
         "id": "p3-32-6",
         "speaker": "Man",
-        "text": "A. I can text you the address when we finish this call.",
-        "vietnamese": "A. Tôi có thể nhắn tin cho bạn địa chỉ khi chúng ta kết thúc cuộc gọi này."
+        "text": "I can text you the address when we finish this call.",
+        "vietnamese": "Tôi có thể nhắn tin cho bạn địa chỉ khi chúng ta kết thúc cuộc gọi này."
       }
     ],
     "questions": [
@@ -2553,50 +2553,50 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-35-1",
         "speaker": "Woman",
-        "text": "A. Mr. Guzman, I'm calling from Powell advertising.",
-        "vietnamese": "A. Ông Guzman, tôi gọi từ Powell quảng cáo."
+        "text": "Mr. Guzman, I'm calling from Powell advertising.",
+        "vietnamese": "Ông Guzman, tôi gọi từ Powell quảng cáo."
       },
       {
         "id": "p3-35-2",
         "speaker": "Man",
-        "text": "A. As I'm sure you know, your contract with us expires next month.",
-        "vietnamese": "A. Như tôi chắc chắn bạn đã biết, hợp đồng của bạn với chúng tôi sẽ hết hạn vào tháng tới."
+        "text": "As I'm sure you know, your contract with us expires next month.",
+        "vietnamese": "Như tôi chắc chắn bạn đã biết, hợp đồng của bạn với chúng tôi sẽ hết hạn vào tháng tới."
       },
       {
         "id": "p3-35-3",
         "speaker": "Woman",
-        "text": "A. I was hoping we could take some time to discuss renewal terms.",
-        "vietnamese": "A. Tôi đã hy vọng chúng ta có thể dành chút thời gian để thảo luận về các điều khoản gia hạn."
+        "text": "I was hoping we could take some time to discuss renewal terms.",
+        "vietnamese": "Tôi đã hy vọng chúng ta có thể dành chút thời gian để thảo luận về các điều khoản gia hạn."
       },
       {
         "id": "p3-35-4",
         "speaker": "Man",
-        "text": "A. Quite honestly, we're not seeing the increase in sales we were hoping for.",
-        "vietnamese": "A. Thành thật mà nói, chúng tôi không thấy doanh số bán hàng tăng như mong đợi."
+        "text": "Quite honestly, we're not seeing the increase in sales we were hoping for.",
+        "vietnamese": "Thành thật mà nói, chúng tôi không thấy doanh số bán hàng tăng như mong đợi."
       },
       {
         "id": "p3-35-5",
         "speaker": "Woman",
-        "text": "A. Advertising in buses and trains just isn't working for us.",
-        "vietnamese": "A. Quảng cáo trên xe buýt và xe lửa không có tác dụng với chúng tôi."
+        "text": "Advertising in buses and trains just isn't working for us.",
+        "vietnamese": "Quảng cáo trên xe buýt và xe lửa không có tác dụng với chúng tôi."
       },
       {
         "id": "p3-35-6",
         "speaker": "Man",
-        "text": "A. Hmm. I know you've been hesitant to get into web advertising, but maybe now the time is right.",
-        "vietnamese": "A. Ừm. Tôi biết bạn đã do dự khi tham gia quảng cáo trên web, nhưng có lẽ bây giờ đã đến lúc."
+        "text": "Hmm. I know you've been hesitant to get into web advertising, but maybe now the time is right.",
+        "vietnamese": "Ừm. Tôi biết bạn đã do dự khi tham gia quảng cáo trên web, nhưng có lẽ bây giờ đã đến lúc."
       },
       {
         "id": "p3-35-7",
         "speaker": "Woman",
-        "text": "A. Okay. Let's sit up a time to talk about this.",
-        "vietnamese": "A. Được rồi. Chúng ta hãy ngồi lại một lúc để nói về điều này."
+        "text": "Okay. Let's sit up a time to talk about this.",
+        "vietnamese": "Được rồi. Chúng ta hãy ngồi lại một lúc để nói về điều này."
       },
       {
         "id": "p3-35-8",
         "speaker": "Man",
-        "text": "A. I'm going to ask a few of my colleagues here to join us.",
-        "vietnamese": "A. Tôi sẽ mời một vài đồng nghiệp của tôi ở đây tham gia cùng chúng tôi."
+        "text": "I'm going to ask a few of my colleagues here to join us.",
+        "vietnamese": "Tôi sẽ mời một vài đồng nghiệp của tôi ở đây tham gia cùng chúng tôi."
       }
     ],
     "questions": [
@@ -2724,44 +2724,44 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-38-1",
         "speaker": "Woman",
-        "text": "A. Did Mr. Okamura really order all these carrots for the cafe?",
-        "vietnamese": "A. Có thật là ông Okamura đã đặt mua tất cả cà rốt này cho quán cà phê không?"
+        "text": "Did Mr. Okamura really order all these carrots for the cafe?",
+        "vietnamese": "Có thật là ông Okamura đã đặt mua tất cả cà rốt này cho quán cà phê không?"
       },
       {
         "id": "p3-38-2",
         "speaker": "Man",
-        "text": "A. I signed for the delivery, but now I'm worried that there was a mistake.",
-        "vietnamese": "A. Tôi đã ký nhận hàng nhưng hiện tại tôi lo lắng có sai sót."
+        "text": "I signed for the delivery, but now I'm worried that there was a mistake.",
+        "vietnamese": "Tôi đã ký nhận hàng nhưng hiện tại tôi lo lắng có sai sót."
       },
       {
         "id": "p3-38-3",
         "speaker": "Woman",
-        "text": "A. I don't know me, how.",
-        "vietnamese": "A. Tôi không biết tôi thì sao."
+        "text": "I don't know me, how.",
+        "vietnamese": "Tôi không biết tôi thì sao."
       },
       {
         "id": "p3-38-4",
         "speaker": "Man",
-        "text": "A. I sold the list of specials for offering this weekend, and didn't see anything that has a lot of carrots in it.",
-        "vietnamese": "A. Tôi đã bán danh sách ưu đãi đặc biệt vào cuối tuần này và không thấy món nào có nhiều cà rốt trong đó cả."
+        "text": "I sold the list of specials for offering this weekend, and didn't see anything that has a lot of carrots in it.",
+        "vietnamese": "Tôi đã bán danh sách ưu đãi đặc biệt vào cuối tuần này và không thấy món nào có nhiều cà rốt trong đó cả."
       },
       {
         "id": "p3-38-5",
         "speaker": "Woman",
-        "text": "A. It's okay. Mr. Okamura told me that we need them for a special private dinner tonight.",
-        "vietnamese": "A. Không sao đâu. Ông Okamura nói với tôi rằng chúng tôi cần họ cho bữa tối riêng tư đặc biệt tối nay."
+        "text": "It's okay. Mr. Okamura told me that we need them for a special private dinner tonight.",
+        "vietnamese": "Không sao đâu. Ông Okamura nói với tôi rằng chúng tôi cần họ cho bữa tối riêng tư đặc biệt tối nay."
       },
       {
         "id": "p3-38-6",
         "speaker": "Man",
-        "text": "A. I'll start preparing them now. A. Ok. Once I finish the baking, I should be able to do some.",
-        "vietnamese": "A. Tôi sẽ bắt đầu chuẩn bị chúng ngay bây giờ. A. Được rồi. Sau khi nướng xong, tôi sẽ có thể làm được một ít."
+        "text": "I'll start preparing them now. Ok. Once I finish the baking, I should be able to do some.",
+        "vietnamese": "Tôi sẽ bắt đầu chuẩn bị chúng ngay bây giờ. Được rồi. Sau khi nướng xong, tôi sẽ có thể làm được một ít."
       },
       {
         "id": "p3-38-7",
         "speaker": "Woman",
-        "text": "A. Thanks, Miho.",
-        "vietnamese": "A. Cảm ơn, Miho."
+        "text": "Thanks, Miho.",
+        "vietnamese": "Cảm ơn, Miho."
       }
     ],
     "questions": [
@@ -2811,7 +2811,7 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "C",
-            "text": "It contains a large quantity of one item. TEST5",
+            "text": "It contains a large quantity of one item.",
             "vietnamese": "Nó chứa một số lượng lớn của một mặt hàng. TEST5"
           },
           {
@@ -2821,7 +2821,7 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           }
         ],
         "correctAnswer": "C",
-        "explanation": "Đáp án đúng là (C): \"It contains a large quantity of one item. TEST5\" (Nó chứa một số lượng lớn của một mặt hàng. TEST5)."
+        "explanation": "Đáp án đúng là (C): \"It contains a large quantity of one item.\" (Nó chứa một số lượng lớn của một mặt hàng. TEST5)."
       },
       {
         "num": 40,
@@ -2879,32 +2879,32 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-41-1",
         "speaker": "Woman",
-        "text": "A. Hi. I'm calling from Dr. Yankovich's office to confirm your appointment tomorrow morning.",
-        "vietnamese": "A. Xin chào. Tôi sẽ gọi từ văn phòng bác sĩ Yankovich để xác nhận cuộc hẹn của anh vào sáng mai."
+        "text": "Hi. I'm calling from Dr. Yankovich's office to confirm your appointment tomorrow morning.",
+        "vietnamese": "Xin chào. Tôi sẽ gọi từ văn phòng bác sĩ Yankovich để xác nhận cuộc hẹn của anh vào sáng mai."
       },
       {
         "id": "p3-41-2",
         "speaker": "Man",
-        "text": "A. Sure. I'll be there at 11 o'clock.",
-        "vietnamese": "A. Chắc chắn rồi. Tôi sẽ có mặt ở đó lúc 11 giờ."
+        "text": "Sure. I'll be there at 11 o'clock.",
+        "vietnamese": "Chắc chắn rồi. Tôi sẽ có mặt ở đó lúc 11 giờ."
       },
       {
         "id": "p3-41-3",
         "speaker": "Woman",
-        "text": "A. Since you're a new patient, please complete all the online forms before you arrive.",
-        "vietnamese": "A. Vì bạn là bệnh nhân mới, vui lòng điền tất cả các biểu mẫu trực tuyến trước khi bạn đến."
+        "text": "Since you're a new patient, please complete all the online forms before you arrive.",
+        "vietnamese": "Vì bạn là bệnh nhân mới, vui lòng điền tất cả các biểu mẫu trực tuyến trước khi bạn đến."
       },
       {
         "id": "p3-41-4",
         "speaker": "Man",
-        "text": "A. I sent you an email last week with a link to our medical portal.",
-        "vietnamese": "A. Tôi đã gửi cho bạn một email vào tuần trước có liên kết đến cổng thông tin y tế của chúng tôi."
+        "text": "I sent you an email last week with a link to our medical portal.",
+        "vietnamese": "Tôi đã gửi cho bạn một email vào tuần trước có liên kết đến cổng thông tin y tế của chúng tôi."
       },
       {
         "id": "p3-41-5",
         "speaker": "Woman",
-        "text": "A. Oh, I must have missed it. Sorry about that. I'll do it right away.",
-        "vietnamese": "A. Ồ, chắc là tôi đã bỏ lỡ nó. Xin lỗi về điều đó. Tôi sẽ làm điều đó ngay lập tức."
+        "text": "Oh, I must have missed it. Sorry about that. I'll do it right away.",
+        "vietnamese": "Ồ, chắc là tôi đã bỏ lỡ nó. Xin lỗi về điều đó. Tôi sẽ làm điều đó ngay lập tức."
       },
       {
         "id": "p3-41-6",
@@ -3000,12 +3000,12 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "A parking area is closed. GOONTOTHENEXTPAGE TEST581",
+            "text": "A parking area is closed.",
             "vietnamese": "Một khu vực đậu xe đã đóng cửa. KIỂM TRA GONTOTHENEXTPAGE581"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"A parking area is closed. GOONTOTHENEXTPAGE TEST581\" (Một khu vực đậu xe đã đóng cửa. KIỂM TRA GONTOTHENEXTPAGE581)."
+        "explanation": "Đáp án đúng là (D): \"A parking area is closed.\" (Một khu vực đậu xe đã đóng cửa. KIỂM TRA GONTOTHENEXTPAGE581)."
       }
     ],
     "vocabulary": [
@@ -3044,32 +3044,32 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-44-1",
         "speaker": "Woman",
-        "text": "A. Hi. I'm flying to Munich. The name's Goldenberg. I have one suitcase.",
-        "vietnamese": "A. Xin chào. Tôi đang bay tới Munich. Tên là Goldenberg. Tôi có một chiếc vali."
+        "text": "Hi. I'm flying to Munich. The name's Goldenberg. I have one suitcase.",
+        "vietnamese": "Xin chào. Tôi đang bay tới Munich. Tên là Goldenberg. Tôi có một chiếc vali."
       },
       {
         "id": "p3-44-2",
         "speaker": "Man",
-        "text": "A. I see your reservation, Miss Goldenberg. I'll print your boarding pass.",
-        "vietnamese": "A. Tôi đã xem thông tin đặt chỗ của cô, cô Goldenberg. Tôi sẽ in thẻ lên máy bay của bạn."
+        "text": "I see your reservation, Miss Goldenberg. I'll print your boarding pass.",
+        "vietnamese": "Tôi đã xem thông tin đặt chỗ của cô, cô Goldenberg. Tôi sẽ in thẻ lên máy bay của bạn."
       },
       {
         "id": "p3-44-3",
         "speaker": "Woman",
-        "text": "A. Actually, I was wondering if you could change my seat. I'd rather have an aisle one. It's easier if I have to move around.",
-        "vietnamese": "A. Thực ra tôi đang thắc mắc liệu bạn có thể đổi chỗ ngồi cho tôi không. Tôi muốn có một lối đi hơn. Sẽ dễ dàng hơn nếu tôi phải di chuyển xung quanh."
+        "text": "Actually, I was wondering if you could change my seat. I'd rather have an aisle one. It's easier if I have to move around.",
+        "vietnamese": "Thực ra tôi đang thắc mắc liệu bạn có thể đổi chỗ ngồi cho tôi không. Tôi muốn có một lối đi hơn. Sẽ dễ dàng hơn nếu tôi phải di chuyển xung quanh."
       },
       {
         "id": "p3-44-4",
         "speaker": "Man",
-        "text": "A. Unfortunately, this flight is full. In fact, it's overbooked. So if you're interested, I can offer you an aisle seat on tomorrow's flight and upgrade you to business class.",
-        "vietnamese": "A. Thật không may, chuyến bay này đã kín chỗ. Trên thực tế, nó đã được đặt trước quá nhiều. Vì vậy, nếu bạn quan tâm, tôi có thể cung cấp cho bạn ghế cạnh lối đi trên chuyến bay ngày mai và nâng bạn lên hạng thương gia."
+        "text": "Unfortunately, this flight is full. In fact, it's overbooked. So if you're interested, I can offer you an aisle seat on tomorrow's flight and upgrade you to business class.",
+        "vietnamese": "Thật không may, chuyến bay này đã kín chỗ. Trên thực tế, nó đã được đặt trước quá nhiều. Vì vậy, nếu bạn quan tâm, tôi có thể cung cấp cho bạn ghế cạnh lối đi trên chuyến bay ngày mai và nâng bạn lên hạng thương gia."
       },
       {
         "id": "p3-44-5",
         "speaker": "Woman",
-        "text": "A. Tomorrow? I'm the guest speaker at a conference. A. Okay. We'll ask some other passengers. Here's your boarding pass. Have a good trip.",
-        "vietnamese": "A. Ngày mai? Tôi là diễn giả khách mời tại một hội nghị. A. Được rồi. Chúng ta sẽ hỏi một số hành khách khác. Đây là thẻ lên máy bay của bạn. Chúc bạn có một chuyến đi vui vẻ."
+        "text": "Tomorrow? I'm the guest speaker at a conference. Okay. We'll ask some other passengers. Here's your boarding pass. Have a good trip.",
+        "vietnamese": "Ngày mai? Tôi là diễn giả khách mời tại một hội nghị. Được rồi. Chúng ta sẽ hỏi một số hành khách khác. Đây là thẻ lên máy bay của bạn. Chúc bạn có một chuyến đi vui vẻ."
       }
     ],
     "questions": [
@@ -3197,8 +3197,8 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-47-1",
         "speaker": "Woman",
-        "text": "A. Hi. I'm calling from Gwan construction. We were originally scheduled to transport the tower crane to your building this weekend for upcoming construction.",
-        "vietnamese": "A. Xin chào. Tôi đang gọi từ công trình Gwan. Ban đầu chúng tôi dự kiến ​​sẽ vận chuyển cần cẩu tháp đến tòa nhà của bạn vào cuối tuần này để chuẩn bị cho công trình sắp tới."
+        "text": "Hi. I'm calling from Gwan construction. We were originally scheduled to transport the tower crane to your building this weekend for upcoming construction.",
+        "vietnamese": "Xin chào. Tôi đang gọi từ công trình Gwan. Ban đầu chúng tôi dự kiến ​​sẽ vận chuyển cần cẩu tháp đến tòa nhà của bạn vào cuối tuần này để chuẩn bị cho công trình sắp tới."
       },
       {
         "id": "p3-47-2",
@@ -3215,20 +3215,20 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-47-4",
         "speaker": "Man",
-        "text": "A. Well, the weekend would have been better since most of the offices are usually empty.",
-        "vietnamese": "A. Cuối tuần sẽ tốt hơn vì hầu hết các văn phòng thường trống."
+        "text": "Well, the weekend would have been better since most of the offices are usually empty.",
+        "vietnamese": "Cuối tuần sẽ tốt hơn vì hầu hết các văn phòng thường trống."
       },
       {
         "id": "p3-47-5",
         "speaker": "Woman",
-        "text": "A. But if you have to, I'll send a notice that employees should use the side street entrance.",
-        "vietnamese": "A. Nhưng nếu bạn phải làm vậy, tôi sẽ gửi thông báo rằng nhân viên nên sử dụng lối vào bên đường."
+        "text": "But if you have to, I'll send a notice that employees should use the side street entrance.",
+        "vietnamese": "Nhưng nếu bạn phải làm vậy, tôi sẽ gửi thông báo rằng nhân viên nên sử dụng lối vào bên đường."
       },
       {
         "id": "p3-47-6",
         "speaker": "Man",
-        "text": "A. Okay. I'll go ahead and contact the city to request a change to the start date of our construction permit.",
-        "vietnamese": "A. Được rồi. Tôi sẽ tiếp tục và liên hệ với thành phố để yêu cầu thay đổi ngày bắt đầu cấp giấy phép xây dựng của chúng tôi."
+        "text": "Okay. I'll go ahead and contact the city to request a change to the start date of our construction permit.",
+        "vietnamese": "Được rồi. Tôi sẽ tiếp tục và liên hệ với thành phố để yêu cầu thay đổi ngày bắt đầu cấp giấy phép xây dựng của chúng tôi."
       }
     ],
     "questions": [
@@ -3356,50 +3356,50 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-50-1",
         "speaker": "Woman",
-        "text": "A. As you all know, our bookstore has a new inventory system for keeping track of what books we have in the store.",
-        "vietnamese": "A. Như các bạn đã biết, hiệu sách của chúng tôi có một hệ thống kiểm kê mới để theo dõi những cuốn sách chúng tôi có trong cửa hàng."
+        "text": "As you all know, our bookstore has a new inventory system for keeping track of what books we have in the store.",
+        "vietnamese": "Như các bạn đã biết, hiệu sách của chúng tôi có một hệ thống kiểm kê mới để theo dõi những cuốn sách chúng tôi có trong cửa hàng."
       },
       {
         "id": "p3-50-2",
         "speaker": "Man",
-        "text": "A. We were going to start using it just after the holidays when the store is closed to customers.",
-        "vietnamese": "A. Chúng tôi dự định bắt đầu sử dụng nó ngay sau kỳ nghỉ lễ khi cửa hàng đóng cửa đón khách."
+        "text": "We were going to start using it just after the holidays when the store is closed to customers.",
+        "vietnamese": "Chúng tôi dự định bắt đầu sử dụng nó ngay sau kỳ nghỉ lễ khi cửa hàng đóng cửa đón khách."
       },
       {
         "id": "p3-50-3",
         "speaker": "Woman",
-        "text": "A. But we need to start using it now.",
-        "vietnamese": "A. Nhưng chúng ta cần bắt đầu sử dụng nó ngay bây giờ."
+        "text": "But we need to start using it now.",
+        "vietnamese": "Nhưng chúng ta cần bắt đầu sử dụng nó ngay bây giờ."
       },
       {
         "id": "p3-50-4",
         "speaker": "Man",
-        "text": "A. Mr. Jones, you mean we'll be entering inventory into the system and helping customers at the same time.",
-        "vietnamese": "A. Ông Jones, ý ông là chúng tôi sẽ nhập hàng tồn kho vào hệ thống và đồng thời giúp đỡ khách hàng."
+        "text": "Mr. Jones, you mean we'll be entering inventory into the system and helping customers at the same time.",
+        "vietnamese": "Ông Jones, ý ông là chúng tôi sẽ nhập hàng tồn kho vào hệ thống và đồng thời giúp đỡ khách hàng."
       },
       {
         "id": "p3-50-5",
         "speaker": "Woman",
-        "text": "A. That's a lot.",
-        "vietnamese": "A. Đó là rất nhiều."
+        "text": "That's a lot.",
+        "vietnamese": "Đó là rất nhiều."
       },
       {
         "id": "p3-50-6",
         "speaker": "Man",
-        "text": "A. I understand your concern, but Mark has been attending training and we'll be able to lead the transition so that salespeople can concentrate on customer service.",
-        "vietnamese": "A. Tôi hiểu mối quan tâm của bạn, nhưng Mark đã tham gia khóa đào tạo và chúng tôi sẽ có thể dẫn dắt quá trình chuyển đổi để nhân viên bán hàng có thể tập trung vào dịch vụ khách hàng."
+        "text": "I understand your concern, but Mark has been attending training and we'll be able to lead the transition so that salespeople can concentrate on customer service.",
+        "vietnamese": "Tôi hiểu mối quan tâm của bạn, nhưng Mark đã tham gia khóa đào tạo và chúng tôi sẽ có thể dẫn dắt quá trình chuyển đổi để nhân viên bán hàng có thể tập trung vào dịch vụ khách hàng."
       },
       {
         "id": "p3-50-7",
         "speaker": "Woman",
-        "text": "A. Mark, anything you want to say?",
-        "vietnamese": "A. Mark, bạn có muốn nói gì không?"
+        "text": "Mark, anything you want to say?",
+        "vietnamese": "Mark, bạn có muốn nói gì không?"
       },
       {
         "id": "p3-50-8",
         "speaker": "Man",
-        "text": "A. The system isn't difficult to use and most importantly, I think it will make filling online orders much quicker.",
-        "vietnamese": "A. Hệ thống này không khó sử dụng và quan trọng nhất là tôi nghĩ nó sẽ giúp việc thực hiện các đơn hàng trực tuyến nhanh hơn nhiều."
+        "text": "The system isn't difficult to use and most importantly, I think it will make filling online orders much quicker.",
+        "vietnamese": "Hệ thống này không khó sử dụng và quan trọng nhất là tôi nghĩ nó sẽ giúp việc thực hiện các đơn hàng trực tuyến nhanh hơn nhiều."
       }
     ],
     "questions": [
@@ -3527,8 +3527,8 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-53-1",
         "speaker": "Woman",
-        "text": "A. Hi, I'm Tina Mackin from the television program Sunrise Scotland.",
-        "vietnamese": "A. Xin chào, tôi là Tina Mackin từ chương trình truyền hình Sunrise Scotland."
+        "text": "Hi, I'm Tina Mackin from the television program Sunrise Scotland.",
+        "vietnamese": "Xin chào, tôi là Tina Mackin từ chương trình truyền hình Sunrise Scotland."
       },
       {
         "id": "p3-53-2",
@@ -3539,20 +3539,20 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-53-3",
         "speaker": "Woman",
-        "text": "A. Yes, the director asked me to send that, some photos and information.",
-        "vietnamese": "A. Vâng, giám đốc yêu cầu tôi gửi một số hình ảnh và thông tin."
+        "text": "Yes, the director asked me to send that, some photos and information.",
+        "vietnamese": "Vâng, giám đốc yêu cầu tôi gửi một số hình ảnh và thông tin."
       },
       {
         "id": "p3-53-4",
         "speaker": "Man",
-        "text": "A. So you got the email with all the attachments?",
-        "vietnamese": "A. Vậy là bạn đã nhận được email với tất cả các tệp đính kèm?"
+        "text": "So you got the email with all the attachments?",
+        "vietnamese": "Vậy là bạn đã nhận được email với tất cả các tệp đính kèm?"
       },
       {
         "id": "p3-53-5",
         "speaker": "Woman",
-        "text": "A. I did, but I was expecting a short video from one of the rehearsals.",
-        "vietnamese": "A. Tôi đã làm vậy, nhưng tôi đang mong đợi một đoạn video ngắn từ một trong những buổi diễn tập."
+        "text": "I did, but I was expecting a short video from one of the rehearsals.",
+        "vietnamese": "Tôi đã làm vậy, nhưng tôi đang mong đợi một đoạn video ngắn từ một trong những buổi diễn tập."
       },
       {
         "id": "p3-53-6",
@@ -3563,14 +3563,14 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-53-7",
         "speaker": "Woman",
-        "text": "A. I wasn't aware of that. I'll talk to the musical's director, Michael Byrne.",
-        "vietnamese": "A. Tôi đã không biết điều đó. Tôi sẽ nói chuyện với đạo diễn vở nhạc kịch, Michael Byrne."
+        "text": "I wasn't aware of that. I'll talk to the musical's director, Michael Byrne.",
+        "vietnamese": "Tôi đã không biết điều đó. Tôi sẽ nói chuyện với đạo diễn vở nhạc kịch, Michael Byrne."
       },
       {
         "id": "p3-53-8",
         "speaker": "Man",
-        "text": "A. Okay, and when you speak to him, please advise him to arrive early for his appearance and I'll show this Friday.",
-        "vietnamese": "A. Được rồi, và khi bạn nói chuyện với anh ấy, vui lòng khuyên anh ấy đến sớm để xuất hiện và tôi sẽ trình chiếu vào thứ Sáu tuần này."
+        "text": "Okay, and when you speak to him, please advise him to arrive early for his appearance and I'll show this Friday.",
+        "vietnamese": "Được rồi, và khi bạn nói chuyện với anh ấy, vui lòng khuyên anh ấy đến sớm để xuất hiện và tôi sẽ trình chiếu vào thứ Sáu tuần này."
       },
       {
         "id": "p3-53-9",
@@ -3704,50 +3704,50 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-56-1",
         "speaker": "Woman",
-        "text": "A. Have you had a chance to look at the survey results?",
-        "vietnamese": "A. Bạn đã có cơ hội xem kết quả khảo sát chưa?"
+        "text": "Have you had a chance to look at the survey results?",
+        "vietnamese": "Bạn đã có cơ hội xem kết quả khảo sát chưa?"
       },
       {
         "id": "p3-56-2",
         "speaker": "Man",
-        "text": "A. I wasn't surprised. We've known for a while that our customers really don't like the music in our video games.",
-        "vietnamese": "A. Tôi không ngạc nhiên. Chúng tôi đã biết từ lâu rằng khách hàng thực sự không thích âm nhạc trong trò chơi điện tử của chúng tôi."
+        "text": "I wasn't surprised. We've known for a while that our customers really don't like the music in our video games.",
+        "vietnamese": "Tôi không ngạc nhiên. Chúng tôi đã biết từ lâu rằng khách hàng thực sự không thích âm nhạc trong trò chơi điện tử của chúng tôi."
       },
       {
         "id": "p3-56-3",
         "speaker": "Woman",
-        "text": "A. The trend is to have popular music with vocals rather than the electronic sounds we've always used.",
-        "vietnamese": "A. Xu hướng là có âm nhạc phổ biến với giọng hát hơn là âm thanh điện tử mà chúng ta vẫn luôn sử dụng."
+        "text": "The trend is to have popular music with vocals rather than the electronic sounds we've always used.",
+        "vietnamese": "Xu hướng là có âm nhạc phổ biến với giọng hát hơn là âm thanh điện tử mà chúng ta vẫn luôn sử dụng."
       },
       {
         "id": "p3-56-4",
         "speaker": "Man",
-        "text": "A. I'm sure using popular music in our games will increase sales.",
-        "vietnamese": "A. Tôi chắc chắn rằng việc sử dụng âm nhạc phổ biến trong trò chơi của chúng tôi sẽ tăng doanh thu."
+        "text": "I'm sure using popular music in our games will increase sales.",
+        "vietnamese": "Tôi chắc chắn rằng việc sử dụng âm nhạc phổ biến trong trò chơi của chúng tôi sẽ tăng doanh thu."
       },
       {
         "id": "p3-56-5",
         "speaker": "Woman",
-        "text": "A. I think we should start to make this change now, don't you?",
-        "vietnamese": "A. Tôi nghĩ chúng ta nên bắt đầu thực hiện thay đổi này ngay bây giờ phải không?"
+        "text": "I think we should start to make this change now, don't you?",
+        "vietnamese": "Tôi nghĩ chúng ta nên bắt đầu thực hiện thay đổi này ngay bây giờ phải không?"
       },
       {
         "id": "p3-56-6",
         "speaker": "Man",
-        "text": "A. Well, what's popular today may not be popular tomorrow and we want our games to keep selling for a long time.",
+        "text": "Well, what's popular today may not be popular tomorrow and we want our games to keep selling for a long time.",
         "vietnamese": "Đáp: Những gì phổ biến hôm nay có thể không phổ biến vào ngày mai và chúng tôi muốn trò chơi của mình tiếp tục bán chạy trong thời gian dài."
       },
       {
         "id": "p3-56-7",
         "speaker": "Woman",
-        "text": "A. So, let's not rush this decision. A. I see. Okay.",
-        "vietnamese": "A. Vì vậy, chúng ta đừng vội đưa ra quyết định này. A. Tôi hiểu rồi. Được rồi."
+        "text": "So, let's not rush this decision. I see. Okay.",
+        "vietnamese": "Vì vậy, chúng ta đừng vội đưa ra quyết định này. Tôi hiểu rồi. Được rồi."
       },
       {
         "id": "p3-56-8",
         "speaker": "Man",
-        "text": "A. Let's discuss this further with our division leaders.",
-        "vietnamese": "A. Hãy thảo luận thêm về vấn đề này với các lãnh đạo bộ phận của chúng ta."
+        "text": "Let's discuss this further with our division leaders.",
+        "vietnamese": "Hãy thảo luận thêm về vấn đề này với các lãnh đạo bộ phận của chúng ta."
       }
     ],
     "questions": [
@@ -3875,38 +3875,38 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-59-1",
         "speaker": "Woman",
-        "text": "A. Good morning, Dr. On. In case you have forgotten, today I am going to start transferring patients' paper records to electronic files.",
-        "vietnamese": "A. Chào buổi sáng, Tiến sĩ On. Trong trường hợp bạn quên, hôm nay tôi sẽ bắt đầu chuyển hồ sơ giấy của bệnh nhân sang hồ sơ điện tử."
+        "text": "Good morning, Dr. On. In case you have forgotten, today I am going to start transferring patients' paper records to electronic files.",
+        "vietnamese": "Chào buổi sáng, Tiến sĩ On. Trong trường hợp bạn quên, hôm nay tôi sẽ bắt đầu chuyển hồ sơ giấy của bệnh nhân sang hồ sơ điện tử."
       },
       {
         "id": "p3-59-2",
         "speaker": "Man",
-        "text": "A. Oh, right. Thanks. Who will be handling phone calls and greeting patients while you're in the back office?",
-        "vietnamese": "A. Ồ, phải rồi. Cảm ơn. Ai sẽ xử lý các cuộc gọi điện thoại và chào đón bệnh nhân khi bạn ở văn phòng hỗ trợ?"
+        "text": "Oh, right. Thanks. Who will be handling phone calls and greeting patients while you're in the back office?",
+        "vietnamese": "Ồ, phải rồi. Cảm ơn. Ai sẽ xử lý các cuộc gọi điện thoại và chào đón bệnh nhân khi bạn ở văn phòng hỗ trợ?"
       },
       {
         "id": "p3-59-3",
         "speaker": "Woman",
-        "text": "A. I arranged for a temporary office assistant to come in and help out.",
-        "vietnamese": "A. Tôi đã sắp xếp một trợ lý văn phòng tạm thời đến giúp đỡ."
+        "text": "I arranged for a temporary office assistant to come in and help out.",
+        "vietnamese": "Tôi đã sắp xếp một trợ lý văn phòng tạm thời đến giúp đỡ."
       },
       {
         "id": "p3-59-4",
         "speaker": "Man",
-        "text": "A. Okay. But the system we use for scheduling appointments can be tricky to operate.",
-        "vietnamese": "A. Được rồi. Tuy nhiên, hệ thống chúng tôi sử dụng để lên lịch cuộc hẹn có thể khó vận hành."
+        "text": "Okay. But the system we use for scheduling appointments can be tricky to operate.",
+        "vietnamese": "Được rồi. Tuy nhiên, hệ thống chúng tôi sử dụng để lên lịch cuộc hẹn có thể khó vận hành."
       },
       {
         "id": "p3-59-5",
         "speaker": "Woman",
-        "text": "A. Well, the office assistant is coming from an agency that specializes in the medical profession.",
-        "vietnamese": "A. Vâng, trợ lý văn phòng này đến từ một cơ quan chuyên về lĩnh vực y tế."
+        "text": "Well, the office assistant is coming from an agency that specializes in the medical profession.",
+        "vietnamese": "Vâng, trợ lý văn phòng này đến từ một cơ quan chuyên về lĩnh vực y tế."
       },
       {
         "id": "p3-59-6",
         "speaker": "Man",
-        "text": "A. So, I think we should be fine.",
-        "vietnamese": "A. Vì vậy, tôi nghĩ chúng ta sẽ ổn thôi."
+        "text": "So, I think we should be fine.",
+        "vietnamese": "Vì vậy, tôi nghĩ chúng ta sẽ ổn thôi."
       }
     ],
     "questions": [
@@ -4034,44 +4034,44 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-62-1",
         "speaker": "Woman",
-        "text": "A. Hi, Ian. This is Michelle from Michelle's Flower Shop.",
-        "vietnamese": "A. Chào Ian. Đây là Michelle từ Cửa hàng hoa của Michelle."
+        "text": "Hi, Ian. This is Michelle from Michelle's Flower Shop.",
+        "vietnamese": "Chào Ian. Đây là Michelle từ Cửa hàng hoa của Michelle."
       },
       {
         "id": "p3-62-2",
         "speaker": "Man",
-        "text": "A. We just received our wholesale order, but the tulips are missing.",
-        "vietnamese": "A. Chúng tôi vừa nhận được đơn đặt hàng bán buôn, nhưng hoa tulip bị thiếu."
+        "text": "We just received our wholesale order, but the tulips are missing.",
+        "vietnamese": "Chúng tôi vừa nhận được đơn đặt hàng bán buôn, nhưng hoa tulip bị thiếu."
       },
       {
         "id": "p3-62-3",
         "speaker": "Woman",
-        "text": "A. Oh, sorry. I forgot to let you know that my supplier can't get them to me until tomorrow.",
-        "vietnamese": "A. Ồ, xin lỗi. Tôi quên báo cho bạn biết rằng nhà cung cấp của tôi không thể giao hàng cho tôi cho đến ngày mai."
+        "text": "Oh, sorry. I forgot to let you know that my supplier can't get them to me until tomorrow.",
+        "vietnamese": "Ồ, xin lỗi. Tôi quên báo cho bạn biết rằng nhà cung cấp của tôi không thể giao hàng cho tôi cho đến ngày mai."
       },
       {
         "id": "p3-62-4",
         "speaker": "Man",
-        "text": "A. I've had a number of customers requesting tulips recently.",
-        "vietnamese": "A. Gần đây tôi có một số khách hàng yêu cầu hoa tulip."
+        "text": "I've had a number of customers requesting tulips recently.",
+        "vietnamese": "Gần đây tôi có một số khách hàng yêu cầu hoa tulip."
       },
       {
         "id": "p3-62-5",
         "speaker": "Woman",
-        "text": "A. So, could you please ship them as soon as you can? A. Absolutely. I'll send the truck back to you tomorrow with the tulips.",
-        "vietnamese": "A. Vì vậy, bạn có thể vui lòng gửi chúng sớm nhất có thể được không? A. Chắc chắn rồi. Ngày mai tôi sẽ gửi xe tải chở hoa tulip về cho bạn."
+        "text": "So, could you please ship them as soon as you can? Absolutely. I'll send the truck back to you tomorrow with the tulips.",
+        "vietnamese": "Vì vậy, bạn có thể vui lòng gửi chúng sớm nhất có thể được không? Chắc chắn rồi. Ngày mai tôi sẽ gửi xe tải chở hoa tulip về cho bạn."
       },
       {
         "id": "p3-62-6",
         "speaker": "Man",
-        "text": "A. And actually, I've ordered 100 flowers, but could you double that, please? I'm sure I'll need at least 200.",
-        "vietnamese": "A. Và thực ra, tôi đã đặt mua 100 bông hoa, nhưng bạn có thể tăng gấp đôi số đó lên được không? Tôi chắc chắn tôi sẽ cần ít nhất 200."
+        "text": "And actually, I've ordered 100 flowers, but could you double that, please? I'm sure I'll need at least 200.",
+        "vietnamese": "Và thực ra, tôi đã đặt mua 100 bông hoa, nhưng bạn có thể tăng gấp đôi số đó lên được không? Tôi chắc chắn tôi sẽ cần ít nhất 200."
       },
       {
         "id": "p3-62-7",
         "speaker": "Woman",
-        "text": "A. Sure. And I'll send you a revised invoice as well.",
-        "vietnamese": "A. Chắc chắn rồi. Và tôi cũng sẽ gửi cho bạn hóa đơn sửa đổi."
+        "text": "Sure. And I'll send you a revised invoice as well.",
+        "vietnamese": "Chắc chắn rồi. Và tôi cũng sẽ gửi cho bạn hóa đơn sửa đổi."
       }
     ],
     "questions": [
@@ -4155,7 +4155,7 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "$85 GOONTOTHENEXTPAGE",
+            "text": "$85",
             "vietnamese": "$85 GONTOTHENEXTPAGE"
           }
         ],
@@ -4200,32 +4200,32 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-65-1",
         "speaker": "Woman",
-        "text": "A. I hear that we've received complaints about the display panel on the Handymax coffee maker we just introduced.",
-        "vietnamese": "A. Tôi được biết chúng tôi đã nhận được khiếu nại về bảng hiển thị trên máy pha cà phê Handymax mà chúng tôi vừa giới thiệu."
+        "text": "I hear that we've received complaints about the display panel on the Handymax coffee maker we just introduced.",
+        "vietnamese": "Tôi được biết chúng tôi đã nhận được khiếu nại về bảng hiển thị trên máy pha cà phê Handymax mà chúng tôi vừa giới thiệu."
       },
       {
         "id": "p3-65-2",
         "speaker": "Man",
-        "text": "A. Have you looked into it? A. It's the warning light that lets people know that more water needs to be added.",
-        "vietnamese": "A. Bạn đã xem xét nó chưa? A. Đó là đèn cảnh báo để mọi người biết cần bổ sung thêm nước."
+        "text": "Have you looked into it? It's the warning light that lets people know that more water needs to be added.",
+        "vietnamese": "Bạn đã xem xét nó chưa? Đó là đèn cảnh báo để mọi người biết cần bổ sung thêm nước."
       },
       {
         "id": "p3-65-3",
         "speaker": "Woman",
-        "text": "A. On the Handymax, it's right next to the Keep Warmlight, and some customers become confused when using the machine.",
-        "vietnamese": "A. Trên Handymax, nó nằm ngay cạnh Keep Warmlight và một số khách hàng cảm thấy bối rối khi sử dụng máy."
+        "text": "On the Handymax, it's right next to the Keep Warmlight, and some customers become confused when using the machine.",
+        "vietnamese": "Trên Handymax, nó nằm ngay cạnh Keep Warmlight và một số khách hàng cảm thấy bối rối khi sử dụng máy."
       },
       {
         "id": "p3-65-4",
         "speaker": "Man",
-        "text": "A. The warning light was much bigger on previous models, which made it easier to see. Should we enlarge it? Would that solve the problem?",
-        "vietnamese": "A. Đèn cảnh báo lớn hơn nhiều trên các mẫu trước đó, giúp dễ nhìn hơn. Chúng ta có nên phóng to nó không? Điều đó có giải quyết được vấn đề không?"
+        "text": "The warning light was much bigger on previous models, which made it easier to see. Should we enlarge it? Would that solve the problem?",
+        "vietnamese": "Đèn cảnh báo lớn hơn nhiều trên các mẫu trước đó, giúp dễ nhìn hơn. Chúng ta có nên phóng to nó không? Điều đó có giải quyết được vấn đề không?"
       },
       {
         "id": "p3-65-5",
         "speaker": "Woman",
-        "text": "A. I think we should move the warning light to the right of the words add water. That could avoid the issue.",
-        "vietnamese": "A. Tôi nghĩ chúng ta nên di chuyển đèn cảnh báo sang bên phải dòng chữ thêm nước. Điều đó có thể tránh được vấn đề."
+        "text": "I think we should move the warning light to the right of the words add water. That could avoid the issue.",
+        "vietnamese": "Tôi nghĩ chúng ta nên di chuyển đèn cảnh báo sang bên phải dòng chữ thêm nước. Điều đó có thể tránh được vấn đề."
       }
     ],
     "questions": [
@@ -4354,20 +4354,20 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-68-1",
         "speaker": "Woman",
-        "text": "A. Thanks for stopping by, Petra. Last week I got the schedule for the rollout of Langenfeld's new Oatmeal Raisin cookies.",
-        "vietnamese": "A. Cảm ơn vì đã ghé qua, Petra. Tuần trước tôi đã nhận được lịch trình giới thiệu loại bánh quy nho khô yến mạch mới của Langenfeld."
+        "text": "Thanks for stopping by, Petra. Last week I got the schedule for the rollout of Langenfeld's new Oatmeal Raisin cookies.",
+        "vietnamese": "Cảm ơn vì đã ghé qua, Petra. Tuần trước tôi đã nhận được lịch trình giới thiệu loại bánh quy nho khô yến mạch mới của Langenfeld."
       },
       {
         "id": "p3-68-2",
         "speaker": "Man",
-        "text": "A. Oh, yes. It's about time. Customers have been complaining about how dry the current ones are.",
-        "vietnamese": "A. Ồ, vâng. Đã đến lúc rồi. Khách hàng đã phàn nàn về độ khô của những sản phẩm hiện tại."
+        "text": "Oh, yes. It's about time. Customers have been complaining about how dry the current ones are.",
+        "vietnamese": "Ồ, vâng. Đã đến lúc rồi. Khách hàng đã phàn nàn về độ khô của những sản phẩm hiện tại."
       },
       {
         "id": "p3-68-3",
         "speaker": "Woman",
-        "text": "A. Well, I just got an email update from headquarters. They want to extend the window of time the product will be discounted.",
-        "vietnamese": "A. Tôi vừa nhận được email cập nhật từ trụ sở chính. Họ muốn kéo dài thời gian sản phẩm sẽ được giảm giá."
+        "text": "Well, I just got an email update from headquarters. They want to extend the window of time the product will be discounted.",
+        "vietnamese": "Tôi vừa nhận được email cập nhật từ trụ sở chính. Họ muốn kéo dài thời gian sản phẩm sẽ được giảm giá."
       },
       {
         "id": "p3-68-4",
@@ -4378,8 +4378,8 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p3-68-5",
         "speaker": "Woman",
-        "text": "A. Okay. That should help win back some customers. We should also post about the change on our social media accounts.",
-        "vietnamese": "A. Được rồi. Điều đó sẽ giúp giành lại một số khách hàng. Chúng ta cũng nên đăng về sự thay đổi trên các tài khoản mạng xã hội của mình."
+        "text": "Okay. That should help win back some customers. We should also post about the change on our social media accounts.",
+        "vietnamese": "Được rồi. Điều đó sẽ giúp giành lại một số khách hàng. Chúng ta cũng nên đăng về sự thay đổi trên các tài khoản mạng xã hội của mình."
       }
     ],
     "questions": [
@@ -4508,8 +4508,8 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
       {
         "id": "p4-71-1",
         "speaker": "Speaker",
-        "text": "A. Hi, Cara. This is Joe. I found a very nice space for your restaurant.",
-        "vietnamese": "A. Chào Cara. Đây là Joe. Tôi đã tìm được một không gian rất đẹp cho nhà hàng của bạn."
+        "text": "Hi, Cara. This is Joe. I found a very nice space for your restaurant.",
+        "vietnamese": "Chào Cara. Đây là Joe. Tôi đã tìm được một không gian rất đẹp cho nhà hàng của bạn."
       },
       {
         "id": "p4-71-2",
@@ -4901,7 +4901,7 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Listen to a special program TEST5",
+            "text": "Listen to a special program",
             "vietnamese": "Nghe chương trình đặc biệt TEST5"
           }
         ],
@@ -5079,12 +5079,12 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
           },
           {
             "key": "D",
-            "text": "Todirect the listeners towatcha video GOONTOTHENEXTPAGE TEST585",
+            "text": "Todirect the listeners towatcha video",
             "vietnamese": "Hướng người nghe xem video GONTOTHENEXTPAGE TEST585"
           }
         ],
         "correctAnswer": "D",
-        "explanation": "Đáp án đúng là (D): \"Todirect the listeners towatcha video GOONTOTHENEXTPAGE TEST585\" (Hướng người nghe xem video GONTOTHENEXTPAGE TEST585)."
+        "explanation": "Đáp án đúng là (D): \"Todirect the listeners towatcha video\" (Hướng người nghe xem video GONTOTHENEXTPAGE TEST585)."
       }
     ],
     "vocabulary": [
@@ -5945,7 +5945,7 @@ export const test5_2023_IntensiveData: IntensiveListeningItem[] = [
         "options": [
           {
             "key": "A",
-            "text": "Thisafternoon TEST5",
+            "text": "Thisafternoon",
             "vietnamese": "Chiều nay KIỂM TRA5"
           },
           {
