@@ -8,6 +8,7 @@ import { test7IntensiveData } from './intensive_listening_test7';
 import { test8IntensiveData } from './intensive_listening_test8';
 import { test9IntensiveData } from './intensive_listening_test9';
 import { test10IntensiveData } from './intensive_listening_test10';
+import { test1_2024_IntensiveData } from './intensive_listening_2024_test1';
 import type { IntensiveListeningItem } from './intensive_listening_test1';
 
 export type {
@@ -23,6 +24,8 @@ export interface IntensiveTestOption {
   title: string;
   shortTitle: string;
   description: string;
+  edition?: string;
+  badge?: string;
   itemCount: number;
   data: IntensiveListeningItem[];
 }
@@ -33,6 +36,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 1',
     shortTitle: 'Test 1',
     description: 'Luyện nghe chi tiết Test 1 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T1',
     itemCount: test1IntensiveData.length,
     data: test1IntensiveData,
   },
@@ -41,6 +46,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 2',
     shortTitle: 'Test 2',
     description: 'Luyện nghe chi tiết Test 2 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T2',
     itemCount: test2IntensiveData.length,
     data: test2IntensiveData,
   },
@@ -49,6 +56,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 3',
     shortTitle: 'Test 3',
     description: 'Luyện nghe chi tiết Test 3 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T3',
     itemCount: test3IntensiveData.length,
     data: test3IntensiveData,
   },
@@ -57,6 +66,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 4',
     shortTitle: 'Test 4',
     description: 'Luyện nghe chi tiết Test 4 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T4',
     itemCount: test4IntensiveData.length,
     data: test4IntensiveData,
   },
@@ -65,6 +76,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 5',
     shortTitle: 'Test 5',
     description: 'Luyện nghe chi tiết Test 5 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T5',
     itemCount: test5IntensiveData.length,
     data: test5IntensiveData,
   },
@@ -73,6 +86,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 6',
     shortTitle: 'Test 6',
     description: 'Luyện nghe chi tiết Test 6 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T6',
     itemCount: test6IntensiveData.length,
     data: test6IntensiveData,
   },
@@ -81,6 +96,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 7',
     shortTitle: 'Test 7',
     description: 'Luyện nghe chi tiết Test 7 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T7',
     itemCount: test7IntensiveData.length,
     data: test7IntensiveData,
   },
@@ -89,6 +106,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 8',
     shortTitle: 'Test 8',
     description: 'Luyện nghe chi tiết Test 8 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T8',
     itemCount: test8IntensiveData.length,
     data: test8IntensiveData,
   },
@@ -97,6 +116,8 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 9',
     shortTitle: 'Test 9',
     description: 'Luyện nghe chi tiết Test 9 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T9',
     itemCount: test9IntensiveData.length,
     data: test9IntensiveData,
   },
@@ -105,8 +126,20 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     title: 'ETS TOEIC 2026 - Test 10',
     shortTitle: 'Test 10',
     description: 'Luyện nghe chi tiết Test 10 (Part 1 - 4)',
+    edition: 'ETS 2026',
+    badge: 'T10',
     itemCount: test10IntensiveData.length,
     data: test10IntensiveData,
+  },
+  {
+    id: 20241,
+    title: 'ETS TOEIC 2024 - Test 1',
+    shortTitle: 'Test 1',
+    description: 'Luyện nghe chi tiết Test 1 ETS 2024 (Virtual Timestamp Slicing)',
+    edition: 'ETS 2024',
+    badge: "'24 T1",
+    itemCount: test1_2024_IntensiveData.length,
+    data: test1_2024_IntensiveData,
   },
 ];
 

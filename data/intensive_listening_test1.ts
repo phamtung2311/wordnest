@@ -1,3 +1,19 @@
+import type {
+  DialogueLine,
+  QuestionOption,
+  QuestionItem,
+  VocabItem,
+  IntensiveListeningItem,
+} from './intensive_listening_types';
+
+export type {
+  DialogueLine,
+  QuestionOption,
+  QuestionItem,
+  VocabItem,
+  IntensiveListeningItem,
+};
+
 export const test1IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",

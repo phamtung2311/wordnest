@@ -1,3 +1,5 @@
+import type { IntensiveListeningItem } from './intensive_listening_types';
+
 export const test6IntensiveData: IntensiveListeningItem[] = [
   {
     "id": "part1-1",

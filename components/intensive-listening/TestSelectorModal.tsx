@@ -37,6 +37,7 @@ export function TestSelectorModal({
   onResetTest,
 }: TestSelectorModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedEdition, setSelectedEdition] = useState<'all' | 'ETS 2026' | 'ETS 2024'>('all');
   const [testStats, setTestStats] = useState<
     Record<number, { completed: number; total: number; percentage: number }>
   >({});
@@ -201,11 +202,15 @@ export function TestSelectorModal({
   if (!isOpen) return null;
 
   const filteredTests = availableIntensiveTests.filter((t) => {
+    if (selectedEdition !== 'all' && t.edition !== selectedEdition) {
+      return false;
+    }
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase().trim();
     return (
       t.title.toLowerCase().includes(q) ||
       t.shortTitle.toLowerCase().includes(q) ||
+      (t.edition && t.edition.toLowerCase().includes(q)) ||
       t.id.toString() === q
     );
   });
@@ -241,9 +246,9 @@ export function TestSelectorModal({
             <div>
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#f8d467] text-[#213a34]">
-                  ETS TOEIC 2026
+                  ETS TOEIC LC
                 </span>
-                <span className="text-xs text-white/70 font-semibold">10 Đề Hoàn Chỉnh</span>
+                <span className="text-xs text-white/70 font-semibold">{availableIntensiveTests.length} Đề Hoàn Chỉnh</span>
               </div>
               <h2 className="text-lg sm:text-xl font-black text-white mt-1">
                 Chọn Đề Luyện Nghe Chi Tiết
@@ -276,29 +281,68 @@ export function TestSelectorModal({
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="p-4 bg-white border-b border-[#213a34]/10 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm theo số đề (ví dụ: Test 5)..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#f5f0e6]/60 border border-[#213a34]/15 text-xs text-[#213a34] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#213a34]/20"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
+        <div className="p-4 bg-white border-b border-[#213a34]/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
+          {/* Edition filter pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+            <button
+              type="button"
+              onClick={() => setSelectedEdition('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
+                selectedEdition === 'all'
+                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
+              }`}
+            >
+              Tất cả ({availableIntensiveTests.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedEdition('ETS 2026')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
+                selectedEdition === 'ETS 2026'
+                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
+              }`}
+            >
+              ETS 2026 (10)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedEdition('ETS 2024')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
+                selectedEdition === 'ETS 2024'
+                  ? 'bg-[#213a34] text-[#f8d467] shadow-xs'
+                  : 'bg-[#f5f0e6] text-[#213a34] hover:bg-[#e9f2ed]'
+              }`}
+            >
+              ETS 2024 (1)
+            </button>
           </div>
 
-          <div className="text-xs text-gray-500 font-bold self-end sm:self-center">
-            Hiển thị <span className="text-[#213a34] font-black">{filteredTests.length}</span>/10 đề thi
+          <div className="flex items-center gap-3">
+            <div className="relative w-full sm:w-60">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm theo số đề (ví dụ: Test 1, 2024)..."
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#f5f0e6]/60 border border-[#213a34]/15 text-xs text-[#213a34] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#213a34]/20"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="text-xs text-gray-500 font-bold shrink-0 hidden md:block">
+              Hiển thị <span className="text-[#213a34] font-black">{filteredTests.length}</span>/{availableIntensiveTests.length} đề thi
+            </div>
           </div>
         </div>
 
@@ -327,11 +371,11 @@ export function TestSelectorModal({
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         <span className="w-8 h-8 rounded-xl bg-[#213a34] text-[#f8d467] font-black text-xs flex items-center justify-center shrink-0">
-                          T{test.id}
+                          {test.badge || (test.id > 100 ? `'24` : `T${test.id}`)}
                         </span>
                         <div>
                           <span className="text-[10px] font-black tracking-wider uppercase text-gray-400">
-                            Bộ đề 2026
+                            {test.edition || 'Bộ đề 2026'}
                           </span>
                           <h3 className="font-black text-[#213a34] text-base leading-tight group-hover:text-[#eb6a52] transition-colors">
                             {test.title}

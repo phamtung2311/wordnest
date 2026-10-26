@@ -520,9 +520,9 @@ export function IntensiveListeningHub() {
               title="Nhấn để mở danh sách 10 đề thi ETS 2026"
             >
               <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
-              <span>ETS 2026 · {activeTestInfo?.shortTitle || `Test ${currentTestId}`}</span>
+              <span>{activeTestInfo?.edition || 'ETS 2026'} · {activeTestInfo?.shortTitle || `Test ${currentTestId}`}</span>
               <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md text-[10px] bg-white/10 text-[#f8d467]">
-                10 Đề
+                {availableIntensiveTests.length} Đề
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-gray-300 group-hover:translate-y-0.5 transition-transform" />
             </button>
@@ -602,6 +602,8 @@ export function IntensiveListeningHub() {
           <div className="shrink-0 mb-2.5 sticky top-14 lg:static z-20">
             <IntensiveAudioPlayer
               audioSrc={currentItem.audioSrc}
+              startTime={currentItem.startTime}
+              endTime={currentItem.endTime}
               title={currentItem.title}
               questionRange={currentItem.questionRange}
               part={currentItem.part}
@@ -646,7 +648,7 @@ export function IntensiveListeningHub() {
                 key={`trans-${currentTestId}-${currentItem.id}`}
                 imageUrl={currentItem.imageUrl || (currentItem as any).image || (currentItem as any).graphicImage}
                 transcript={currentItem.transcript}
-                vocabulary={currentItem.vocabulary}
+                vocabulary={currentItem.vocabulary || []}
               />
             )}
 

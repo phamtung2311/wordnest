@@ -42,3 +42,10 @@ next-env.d.ts
 _raw_materials/
 bo de 2024/
 bo de 2023/
+
+# scratch and cache
+__pycache__/
+*.pyc
+*.tsbuildinfo
+test1_2024_segments.json
+scripts/*.png

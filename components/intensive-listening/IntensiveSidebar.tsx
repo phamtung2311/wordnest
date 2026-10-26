@@ -191,8 +191,8 @@ export function IntensiveSidebar({
             className="w-full flex items-center justify-between p-2 rounded-xl bg-white border border-[#213a34]/15 hover:border-[#213a34]/35 hover:bg-[#e9f2ed]/50 transition-all shadow-2xs group text-left cursor-pointer"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 rounded-md bg-[#213a34] text-[#f8d467] flex items-center justify-center text-[10px] font-black shrink-0">
-                T{currentTestId}
+              <div className="w-auto min-w-[24px] px-1.5 h-6 rounded-md bg-[#213a34] text-[#f8d467] flex items-center justify-center text-[10px] font-black shrink-0">
+                {currentTest?.badge || `T${currentTestId}`}
               </div>
               <div className="text-xs font-black text-[#213a34] truncate">
                 {currentTest ? currentTest.title : `ETS 2026 - Test ${currentTestId}`}

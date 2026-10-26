@@ -21,6 +21,8 @@ import {
 
 interface IntensiveAudioPlayerProps {
   audioSrc: string;
+  startTime?: number;
+  endTime?: number;
   title: string;
   questionRange: string;
   part?: number;
@@ -38,6 +40,8 @@ interface IntensiveAudioPlayerProps {
 
 export function IntensiveAudioPlayer({
   audioSrc,
+  startTime,
+  endTime,
   title,
   questionRange,
   part,
@@ -62,6 +66,12 @@ export function IntensiveAudioPlayer({
   const [isMuted, setIsMuted] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Virtual slice support
+  const isVirtualSlice = typeof startTime === 'number' && typeof endTime === 'number' && endTime > startTime;
+  const effectiveDuration = isVirtualSlice ? (endTime - startTime) : duration;
+  const displayTime = isVirtualSlice ? Math.max(0, Math.min(effectiveDuration, currentTime - startTime)) : currentTime;
+  const progressPercent = effectiveDuration > 0 ? (displayTime / effectiveDuration) * 100 : 0;
+
   // Speed options
   const speeds = [0.75, 0.9, 1.0, 1.25];
 
@@ -77,11 +87,13 @@ export function IntensiveAudioPlayer({
     }
   }, [activeTab]);
 
-  // Auto reset and play on audioSrc change
+  // Auto reset and play on audioSrc or slice change
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.playbackRate = playbackSpeed;
-    setCurrentTime(0);
+    const initialTime = isVirtualSlice ? (startTime ?? 0) : 0;
+    audioRef.current.currentTime = initialTime;
+    setCurrentTime(initialTime);
     setIsPlaying(false);
 
     // Do NOT auto-play full question audio if user is currently in dictation tab
@@ -91,6 +103,9 @@ export function IntensiveAudioPlayer({
 
     const timer = setTimeout(() => {
       if (!audioRef.current) return;
+      if (isVirtualSlice) {
+        audioRef.current.currentTime = startTime ?? 0;
+      }
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
@@ -100,7 +115,7 @@ export function IntensiveAudioPlayer({
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [audioSrc]);
+  }, [audioSrc, startTime, endTime, isVirtualSlice]);
 
   // Sync playbackRate when changed
   useEffect(() => {
@@ -115,21 +130,38 @@ export function IntensiveAudioPlayer({
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
+      if (isVirtualSlice) {
+        if (
+          audioRef.current.currentTime < (startTime ?? 0) ||
+          audioRef.current.currentTime >= (endTime ?? 0) - 0.1
+        ) {
+          audioRef.current.currentTime = startTime ?? 0;
+          setCurrentTime(startTime ?? 0);
+        }
+      }
       audioRef.current
         .play()
         .then(() => setIsPlaying(true))
         .catch((err) => console.log('Playback error:', err));
     }
-  }, [isPlaying]);
+  }, [isPlaying, isVirtualSlice, startTime, endTime]);
 
   const skipSeconds = useCallback(
     (seconds: number) => {
       if (!audioRef.current) return;
-      const targetTime = Math.max(0, Math.min(duration || 9999, audioRef.current.currentTime + seconds));
-      audioRef.current.currentTime = targetTime;
-      setCurrentTime(targetTime);
+      if (isVirtualSlice) {
+        const minBound = startTime ?? 0;
+        const maxBound = endTime ?? duration;
+        const targetTime = Math.max(minBound, Math.min(maxBound, audioRef.current.currentTime + seconds));
+        audioRef.current.currentTime = targetTime;
+        setCurrentTime(targetTime);
+      } else {
+        const targetTime = Math.max(0, Math.min(duration || 9999, audioRef.current.currentTime + seconds));
+        audioRef.current.currentTime = targetTime;
+        setCurrentTime(targetTime);
+      }
     },
-    [duration]
+    [isVirtualSlice, startTime, endTime, duration]
   );
 
   // KEYBOARD SHORTCUTS LISTENER: ArrowRight/Left (Next/Prev câu), Space (Play/Pause), Shift+Arrows (Seek), 1,2,3 (Tabs)
@@ -181,8 +213,24 @@ export function IntensiveAudioPlayer({
   }, [togglePlay, skipSeconds, onToggleLoop, onChangeTab, hasPrev, hasNext, onPrev, onNext]);
 
   const handleTimeUpdate = () => {
-    if (audioRef.current && !isDragging) {
-      setCurrentTime(audioRef.current.currentTime);
+    if (!audioRef.current || isDragging) return;
+    const curr = audioRef.current.currentTime;
+    setCurrentTime(curr);
+
+    if (isVirtualSlice && typeof endTime === 'number') {
+      if (curr >= endTime) {
+        if (isLooping) {
+          audioRef.current.currentTime = startTime ?? 0;
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        } else {
+          audioRef.current.pause();
+          setIsPlaying(false);
+          if (autoAdvance && hasNext) {
+            onNext();
+          }
+        }
+      }
     }
   };
 
@@ -190,32 +238,58 @@ export function IntensiveAudioPlayer({
     if (audioRef.current) {
       setDuration(audioRef.current.duration || 0);
       audioRef.current.playbackRate = playbackSpeed;
+      if (isVirtualSlice) {
+        audioRef.current.currentTime = startTime ?? 0;
+        setCurrentTime(startTime ?? 0);
+      }
     }
   };
 
   const handleEnded = () => {
-    if (isLooping) {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch(() => {});
-        setIsPlaying(true);
+    if (isVirtualSlice) {
+      if (isLooping) {
+        if (audioRef.current) {
+          audioRef.current.currentTime = startTime ?? 0;
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      } else if (autoAdvance && hasNext) {
+        onNext();
+      } else {
+        setIsPlaying(false);
       }
-    } else if (hasNext) {
-      // Khi nghe hết bài nghe, tự động chuyển sang bài nghe tiếp
-      onNext();
     } else {
-      setIsPlaying(false);
+      if (isLooping) {
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      } else if (hasNext) {
+        // Khi nghe hết bài nghe, tự động chuyển sang bài nghe tiếp
+        onNext();
+      } else {
+        setIsPlaying(false);
+      }
     }
   };
 
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!progressBarRef.current || !audioRef.current || duration === 0) return;
+    if (!progressBarRef.current || !audioRef.current) return;
     const rect = progressBarRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-    const newTime = percentage * duration;
-    audioRef.current.currentTime = newTime;
-    setCurrentTime(newTime);
+
+    if (isVirtualSlice) {
+      const newTime = (startTime ?? 0) + percentage * effectiveDuration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    } else {
+      if (duration === 0) return;
+      const newTime = percentage * duration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
   };
 
   const toggleMute = () => {
@@ -231,15 +305,13 @@ export function IntensiveAudioPlayer({
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-
   // Clean neutral part label without spoiling question translation
   const getPartLabel = () => {
     if (part === 1) return 'Part 1 · Mô tả tranh';
     if (part === 2) return 'Part 2 · Hỏi - Đáp';
     if (part === 3) return 'Part 3 · Đoạn hội thoại';
     if (part === 4) return 'Part 4 · Bài nói chuyện';
-    return `Part ${part || 2} · Luyện nghe ETS 2026`;
+    return `Part ${part || 2} · Luyện nghe`;
   };
 
   return (
@@ -398,7 +470,7 @@ export function IntensiveAudioPlayer({
         {/* Progress Bar & Timestamps */}
         <div className="flex-1 flex items-center gap-2 min-w-0">
           <span className="text-[10px] sm:text-[11px] font-bold text-gray-500 font-mono shrink-0 w-9 text-right">
-            {formatTime(currentTime)}
+            {formatTime(displayTime)}
           </span>
 
           <div
@@ -415,7 +487,7 @@ export function IntensiveAudioPlayer({
           </div>
 
           <span className="text-[10px] sm:text-[11px] font-bold text-gray-500 font-mono shrink-0 w-9">
-            {formatTime(duration)}
+            {formatTime(effectiveDuration)}
           </span>
         </div>
       </div>
