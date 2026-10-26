@@ -24,7 +24,13 @@ import {
   getTomorrowKey,
 } from '@/lib/lifeService';
 
-export default function TodoFloatingWidget() {
+export default function TodoFloatingWidget({
+  position = 'right',
+  isCollapsed = false,
+}: {
+  position?: 'left' | 'right';
+  isCollapsed?: boolean;
+} = {}) {
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -102,7 +108,7 @@ export default function TodoFloatingWidget() {
     }
   };
 
-  if (!mounted) return null;
+  if (!mounted || isCollapsed) return null;
 
   const todayTasks = lifeData.dailyTasks[today] ?? [];
   const activeDateTasks = lifeData.dailyTasks[selectedDate] ?? [];
@@ -239,14 +245,18 @@ export default function TodoFloatingWidget() {
   return (
     <div
       ref={widgetRef}
-      className="fixed z-[9999] bottom-5 right-5 sm:bottom-6 sm:right-6 flex flex-col items-end pointer-events-none select-none font-sans"
+      className={`fixed z-[9999] bottom-5 sm:bottom-6 flex flex-col pointer-events-none select-none font-sans ${
+        position === 'left' ? 'left-4 sm:left-6 items-start' : 'right-4 sm:right-6 items-end'
+      }`}
     >
       {/* 1. EXPANDED MESSENGER-LIKE TO-DO WINDOW */}
       {isOpen && (
         <section
           aria-label="Cửa sổ việc cần làm"
           className="pointer-events-auto mb-3 w-[calc(100vw-32px)] sm:w-[410px] max-h-[80vh] flex flex-col bg-[#fffdf8] border-2 border-[#213a34] rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in zoom-in-95 duration-200"
-          style={{ boxShadow: '6px 6px 0px #213a34' }}
+          style={{
+            boxShadow: position === 'left' ? '-6px 6px 0px #213a34' : '6px 6px 0px #213a34',
+          }}
         >
           {/* Header */}
           <div className="bg-[#213a34] text-white px-4 py-3 flex items-center justify-between border-b-2 border-[#213a34]">

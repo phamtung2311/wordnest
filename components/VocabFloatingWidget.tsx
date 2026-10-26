@@ -42,7 +42,13 @@ function speak(text: string, lang = 'en') {
 const EMPTY_DECKS: DeckItem[] = [];
 const getDecksServerSnapshot = () => EMPTY_DECKS;
 
-export default function VocabFloatingWidget() {
+export default function VocabFloatingWidget({
+  position = 'right',
+  isCollapsed = false,
+}: {
+  position?: 'left' | 'right';
+  isCollapsed?: boolean;
+} = {}) {
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -114,7 +120,7 @@ export default function VocabFloatingWidget() {
     };
   }, [isOpen]);
 
-  if (!mounted) return null;
+  if (!mounted || isCollapsed) return null;
 
   const toggleOpen = () => {
     const next = !isOpen;
@@ -236,14 +242,18 @@ export default function VocabFloatingWidget() {
   return (
     <div
       ref={widgetRef}
-      className="fixed z-[9998] bottom-[84px] right-5 sm:bottom-[92px] sm:right-6 flex flex-col items-end pointer-events-none select-none font-sans"
+      className={`fixed z-[9998] bottom-[84px] sm:bottom-[92px] flex flex-col pointer-events-none select-none font-sans ${
+        position === 'left' ? 'left-4 sm:left-6 items-start' : 'right-4 sm:right-6 items-end'
+      }`}
     >
       {/* 1. EXPANDED MESSENGER-LIKE VOCABULARY WINDOW */}
       {isOpen && (
         <section
           aria-label="Cửa sổ học từ vựng"
           className="pointer-events-auto mb-3 w-[calc(100vw-32px)] sm:w-[410px] max-h-[80vh] flex flex-col bg-[#fffdf8] border-2 border-[#213a34] rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in zoom-in-95 duration-200"
-          style={{ boxShadow: '6px 6px 0px #213a34' }}
+          style={{
+            boxShadow: position === 'left' ? '-6px 6px 0px #213a34' : '6px 6px 0px #213a34',
+          }}
         >
           {/* Header */}
           <div className="bg-[#213a34] text-white px-4 py-3 flex items-center justify-between border-b-2 border-[#213a34]">

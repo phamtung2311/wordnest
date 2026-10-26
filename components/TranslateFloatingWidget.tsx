@@ -47,7 +47,13 @@ function speak(text: string, lang = 'en') {
 const EMPTY_RECENTS: RecentTranslation[] = [];
 const getRecentServerSnapshot = () => EMPTY_RECENTS;
 
-export default function TranslateFloatingWidget() {
+export default function TranslateFloatingWidget({
+  position = 'right',
+  isCollapsed = false,
+}: {
+  position?: 'left' | 'right';
+  isCollapsed?: boolean;
+} = {}) {
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -121,7 +127,7 @@ export default function TranslateFloatingWidget() {
     };
   }, [isOpen]);
 
-  if (!mounted) return null;
+  if (!mounted || isCollapsed) return null;
 
   const toggleOpen = () => {
     const next = !isOpen;
@@ -212,14 +218,18 @@ export default function TranslateFloatingWidget() {
   return (
     <div
       ref={widgetRef}
-      className="fixed z-[9996] bottom-[212px] right-5 sm:bottom-[224px] sm:right-6 flex flex-col items-end pointer-events-none select-none font-sans"
+      className={`fixed z-[9996] bottom-[212px] sm:bottom-[224px] flex flex-col pointer-events-none select-none font-sans ${
+        position === 'left' ? 'left-4 sm:left-6 items-start' : 'right-4 sm:right-6 items-end'
+      }`}
     >
       {/* 1. EXPANDED INSTANT TRANSLATION WINDOW */}
       {isOpen && (
         <section
           aria-label="Cửa sổ dịch nghĩa và tra từ"
           className="pointer-events-auto mb-2 w-[calc(100vw-24px)] sm:w-[480px] max-h-[calc(100dvh-175px)] sm:max-h-[calc(100dvh-185px)] flex flex-col bg-[#fffdf8] border-2 border-[#213a34] rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in zoom-in-95 duration-150"
-          style={{ boxShadow: '6px 6px 0px #213a34' }}
+          style={{
+            boxShadow: position === 'left' ? '-6px 6px 0px #213a34' : '6px 6px 0px #213a34',
+          }}
         >
           {/* Header */}
           <div className="bg-[#213a34] text-white px-3.5 py-2.5 flex items-center justify-between border-b-2 border-[#213a34] shrink-0">
