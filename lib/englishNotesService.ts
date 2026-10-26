@@ -12,24 +12,25 @@ export interface EnglishNoteItem {
 const STORAGE_KEY = 'wordnest-english-notes';
 const VERSION_KEY = 'wordnest-english-notes-v2';
 
+const EMPTY_NOTES: EnglishNoteItem[] = [];
 let cachedNotesRaw: string | null = null;
-let cachedNotes: EnglishNoteItem[] = [];
+let cachedNotes: EnglishNoteItem[] = EMPTY_NOTES;
 
 export function getSavedEnglishNotes(): EnglishNoteItem[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') return EMPTY_NOTES;
   try {
     // Migration: If v2 is not set, wipe old sample dummy notes so user starts with a clean slate
     const v = localStorage.getItem(VERSION_KEY);
     if (v !== 'v2') {
       localStorage.setItem(VERSION_KEY, 'v2');
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-      cachedNotesRaw = JSON.stringify([]);
-      cachedNotes = [];
-      return [];
+      localStorage.setItem(STORAGE_KEY, '[]');
+      cachedNotesRaw = '[]';
+      cachedNotes = EMPTY_NOTES;
+      return EMPTY_NOTES;
     }
 
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === cachedNotesRaw && cachedNotes) return cachedNotes;
+    if (raw === cachedNotesRaw) return cachedNotes;
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
@@ -46,12 +47,12 @@ export function getSavedEnglishNotes(): EnglishNoteItem[] {
         return cachedNotes;
       }
     }
-    cachedNotesRaw = JSON.stringify([]);
-    cachedNotes = [];
-    return [];
+    cachedNotesRaw = null;
+    cachedNotes = EMPTY_NOTES;
+    return EMPTY_NOTES;
   } catch (e) {
     console.error('Error reading english notes from localStorage', e);
-    return [];
+    return cachedNotes;
   }
 }
 

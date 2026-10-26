@@ -147,16 +147,29 @@ export async function translateText(
   }
 }
 
+const EMPTY_RECENTS: RecentTranslation[] = [];
+let cachedRecentsRaw: string | null = null;
+let cachedRecents: RecentTranslation[] = EMPTY_RECENTS;
+
 export function getRecentTranslations(): RecentTranslation[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') return EMPTY_RECENTS;
   try {
     const raw = localStorage.getItem(RECENT_KEY);
+    if (raw === cachedRecentsRaw) return cachedRecents;
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        cachedRecentsRaw = raw;
+        cachedRecents = parsed;
+        return cachedRecents;
+      }
     }
-  } catch (e) {}
-  return [];
+    cachedRecentsRaw = null;
+    cachedRecents = EMPTY_RECENTS;
+    return EMPTY_RECENTS;
+  } catch (e) {
+    return cachedRecents;
+  }
 }
 
 export function addRecentTranslation(item: RecentTranslation): void {
@@ -167,7 +180,10 @@ export function addRecentTranslation(item: RecentTranslation): void {
       (r) => r.original.toLowerCase() !== item.original.toLowerCase(),
     );
     const updated = [item, ...filtered].slice(0, 15);
-    localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
+    const serialized = JSON.stringify(updated);
+    cachedRecentsRaw = serialized;
+    cachedRecents = updated;
+    localStorage.setItem(RECENT_KEY, serialized);
     window.dispatchEvent(new CustomEvent('wordnest-recent-translations-updated'));
   } catch (e) {}
 }
@@ -175,6 +191,8 @@ export function addRecentTranslation(item: RecentTranslation): void {
 export function clearRecentTranslations(): void {
   if (typeof window === 'undefined') return;
   try {
+    cachedRecentsRaw = null;
+    cachedRecents = EMPTY_RECENTS;
     localStorage.removeItem(RECENT_KEY);
     window.dispatchEvent(new CustomEvent('wordnest-recent-translations-updated'));
   } catch (e) {}

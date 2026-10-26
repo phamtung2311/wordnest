@@ -39,6 +39,9 @@ function speak(text: string, lang = 'en') {
   window.speechSynthesis.speak(utterance);
 }
 
+const EMPTY_DECKS: DeckItem[] = [];
+const getDecksServerSnapshot = () => EMPTY_DECKS;
+
 export default function VocabFloatingWidget() {
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -48,7 +51,7 @@ export default function VocabFloatingWidget() {
   const decks = useSyncExternalStore(
     subscribeDecks,
     getSavedDecks,
-    () => [],
+    getDecksServerSnapshot,
   );
 
   const [isOpen, setIsOpen] = useState(false);

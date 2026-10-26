@@ -32,15 +32,16 @@ export function normalizeTerm(term: string): string {
   return term.trim().toLowerCase();
 }
 
+const EMPTY_DECKS: DeckItem[] = [];
 let cachedDecksRaw: string | null = null;
-let cachedDecks: DeckItem[] = [];
+let cachedDecks: DeckItem[] = EMPTY_DECKS;
 
 // 1. Get all decks from localStorage
 export function getSavedDecks(): DeckItem[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') return EMPTY_DECKS;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === cachedDecksRaw && cachedDecks) return cachedDecks;
+    if (raw === cachedDecksRaw) return cachedDecks;
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
@@ -50,11 +51,11 @@ export function getSavedDecks(): DeckItem[] {
       }
     }
     cachedDecksRaw = null;
-    cachedDecks = [];
-    return [];
+    cachedDecks = EMPTY_DECKS;
+    return EMPTY_DECKS;
   } catch (e) {
     console.error('Error reading decks from localStorage', e);
-    return [];
+    return cachedDecks;
   }
 }
 

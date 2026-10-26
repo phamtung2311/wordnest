@@ -44,6 +44,9 @@ function speak(text: string, lang = 'en') {
   window.speechSynthesis.speak(utterance);
 }
 
+const EMPTY_RECENTS: RecentTranslation[] = [];
+const getRecentServerSnapshot = () => EMPTY_RECENTS;
+
 export default function TranslateFloatingWidget() {
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -54,7 +57,7 @@ export default function TranslateFloatingWidget() {
   const recents = useSyncExternalStore(
     subscribeRecentTranslations,
     getRecentTranslations,
-    () => [],
+    getRecentServerSnapshot,
   );
 
   const [isOpen, setIsOpen] = useState(false);

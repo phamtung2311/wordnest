@@ -24,6 +24,9 @@ import {
   subscribeEnglishNotes,
 } from '@/lib/englishNotesService';
 
+const EMPTY_NOTES: EnglishNoteItem[] = [];
+const getNotesServerSnapshot = () => EMPTY_NOTES;
+
 export default function EnglishNotesFloatingWidget() {
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -34,7 +37,7 @@ export default function EnglishNotesFloatingWidget() {
   const notes = useSyncExternalStore(
     subscribeEnglishNotes,
     getSavedEnglishNotes,
-    () => [],
+    getNotesServerSnapshot,
   );
 
   const [isOpen, setIsOpen] = useState(false);
