@@ -700,7 +700,7 @@ export default function TodoFloatingWidget() {
           <span
             className={`absolute -top-1 -right-1 min-w-[22px] h-[22px] px-1.5 flex items-center justify-center rounded-full text-[11px] font-black text-white shadow-md border-2 border-white transition-all ${
               todayPendingCount > 0
-                ? 'bg-[#eb6a52] animate-pulse'
+                ? 'bg-[#eb6a52]'
                 : 'bg-[#49a078]'
             }`}
           >

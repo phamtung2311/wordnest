@@ -25,9 +25,42 @@ export function getTodayKey(date = new Date()): string {
 let cachedProgressRaw: string | null = null;
 let cachedProgressData: StudyProgress = emptyProgress;
 let firestoreSaveTimer: ReturnType<typeof setTimeout> | null = null;
+let localSaveTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingSaveData: StudyProgress | null = null;
+
+export function flushSave(): void {
+  if (!pendingSaveData || typeof window === 'undefined') return;
+  const data = pendingSaveData;
+  pendingSaveData = null;
+  if (localSaveTimer) {
+    clearTimeout(localSaveTimer);
+    localSaveTimer = null;
+  }
+  try {
+    const serialized = JSON.stringify(data);
+    cachedProgressRaw = serialized;
+    cachedProgressData = data;
+    localStorage.setItem('wordnest-progress', serialized);
+    window.dispatchEvent(
+      new CustomEvent('wordnest-progress-updated', { detail: data }),
+    );
+  } catch (e) {
+    console.error('Error saving wordnest-progress', e);
+  }
+}
+
+// Ensure pending study time is flushed instantly when tab is backgrounded or closed
+if (typeof window !== 'undefined') {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushSave();
+  });
+  window.addEventListener('beforeunload', flushSave);
+  window.addEventListener('pagehide', flushSave);
+}
 
 export function getSavedProgress(): StudyProgress {
   if (typeof window === 'undefined') return emptyProgress;
+  if (pendingSaveData) return pendingSaveData;
   try {
     const raw = localStorage.getItem('wordnest-progress');
     if (raw === cachedProgressRaw && cachedProgressData) {
@@ -54,33 +87,32 @@ export function getSavedProgress(): StudyProgress {
   return emptyProgress;
 }
 
-export function saveProgress(data: StudyProgress, syncToCloud = true): void {
+export function saveProgress(data: StudyProgress, syncToCloud = true, immediate = false): void {
   if (typeof window === 'undefined') return;
-  try {
-    const serialized = JSON.stringify(data);
-    cachedProgressRaw = serialized;
-    cachedProgressData = data;
-    localStorage.setItem('wordnest-progress', serialized);
-    window.dispatchEvent(
-      new CustomEvent('wordnest-progress-updated', { detail: data }),
-    );
+  cachedProgressData = data;
+  pendingSaveData = data;
 
-    if (syncToCloud && auth.currentUser) {
-      if (firestoreSaveTimer) clearTimeout(firestoreSaveTimer);
-      firestoreSaveTimer = setTimeout(() => {
-        if (!auth.currentUser) return;
-        void setDoc(
-          doc(db, 'users', auth.currentUser.uid),
-          {
-            progress: data,
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true },
-        ).catch((err) => console.error('Firestore progress sync error', err));
-      }, 5000); // Debounce cloud saves to 5 seconds
-    }
-  } catch (e) {
-    console.error('Error saving wordnest-progress', e);
+  if (immediate) {
+    flushSave();
+  } else if (!localSaveTimer) {
+    localSaveTimer = setTimeout(() => {
+      flushSave();
+    }, 5000);
+  }
+
+  if (syncToCloud && auth.currentUser) {
+    if (firestoreSaveTimer) clearTimeout(firestoreSaveTimer);
+    firestoreSaveTimer = setTimeout(() => {
+      if (!auth.currentUser) return;
+      void setDoc(
+        doc(db, 'users', auth.currentUser.uid),
+        {
+          progress: data,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      ).catch((err) => console.error('Firestore progress sync error', err));
+    }, 10000); // Debounce cloud saves to 10 seconds
   }
 }
 
@@ -110,7 +142,7 @@ export function setDailyGoalMinutes(minutes: number): StudyProgress {
     completedDays: nextCompletedDays,
   };
 
-  saveProgress(next);
+  saveProgress(next, true, true);
   return next;
 }
 
@@ -126,6 +158,7 @@ export function incrementTodaySeconds(): StudyProgress {
   const targetSeconds = getDailyGoalMinutes(current) * 60;
 
   const nextCompletedDays = { ...(current.completedDays || {}) };
+  const isGoalJustHit = nextSeconds === targetSeconds;
   if (nextSeconds >= targetSeconds) {
     nextCompletedDays[today] = true;
   }
@@ -139,7 +172,7 @@ export function incrementTodaySeconds(): StudyProgress {
     completedDays: nextCompletedDays,
   };
 
-  saveProgress(next);
+  saveProgress(next, true, isGoalJustHit);
   return next;
 }
 
@@ -159,7 +192,7 @@ export function resetTodaySeconds(): StudyProgress {
     completedDays: nextCompleted,
   };
 
-  saveProgress(next);
+  saveProgress(next, true, true);
   return next;
 }
 
@@ -185,7 +218,7 @@ export function addTodaySeconds(secondsToAdd: number): StudyProgress {
     completedDays: nextCompletedDays,
   };
 
-  saveProgress(next);
+  saveProgress(next, true, true);
   return next;
 }
 
@@ -250,7 +283,7 @@ export function updateDateSeconds(dateKey: string, seconds: number): StudyProgre
     completedDays: nextCompletedDays,
   };
 
-  saveProgress(next);
+  saveProgress(next, true, true);
   return next;
 }
 

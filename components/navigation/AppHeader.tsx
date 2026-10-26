@@ -280,7 +280,7 @@ export function AppHeader({
                   <span
                     className={`absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-white ${
                       syncStatus === 'loading'
-                        ? 'bg-amber-500 animate-ping'
+                        ? 'bg-amber-500'
                         : syncStatus === 'error'
                         ? 'bg-rose-500'
                         : 'bg-emerald-500'

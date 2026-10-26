@@ -726,7 +726,7 @@ export default function VocabFloatingWidget() {
 
         {/* Due review badge */}
         {!isOpen && totalDueCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[22px] h-[22px] px-1.5 flex items-center justify-center rounded-full text-[11px] font-black text-white bg-[#eb6a52] animate-pulse shadow-md border-2 border-white transition-all">
+          <span className="absolute -top-1 -right-1 min-w-[22px] h-[22px] px-1.5 flex items-center justify-center rounded-full text-[11px] font-black text-white bg-[#eb6a52] shadow-md border-2 border-white transition-all">
             {totalDueCount}
           </span>
         )}

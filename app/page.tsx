@@ -815,21 +815,26 @@ export default function Home() {
     };
   }, [loaded, user?.uid]);
 
+  // Decoupled autosave: Save decks only when decks change
   useEffect(() => {
     if (!loaded) return;
-    localStorage.setItem('wordnest-decks', JSON.stringify(decks));
-    localStorage.setItem('wordnest-progress', JSON.stringify(progress));
-    localStorage.setItem('wordnest-life', JSON.stringify(lifeData));
-    window.dispatchEvent(
-      new CustomEvent('wordnest-life-updated', { detail: lifeData }),
-    );
+    try {
+      localStorage.setItem('wordnest-decks', JSON.stringify(decks));
+    } catch {}
+  }, [decks, loaded]);
+
+  // Decoupled autosave: Save lifeData only when lifeData changes
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      localStorage.setItem('wordnest-life', JSON.stringify(lifeData));
+    } catch {}
     if (!user || !cloudReady) return;
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
       void setDoc(
         doc(db, 'users', user.uid),
         {
-          progress,
           lifeData,
           email: user.email,
           displayName: user.displayName,
@@ -839,11 +844,11 @@ export default function Home() {
       )
         .then(() => setSyncStatus('saved'))
         .catch(() => setSyncStatus('error'));
-    }, 500);
+    }, 1500);
     return () => {
       if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     };
-  }, [decks, progress, lifeData, loaded, user?.uid, cloudReady]);
+  }, [lifeData, loaded, user?.uid, cloudReady]);
 
   useEffect(() => {
     if (!loaded || !user || !cloudReady || !syncedDecksRef.current) return;
@@ -1060,12 +1065,17 @@ export default function Home() {
     };
   }, [activeDeck, currentWord?.id]);
 
-  // Sync real-time study progress with global StudyStopwatchWidget
+  // Sync real-time study progress with global StudyStopwatchWidget (throttled to avoid heavy re-renders)
   useEffect(() => {
+    let lastProgressSync = 0;
     const handleProgressUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<StudyProgress>;
       if (customEvent.detail) {
-        setProgress(customEvent.detail);
+        const now = Date.now();
+        if (now - lastProgressSync > 3000) {
+          lastProgressSync = now;
+          setProgress(customEvent.detail);
+        }
       }
     };
     window.addEventListener('wordnest-progress-updated', handleProgressUpdate);

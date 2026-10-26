@@ -328,7 +328,7 @@ export default function PracticeTestPlayPage() {
         {mounted && (
           <iframe 
             key={testId}
-            src={`/pdfjs/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-width`}
+            src={`/pdfjs/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-width&pagemode=none`}
             onLoad={() => setPdfLoading(false)}
             className="w-full h-full border-0 relative z-0" 
             title={`Test ${testId} PDF`} 

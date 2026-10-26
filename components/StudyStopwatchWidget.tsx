@@ -114,14 +114,16 @@ export default function StudyStopwatchWidget() {
   const [customGoalInput, setCustomGoalInput] = useState('');
   const [isIdle, setIsIdle] = useState(false);
   const [isInStudyContext, setIsInStudyContext] = useState(false);
+  const [, setLocalTick] = useState(0);
   const lastActiveRef = useRef<number>(Date.now());
   const lastAudioActiveRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const today = getTodayKey();
-  const todaySeconds = progress.dailySeconds[today] ?? 0;
+  const currentProgress = getSavedProgress();
+  const todaySeconds = currentProgress.dailySeconds[today] ?? 0;
   const todayMinutes = Math.floor(todaySeconds / 60);
-  const dailyGoalMinutes = getDailyGoalMinutes(progress);
+  const dailyGoalMinutes = getDailyGoalMinutes(currentProgress);
   const dailyGoalSeconds = dailyGoalMinutes * 60;
   const isGoalReached = todaySeconds >= dailyGoalSeconds;
   const progressPercent = Math.min(100, Math.round((todaySeconds / dailyGoalSeconds) * 100));
@@ -132,19 +134,25 @@ export default function StudyStopwatchWidget() {
   useEffect(() => {
     const updateContext = () => {
       const active = isStudyContextActive(pathname, lastAudioActiveRef.current);
-      setIsInStudyContext(active);
+      setIsInStudyContext((prev) => (prev !== active ? active : prev));
     };
 
     updateContext();
-    const interval = window.setInterval(updateContext, 500);
+    // 2s interval is more than enough for context polling and reduces DOM checks by 75%
+    const interval = window.setInterval(updateContext, 2000);
     return () => window.clearInterval(interval);
   }, [pathname]);
 
-  // Listen for user activity (Mouse, Keyboard, Scroll, Touch)
+  // Listen for user activity (Mouse, Keyboard, Scroll, Touch) throttled to prevent event spam
   useEffect(() => {
+    let lastHandled = 0;
     const handleActivity = () => {
-      lastActiveRef.current = Date.now();
-      setIsIdle(false);
+      const now = Date.now();
+      lastActiveRef.current = now;
+      if (now - lastHandled > 1500) {
+        lastHandled = now;
+        setIsIdle((prev) => (prev ? false : prev));
+      }
     };
 
     const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'wheel'];
@@ -160,11 +168,11 @@ export default function StudyStopwatchWidget() {
     const handleMediaPlay = () => {
       lastAudioActiveRef.current = Date.now();
       lastActiveRef.current = Date.now();
-      setIsIdle(false);
+      setIsIdle((prev) => (prev ? false : prev));
     };
 
-    // Capture media playback events on window (works for ALL <audio> elements anywhere in DOM)
-    const mediaEvents = ['play', 'playing', 'timeupdate', 'seeking', 'seeked'];
+    // Removed 'timeupdate' to prevent firing multiple events per second across all audio elements
+    const mediaEvents = ['play', 'playing', 'seeking', 'seeked'];
     mediaEvents.forEach((evt) => {
       window.addEventListener(evt, handleMediaPlay, true);
     });
@@ -248,7 +256,7 @@ export default function StudyStopwatchWidget() {
 
       if (audioActive) {
         lastActiveRef.current = Date.now();
-        setIsIdle(false);
+        setIsIdle((prev) => (prev ? false : prev));
       } else {
         const inactiveDuration = Date.now() - lastActiveRef.current;
         if (inactiveDuration >= 90000) {
@@ -257,8 +265,9 @@ export default function StudyStopwatchWidget() {
         }
       }
 
-      setIsIdle(false);
+      setIsIdle((prev) => (prev ? false : prev));
       incrementTodaySeconds();
+      setLocalTick((t) => t + 1);
     }, 1000);
 
     return () => window.clearInterval(interval);
@@ -338,12 +347,12 @@ export default function StudyStopwatchWidget() {
       >
         {/* Status Dot */}
         <span
-          className={`w-2 h-2 rounded-full shrink-0 ${
+          className={`w-2 h-2 rounded-full shrink-0 transition-all ${
             !isInStudyContext
               ? 'bg-gray-300'
               : isIdle
-              ? 'bg-amber-400 animate-ping'
-              : 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]'
+              ? 'bg-amber-400 ring-2 ring-amber-300/40'
+              : 'bg-emerald-500 ring-2 ring-emerald-400/50 shadow-xs'
           }`}
         />
 
@@ -426,8 +435,8 @@ export default function StudyStopwatchWidget() {
                       !isInStudyContext
                         ? 'bg-gray-400'
                         : isIdle
-                        ? 'bg-amber-500 animate-ping'
-                        : 'bg-emerald-500 animate-pulse'
+                        ? 'bg-amber-500 ring-2 ring-amber-300/40'
+                        : 'bg-emerald-500 ring-2 ring-emerald-400/50'
                     }`}
                   />
                   {!isInStudyContext
