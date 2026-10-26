@@ -556,7 +556,7 @@ export default function ListeningTestPlayPage() {
             step={0.5}
             value={currentTime}
             onChange={handleSeek}
-            onInput={handleSeek}
+            onInput={handleSeek as any}
             className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#f8d467]"
           />
         </div>
@@ -812,7 +812,7 @@ export default function ListeningTestPlayPage() {
             step={0.5}
             value={currentTime}
             onChange={handleSeek}
-            onInput={handleSeek}
+            onInput={handleSeek as any}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#213a34]"
           />
         </div>

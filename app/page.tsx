@@ -346,6 +346,7 @@ function calculateStreak(progress: StudyProgress) {
 }
 
 function isUntouchedLegacyDeck(deck: Deck) {
+  if (!deck || !Array.isArray(deck.words)) return false;
   const original = legacyStarterDecks.find(
     (item) => item.id === deck.id && item.name === deck.name,
   );
@@ -361,12 +362,14 @@ function isUntouchedLegacyDeck(deck: Deck) {
 }
 
 function countDue(deck: Deck, now = new Date().getTime()) {
-  return deck.words.filter((word) => word.nextReview <= now).length;
+  if (!deck || !Array.isArray(deck.words)) return 0;
+  return deck.words.filter((word) => word && word.nextReview <= now).length;
 }
 function normalizeTerm(term: string) {
   return term.trim().toLocaleLowerCase('en-US').replace(/\s+/g, ' ');
 }
 function deckLanguage(deck: Deck): Language {
+  if (!deck) return 'en';
   return deck.language === 'zh' ? 'zh' : 'en';
 }
 function languageName(language: Language) {
@@ -997,6 +1000,8 @@ export default function Home() {
       : undefined;
   const currentWordPhonetic =
     currentWord?.phonetic || currentWordFallback?.phonetic;
+  const currentWordPartOfSpeech =
+    currentWord?.partOfSpeech || currentWordFallback?.partOfSpeech;
   const dailyGoalMinutes =
     typeof progress.targetMinutes === 'number' && progress.targetMinutes > 0
       ? progress.targetMinutes
@@ -1262,7 +1267,7 @@ export default function Home() {
         sentence: selected.text,
         translation,
         source: tatoebaChoices.length ? 'Tatoeba' : 'Free Dictionary API',
-        license: 'license' in selected ? selected.license : undefined,
+        license: 'license' in selected ? (selected as any).license : undefined,
       });
       setExerciseStatus('ready');
     } catch {
@@ -2163,8 +2168,8 @@ export default function Home() {
     );
   }
 
-  const filtered = decks.filter((deck) =>
-    deck.name.toLowerCase().includes(search.toLowerCase()),
+  const filtered = (decks || []).filter((deck) =>
+    Boolean(deck && deck.name && deck.name.toLowerCase().includes((search || '').toLowerCase())),
   );
   return (
     <main className="min-h-screen bg-[#faf8f5] text-[#14362d] pb-24 lg:pb-12">
@@ -2177,10 +2182,30 @@ export default function Home() {
         streak={currentStreak}
         todayMinutes={todayMinutes}
         todaySeconds={todaySeconds}
-        onHome={() => window.location.hash = 'home'}
-        onLibrary={() => window.location.hash = 'library'}
-        onLife={() => window.location.hash = 'life'}
-        onAbout={() => window.location.hash = 'about'}
+        onHome={() => {
+          setActiveDeck(null);
+          setStudyQueue([]);
+          setRevealed(false);
+          window.location.hash = 'home';
+        }}
+        onLibrary={() => {
+          setActiveDeck(null);
+          setStudyQueue([]);
+          setRevealed(false);
+          window.location.hash = 'library';
+        }}
+        onLife={() => {
+          setActiveDeck(null);
+          setStudyQueue([]);
+          setRevealed(false);
+          window.location.hash = 'life';
+        }}
+        onAbout={() => {
+          setActiveDeck(null);
+          setStudyQueue([]);
+          setRevealed(false);
+          window.location.hash = 'about';
+        }}
       />
       {migrationNotice && (
         <div className="migration-notice" role="status">
@@ -2489,7 +2514,7 @@ export default function Home() {
                     {deck.description}
                   </p>
                   <div className="mt-6 flex items-center justify-between border-t border-[#213a34]/10 pt-4 text-sm font-extrabold">
-                    <span>{deck.words.length} từ</span>
+                    <span>{(deck.words || []).length} từ</span>
                     <span
                       className={
                         countDue(deck) ? 'text-[#eb6a52]' : 'text-[#43936d]'
@@ -4512,17 +4537,17 @@ function AddWordModal({
           item.definitions ?? [],
       )
       .find((item: { example?: string }) => item.example);
-    let translated = Array.isArray(translation?.[0])
-      ? translation[0]
-          .map((part: unknown[]) => part?.[0] ?? '')
+    let translated = Array.isArray((translation as any)?.[0])
+      ? ((translation as any)[0] as any[])
+          .map((part: any) => part?.[0] ?? '')
           .join('')
           .trim()
       : '';
     if (!translated || translated.toLowerCase() === cleanWord.toLowerCase()) {
-      const fallback = await fetchJson(
+      const fallback = (await fetchJson(
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanWord)}&langpair=${sourceLanguage}|vi`,
         3500,
-      );
+      )) as any;
       translated = fallback?.responseData?.translatedText ?? '';
     }
     if (translated && translated.toLowerCase() !== cleanWord.toLowerCase())

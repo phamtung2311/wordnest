@@ -111,7 +111,7 @@ export function QuickActionDock() {
     let interval: NodeJS.Timeout | null = null;
     if (isRunning) {
       interval = setInterval(() => {
-        incrementTodaySeconds(1);
+        incrementTodaySeconds();
       }, 1000);
     }
     return () => {
