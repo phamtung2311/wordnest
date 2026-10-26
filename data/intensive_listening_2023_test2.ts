@@ -2343,73 +2343,73 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-32-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hello, Forest Grove Photography Services.",
         "vietnamese": "Xin chào Dịch vụ Nhiếp ảnh Forest Grove."
       },
       {
         "id": "p3-32-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "How can I help you?",
         "vietnamese": "Tôi có thể giúp gì cho bạn?"
       },
       {
         "id": "p3-32-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hi. I'd like to get a photographer to cover our event.",
         "vietnamese": "Xin chào. Tôi muốn thuê một nhiếp ảnh gia để chụp ảnh sự kiện của chúng tôi."
       },
       {
         "id": "p3-32-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "It's a charity basketball game next Tuesday night.",
         "vietnamese": "Đó là trận đấu bóng rổ từ thiện vào tối thứ Ba tới."
       },
       {
         "id": "p3-32-5",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "I was hoping to get Thomas Zukowski.",
         "vietnamese": "Tôi đã hy vọng có được Thomas Zukowski."
       },
       {
         "id": "p3-32-6",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "He works for you, right?",
         "vietnamese": "Anh ấy làm việc cho bạn phải không?"
       },
       {
         "id": "p3-32-7",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Yes, but unfortunately Thomas doesn't usually work evenings.",
         "vietnamese": "Đúng, nhưng tiếc là Thomas thường không làm việc vào buổi tối."
       },
       {
         "id": "p3-32-8",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Oh, too bad.",
         "vietnamese": "Ồ, tệ quá."
       },
       {
         "id": "p3-32-9",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Could you recommend somebody else?",
         "vietnamese": "Bạn có thể giới thiệu người khác được không?"
       },
       {
         "id": "p3-32-10",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Before I do that, let me talk to him.",
         "vietnamese": "Trước khi tôi làm điều đó, hãy để tôi nói chuyện với anh ấy."
       },
       {
         "id": "p3-32-11",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "He might make an exception.",
         "vietnamese": "Anh ấy có thể đưa ra một ngoại lệ."
       },
       {
         "id": "p3-32-12",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Tom does love basketball.",
         "vietnamese": "Tom rất thích bóng rổ."
       }
@@ -2533,49 +2533,49 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-35-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Good morning.",
         "vietnamese": "Chào buổi sáng."
       },
       {
         "id": "p3-35-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "It looks like we received a lot of new orders online last night.",
         "vietnamese": "Có vẻ như tối qua chúng tôi đã nhận được rất nhiều đơn đặt hàng trực tuyến mới."
       },
       {
         "id": "p3-35-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Yes. I saw that when I got in this morning.",
         "vietnamese": "Vâng. Tôi đã thấy điều đó khi tôi đến vào sáng nay."
       },
       {
         "id": "p3-35-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Can you package all of them by yourself?",
         "vietnamese": "Bạn có thể tự mình đóng gói tất cả chúng được không?"
       },
       {
         "id": "p3-35-5",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Well, there are so many I may not be able to finish everything today.",
         "vietnamese": "Chà, có quá nhiều thứ nên tôi có thể không thể hoàn thành hết mọi thứ trong ngày hôm nay."
       },
       {
         "id": "p3-35-6",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Okay. I'll call Maria Zhang and ask if she can come in early today to help.",
         "vietnamese": "Được rồi. Tôi sẽ gọi cho Maria Zhang và hỏi xem hôm nay cô ấy có thể đến sớm để giúp đỡ không."
       },
       {
         "id": "p3-35-7",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "That'd be great. We also have to pack that big shipment for the Henderson order.",
         "vietnamese": "Điều đó thật tuyệt. Chúng tôi cũng phải đóng gói lô hàng lớn đó cho đơn đặt hàng của Henderson."
       },
       {
         "id": "p3-35-8",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "We finally got all of the items in. Oh, yes. Do that first.",
         "vietnamese": "Cuối cùng chúng tôi đã có được tất cả các mặt hàng. Ồ, vâng. Làm điều đó đầu tiên."
       }
@@ -2704,37 +2704,37 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-38-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hauruna, we've planned most of the details for the corporate retreat, including housing and most activities,",
         "vietnamese": "Hauruna, chúng tôi đã lên kế hoạch hầu hết các chi tiết cho chuyến nghỉ dưỡng của công ty, bao gồm nhà ở và hầu hết các hoạt động,"
       },
       {
         "id": "p3-38-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "but we still need to decide where to go for Saturdays closing dinner.",
         "vietnamese": "nhưng chúng ta vẫn cần phải quyết định sẽ đi đâu vào bữa tối cuối ngày thứ Bảy."
       },
       {
         "id": "p3-38-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Yes. I sent you several menus. Did you like any of the places?",
         "vietnamese": "Vâng. Tôi đã gửi cho bạn một số thực đơn. Bạn có thích nơi nào không?"
       },
       {
         "id": "p3-38-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "McNally's is close by. Yes. That would be convenient.",
         "vietnamese": "McNally's ở gần đây. Vâng. Điều đó sẽ thuận tiện."
       },
       {
         "id": "p3-38-5",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "We could even walk there from the hotel, but the prices are a little high.",
         "vietnamese": "Chúng tôi thậm chí có thể đi bộ từ khách sạn đến đó, nhưng giá hơi cao."
       },
       {
         "id": "p3-38-6",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "I agree, but I could see if they can offer us a reduced catering rate rather than ordering off the regular menu.",
         "vietnamese": "Tôi đồng ý, nhưng tôi có thể xem liệu họ có thể giảm giá suất ăn cho chúng tôi thay vì gọi món theo thực đơn thông thường hay không."
       }
@@ -2863,25 +2863,25 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-41-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Janelle and Riko, could you give me an update on how our new medical record software is coming?",
         "vietnamese": "Janelle và Riko, bạn có thể cung cấp cho tôi thông tin cập nhật về hoạt động của phần mềm hồ sơ y tế mới của chúng tôi không?"
       },
       {
         "id": "p3-41-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Sure. Per the customers request, I've updated the logo and changed the font.",
         "vietnamese": "Chắc chắn rồi. Theo yêu cầu của khách hàng, tôi đã cập nhật logo và thay đổi font chữ."
       },
       {
         "id": "p3-41-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "The customer has communicated with us a lot on this project, having their feedback at every stage of the process has been helpful.",
         "vietnamese": "Đáp: Khách hàng đã trao đổi với chúng tôi rất nhiều về dự án này, phản hồi của họ ở mọi giai đoạn của quy trình đều rất hữu ích."
       },
       {
         "id": "p3-41-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Excellent. It sounds like we're on schedule for completing our beta version, then we can hand it off to our marketing team.",
         "vietnamese": "Tuyệt vời. Có vẻ như chúng tôi đang lên kế hoạch hoàn thiện phiên bản beta của mình, sau đó chúng tôi có thể giao nó cho nhóm tiếp thị của mình."
       }
@@ -3163,25 +3163,25 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-47-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "My name is Laura. I refill my medication here at this pharmacy once a month. But on Monday I'm going to travel abroad for work for two months. And I wonder if I can get a two month refill this time.",
         "vietnamese": "Tên tôi là Laura. Tôi nạp thuốc tại nhà thuốc này mỗi tháng một lần. Nhưng vào thứ Hai tôi sẽ đi công tác nước ngoài trong hai tháng. Và tôi tự hỏi liệu lần này tôi có thể nạp thêm hai tháng không."
       },
       {
         "id": "p3-47-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "It shouldn't be a problem. However your doctor must send us the two month prescription so you need to contact her first.",
         "vietnamese": "Nó không phải là một vấn đề. Tuy nhiên bác sĩ của bạn phải gửi cho chúng tôi đơn thuốc hai tháng nên bạn cần liên hệ với cô ấy trước."
       },
       {
         "id": "p3-47-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Oh, I see. I'll give her a call during my lunch break today. When are you open until today?",
         "vietnamese": "Ồ, tôi hiểu rồi. Tôi sẽ gọi cho cô ấy trong giờ nghỉ trưa hôm nay. Hôm nay bạn mở cửa đến khi nào?"
       },
       {
         "id": "p3-47-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Until 9 p.m. But once we receive your doctor's prescription we can deliver the medication directly to your home.",
         "vietnamese": "Cho đến 9 giờ tối. Nhưng sau khi nhận được đơn thuốc của bác sĩ, chúng tôi có thể giao thuốc trực tiếp đến nhà bạn."
       }
@@ -3310,13 +3310,13 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-50-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Miller's Sporting Goods Joey speaking. Hello I'm calling from West End High School. We're looking to make a big purchase for our student baseball teams. Our equipment is getting old and we would like to get new uniforms too.",
         "vietnamese": "Miller's Sporting Goods Joey phát biểu. Xin chào, tôi gọi từ trường trung học West End. Chúng tôi đang tìm cách mua một khoản lớn cho đội bóng chày sinh viên của mình. Thiết bị của chúng tôi đã cũ và chúng tôi cũng muốn có đồng phục mới."
       },
       {
         "id": "p3-50-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "We have budget restrictions though. Well we do offer discounts for bulk purchases and we have a number of price ranges for uniforms. Many are very reasonable.",
         "vietnamese": "Tuy nhiên, chúng tôi có những hạn chế về ngân sách. Chúng tôi có giảm giá khi mua số lượng lớn và chúng tôi có nhiều mức giá cho đồng phục. Nhiều cái rất hợp lý."
       }
@@ -3440,13 +3440,13 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-53-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hi this is Gemini Flowers. I'm calling about the order you placed for your award lunch in on July 12.",
         "vietnamese": "Xin chào, đây là Hoa Song Tử. Tôi đang gọi điện để hỏi về đơn hàng mà bạn đã đặt cho bữa trưa trao giải vào ngày 12 tháng 7."
       },
       {
         "id": "p3-53-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Unfortunately our supplier is out of pink roses. Oh no pink matches are corporate logo. I ordered them especially for this occasion. I understand your disappointment sir. I can offer a 10% discount on the total cost of your order and replace the pink roses with yellow ones.",
         "vietnamese": "Rất tiếc, nhà cung cấp của chúng tôi đã hết hoa hồng. Ồ không, diêm màu hồng là logo của công ty. Tôi đã đặt hàng chúng đặc biệt cho dịp này. Tôi hiểu sự thất vọng của bạn thưa ông. Tôi có thể giảm giá 10% trên tổng chi phí đặt hàng của bạn và thay thế hoa hồng màu hồng bằng hoa màu vàng."
       }
@@ -3575,13 +3575,13 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-56-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Unfortunately our development team has some bad news. It turns out we'll need to push back the shipment of the prototype motor we've been developing for our client. Oh oh why will there be a delay?",
         "vietnamese": "Thật không may, nhóm phát triển của chúng tôi có một số tin xấu. Hóa ra là chúng tôi sẽ phải lùi chuyến hàng động cơ nguyên mẫu mà chúng tôi đang phát triển cho khách hàng của mình. Ôi ôi tại sao lại có sự chậm trễ?"
       },
       {
         "id": "p3-56-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Well some of the components we received to build the prototype of failing initial tests. So we won't be able to make the delivery deadline. Janet could you let the client know? Yes I'll contact them right away.",
         "vietnamese": "Vâng, một số thành phần chúng tôi nhận được để xây dựng nguyên mẫu không thành công trong các thử nghiệm ban đầu. Vì vậy chúng tôi sẽ không thể thực hiện đúng thời hạn giao hàng. Janet bạn có thể cho khách hàng biết được không? Có, tôi sẽ liên hệ với họ ngay."
       }
@@ -3710,19 +3710,19 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-59-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Good evening. Legend Hotel. How may I help you? Hello I'm at the local airport. Does the hotel run shuttle buses to here?",
         "vietnamese": "Buổi tối vui vẻ. Khách sạn Legend. Tôi có thể giúp gì cho bạn? Xin chào, tôi đang ở sân bay địa phương. Khách sạn có chạy xe đưa đón tới đây không?"
       },
       {
         "id": "p3-59-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "We usually don't but was your flight originally scheduled for central airport? It was but apparently there's a problem at central. Yes there's a personnel shortage but several flights have been re-routed to the local airport.",
         "vietnamese": "Chúng tôi thường không làm vậy nhưng chuyến bay ban đầu của bạn có dự kiến ​​đến sân bay trung tâm không? Nhưng rõ ràng là có vấn đề ở trung tâm. Vâng, đang thiếu nhân sự nhưng một số chuyến bay đã được định tuyến lại đến sân bay địa phương."
       },
       {
         "id": "p3-59-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "We have started running an airport shuttle this morning. Okay that's good news. What is the next shuttle? Buses run every half hour.",
         "vietnamese": "Chúng tôi đã bắt đầu chạy xe đưa đón sân bay vào sáng nay. Được rồi đó là tin tốt. Chuyến xe đưa đón tiếp theo là gì? Xe buýt chạy cứ nửa giờ một lần."
       }
@@ -3851,19 +3851,19 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-62-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hi Ma'wah. I'm calling to check whether you received my outline of the design project for your apartment remodeling. I emailed it to you yesterday.",
         "vietnamese": "Chào Ma'wah. Tôi gọi để kiểm tra xem bạn có nhận được bản phác thảo của tôi về dự án thiết kế cho việc tu sửa căn hộ của bạn hay không. Tôi đã gửi email cho bạn ngày hôm qua."
       },
       {
         "id": "p3-62-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "Yes thank you for doing such a great job. I really like your idea of opening up the kitchen and creating an open space with the living room. Great.",
         "vietnamese": "Vâng, cảm ơn bạn đã làm một công việc tuyệt vời như vậy. Tôi rất thích ý tưởng mở bếp và tạo không gian mở với phòng khách của bạn. Tuyệt vời."
       },
       {
         "id": "p3-62-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "If everything looks good to you I can start ordering the supplies tomorrow. Actually I don't like the ceramic tiles you picked for the kitchen. I like the marble ones much better. I know they are more expensive but it's a small space.",
         "vietnamese": "Nếu bạn thấy mọi thứ đều ổn thì tôi có thể bắt đầu đặt hàng vào ngày mai. Thực ra tôi không thích loại gạch men bạn chọn cho nhà bếp. Tôi thích những cái bằng đá cẩm thạch tốt hơn nhiều. Tôi biết chúng đắt hơn nhưng đó là một không gian nhỏ."
       }
@@ -3993,25 +3993,25 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-65-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hi. I'd like to make a reservation for a group of clients that will be visiting our company from the first to the 6th of June. I need 8 rooms.",
         "vietnamese": "CHÀO. Tôi muốn đặt chỗ cho một nhóm khách hàng sẽ đến thăm công ty chúng tôi từ ngày 1 đến ngày 6 tháng 6. Tôi cần 8 phòng."
       },
       {
         "id": "p3-65-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "We do have availability for that period. The type of room I recommend for you is normally 99 euros per night but we can offer a group discount.",
         "vietnamese": "Chúng tôi có sẵn cho khoảng thời gian đó. Loại phòng tôi giới thiệu cho bạn thường là 99 euro mỗi đêm nhưng chúng tôi có thể giảm giá theo nhóm."
       },
       {
         "id": "p3-65-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "That'll work. Also on June 5th we want to take our clients on a tour of the local attractions. Could you help arrange that?",
         "vietnamese": "Điều đó sẽ hiệu quả. Cũng vào ngày 5 tháng 6, chúng tôi muốn đưa khách hàng của mình đi tham quan các điểm tham quan ở địa phương. Bạn có thể giúp sắp xếp việc đó được không?"
       },
       {
         "id": "p3-65-4",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "We have an event planner here who will be able to help you. His name is Pablo Gonzalez. I'll connect you to his office once I've completed your reservation.",
         "vietnamese": "Chúng tôi có một người tổ chức sự kiện ở đây, người sẽ có thể giúp bạn. Tên anh ấy là Pablo Gonzalez. Tôi sẽ kết nối bạn với văn phòng của anh ấy sau khi tôi hoàn tất việc đặt chỗ cho bạn."
       }
@@ -4141,19 +4141,19 @@ export const test2_2023_IntensiveData: IntensiveListeningItem[] = [
     "transcript": [
       {
         "id": "p3-68-1",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Hi Joanna. The management group needs to submit nominees for this year's award for outstanding employee.",
         "vietnamese": "Chào Joanna. Ban quản lý cần đưa ra đề cử cho giải thưởng nhân viên xuất sắc năm nay."
       },
       {
         "id": "p3-68-2",
-        "speaker": Man,
+        "speaker": "Man",
         "text": "My supervisor wants to know if any managers have nominated anyone yet. Not yet Charles. I emailed everyone about it a week ago but I haven't heard anything yet. I'll have to follow up with the managers and let them know the deadline is coming up.",
         "vietnamese": "Người giám sát của tôi muốn biết liệu có người quản lý nào đã đề cử ai chưa. Chưa Charles. Tôi đã gửi email cho mọi người về việc đó một tuần trước nhưng tôi vẫn chưa nhận được thông tin gì. Tôi sẽ phải liên lạc với người quản lý và cho họ biết thời hạn sắp đến."
       },
       {
         "id": "p3-68-3",
-        "speaker": Woman,
+        "speaker": "Woman",
         "text": "Okay well I printed out a breakdown of the customer service representatives with the most five star reviews from customers last year. We had someone who was really outstanding.",
         "vietnamese": "Được rồi, tôi đã in ra bản phân tích các đại diện dịch vụ khách hàng nhận được nhiều đánh giá năm sao nhất từ ​​khách hàng vào năm ngoái. Chúng tôi có một người thực sự xuất sắc."
       }
