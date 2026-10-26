@@ -3061,6 +3061,22 @@ export const lcAnswersData: Record<string, Record<string, string>> = {
   }
 };
 
-export const getLcAnswers = (testId: string): Record<string, string> => {
-  return lcAnswersData[testId] || {};
+export const getLcAnswers = (testId: string | number): Record<string, string> => {
+  const strId = String(testId).trim();
+  // Support numeric IDs like 20232 -> "2023-2", 20245 -> "2024-5"
+  const numId = parseInt(strId, 10);
+  if (!isNaN(numId)) {
+    if (numId >= 20231 && numId <= 202310) {
+      const converted = `2023-${numId - 20230}`;
+      if (lcAnswersData[converted]) return lcAnswersData[converted];
+    }
+    if (numId >= 20241 && numId <= 202410) {
+      const converted = `2024-${numId - 20240}`;
+      if (lcAnswersData[converted]) return lcAnswersData[converted];
+    }
+  }
+
+  // Support underscore "2023_2" -> "2023-2"
+  const normalized = strId.replace('_', '-');
+  return lcAnswersData[normalized] || lcAnswersData[strId] || {};
 };

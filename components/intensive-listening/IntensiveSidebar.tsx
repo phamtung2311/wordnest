@@ -12,6 +12,7 @@ import {
   Trophy,
   AlertCircle,
   Check,
+  FileText,
 } from 'lucide-react';
 
 interface IntensiveSidebarProps {
@@ -204,6 +205,25 @@ export function IntensiveSidebar({
             </div>
           </button>
         )}
+
+        {/* Shortcut to full test in /listening-test */}
+        <a
+          href={`/listening-test/${
+            currentTestId >= 20231 && currentTestId <= 202310
+              ? `2023-${currentTestId - 20230}`
+              : currentTestId >= 20241 && currentTestId <= 202410
+              ? `2024-${currentTestId - 20240}`
+              : String(currentTestId)
+          }`}
+          className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white/70 hover:bg-white text-[#213a34] border border-[#213a34]/15 hover:border-[#213a34]/30 text-[11px] font-bold transition-all shadow-2xs group/full"
+          title="Làm bài thi trắc nghiệm bấm giờ (100 câu + PDF) của đề này"
+        >
+          <div className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-[#b45309]" />
+            <span>Làm full đề (100 câu + PDF)</span>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover/full:translate-x-0.5 transition-transform" />
+        </a>
 
         {/* STATS SCOREBOARD: Đếm số câu đúng từng Part */}
         <div

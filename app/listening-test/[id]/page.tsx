@@ -19,7 +19,8 @@ import {
   ChevronDown, 
   ChevronUp, 
   FastForward, 
-  Volume2 
+  Volume2,
+  Sparkles
 } from 'lucide-react';
 
 type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
@@ -288,6 +289,24 @@ export default function ListeningTestPlayPage() {
     ? `ETS ${testId.toString().split("-")[0]} Đề ${testId.toString().split("-")[1]}` 
     : `ETS 2026 Đề ${testId}`;
 
+  const getIntensiveTestId = () => {
+    const str = testId.toString();
+    if (str.startsWith('2023-')) {
+      const num = parseInt(str.replace('2023-', ''), 10);
+      return 20230 + num;
+    }
+    if (str.startsWith('2024-')) {
+      const num = parseInt(str.replace('2024-', ''), 10);
+      return 20240 + num;
+    }
+    const num = parseInt(str, 10);
+    return isNaN(num) ? 1 : num;
+  };
+
+  const intensiveTestId = getIntensiveTestId();
+  const testYear = testId.toString().includes('-') ? testId.toString().split('-')[0] : '2026';
+  const testNum = testId.toString().includes('-') ? testId.toString().split('-')[1] : testId.toString();
+
   const handleSelect = (q: number, opt: string) => {
     if (appState === 'playing') {
       setAnswers(prev => {
@@ -472,11 +491,30 @@ export default function ListeningTestPlayPage() {
               <span className="hidden xs:inline">PDF</span>
             </a>
           </div>
-          <div className="text-center">
-            <span className="font-extrabold text-sm text-[#213a34] block leading-tight">Listening {testTitle}</span>
-            <span className="text-[11px] font-semibold text-gray-500">Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100</span>
+          <div className="text-center flex flex-col items-center">
+            <div className="flex items-center gap-1.5">
+              <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                testYear === '2023' 
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+                  : testYear === '2024'
+                  ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                  : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+              }`}>
+                ETS {testYear}
+              </span>
+              <span className="font-extrabold text-sm text-[#213a34]">Đề {testNum}</span>
+            </div>
+            <span className="text-[10px] font-semibold text-gray-500">Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100</span>
           </div>
           <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => router.push(`/intensive-listening?test=${intensiveTestId}`)}
+              className="flex items-center gap-1 text-[11px] font-black text-[#213a34] bg-[#f8d467] hover:bg-[#f5c842] px-2.5 py-1.5 rounded-full transition-all shadow-2xs shrink-0 cursor-pointer active:scale-95"
+              title="Chuyển sang chế độ Luyện nghe chi tiết từng câu cho đề này"
+            >
+              <Sparkles className="w-3 h-3 text-[#213a34]" />
+              <span className="hidden xs:inline">Chi tiết</span>
+            </button>
             {appState === 'playing' && (
               <>
                 <button
@@ -735,14 +773,33 @@ export default function ListeningTestPlayPage() {
         }
       >
         {/* Desktop Header */}
-        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-5 bg-white shrink-0 lg:pr-36">
-          <div>
-            <h2 className="font-display text-xl font-black text-[#213a34]">Listening {testTitle}</h2>
-            <p className="text-xs text-gray-500 font-bold mt-0.5">
-              100 câu hỏi (1 - 100) · Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
-            </p>
+        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-4 sm:p-5 bg-white shrink-0 lg:pr-36">
+          <div className="flex items-center gap-3">
+            <span className={`px-2.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${
+              testYear === '2023' 
+                ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+                : testYear === '2024'
+                ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+            }`}>
+              ETS {testYear}
+            </span>
+            <div>
+              <h2 className="font-display text-lg sm:text-xl font-black text-[#213a34]">Đề thi {testNum} (Listening)</h2>
+              <p className="text-xs text-gray-500 font-bold mt-0.5">
+                100 câu hỏi (1 - 100) · Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push(`/intensive-listening?test=${intensiveTestId}`)}
+              className="flex items-center gap-1.5 rounded-full bg-[#f8d467] hover:bg-[#f5c842] text-[#213a34] px-3.5 py-1.5 font-black text-xs transition-transform active:scale-95 shadow-xs cursor-pointer"
+              title="Chuyển sang chế độ Luyện nghe chi tiết (STUDY4 style) cho đề này"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#213a34]" />
+              Luyện chi tiết
+            </button>
             <a
               href={pdfUrl}
               target="_blank"
@@ -751,11 +808,11 @@ export default function ListeningTestPlayPage() {
               title="Mở PDF gốc sang tab mới"
             >
               <ExternalLink className="w-3.5 h-3.5 text-[#213a34]" />
-              Mở PDF tab mới
+              Mở PDF
             </a>
             <button
               onClick={handleClose}
-              className="rounded-full bg-white border border-gray-300 px-4 py-1.5 font-bold text-xs text-gray-700 hover:bg-gray-50 transition-colors"
+              className="rounded-full bg-white border border-gray-300 px-4 py-1.5 font-bold text-xs text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Đóng
             </button>

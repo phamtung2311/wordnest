@@ -21,6 +21,11 @@ export default function PracticeTestSelectionPage() {
 
   useEffect(() => {
     try {
+      const savedYear = localStorage.getItem('toeic_reading_selected_year') as '2026' | '2024' | '2023' | null;
+      if (savedYear && ['2026', '2024', '2023'].includes(savedYear)) {
+        setSelectedYear(savedYear);
+      }
+
       const historyStr = localStorage.getItem('toeic_reading_history');
       if (historyStr) {
         setHistory(JSON.parse(historyStr));
@@ -144,8 +149,11 @@ export default function PracticeTestSelectionPage() {
           {/* Year Switcher Segmented Tabs */}
           <div className="flex items-center justify-center p-1 bg-[#faf8f5] rounded-2xl max-w-sm mx-auto mb-6 border border-[#14362d]/8">
             <button
-              onClick={() => setSelectedYear('2026')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+              onClick={() => {
+                setSelectedYear('2026');
+                try { localStorage.setItem('toeic_reading_selected_year', '2026'); } catch {}
+              }}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 selectedYear === '2026'
                   ? 'bg-white text-[#14362d] shadow-sm'
                   : 'text-[#637770] hover:text-[#14362d]'
@@ -154,8 +162,11 @@ export default function PracticeTestSelectionPage() {
               🌟 ETS 2026 (10 đề)
             </button>
             <button
-              onClick={() => setSelectedYear('2024')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+              onClick={() => {
+                setSelectedYear('2024');
+                try { localStorage.setItem('toeic_reading_selected_year', '2024'); } catch {}
+              }}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 selectedYear === '2024'
                   ? 'bg-white text-[#14362d] shadow-sm'
                   : 'text-[#637770] hover:text-[#14362d]'
@@ -164,8 +175,11 @@ export default function PracticeTestSelectionPage() {
               📘 ETS 2024 (10 đề)
             </button>
             <button
-              onClick={() => setSelectedYear('2023')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all ${
+              onClick={() => {
+                setSelectedYear('2023');
+                try { localStorage.setItem('toeic_reading_selected_year', '2023'); } catch {}
+              }}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 selectedYear === '2023'
                   ? 'bg-white text-[#14362d] shadow-sm'
                   : 'text-[#637770] hover:text-[#14362d]'
@@ -177,7 +191,7 @@ export default function PracticeTestSelectionPage() {
 
           {/* Test Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            {currentTests.map((test) => {
+            {currentTests.map((test, idx) => {
               const score = getLatestScore(test.id);
               const hasProgress = inProgress[test.id];
 
@@ -220,10 +234,21 @@ export default function PracticeTestSelectionPage() {
                       {score}/100
                     </span>
                   )}
-                  <div className="bg-white p-3 rounded-2xl mb-2.5 shadow-sm group-hover:scale-110 transition-transform border border-[#14362d]/6">
+                  <div className="flex items-center gap-1 mb-1.5">
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
+                      selectedYear === '2023'
+                        ? 'bg-amber-100 text-amber-900 border border-amber-200'
+                        : selectedYear === '2024'
+                        ? 'bg-blue-100 text-blue-900 border border-blue-200'
+                        : 'bg-emerald-100 text-emerald-900 border border-emerald-200'
+                    }`}>
+                      {selectedYear === '2023' ? 'ETS 2023' : selectedYear === '2024' ? 'ETS 2024' : 'ETS 2026'}
+                    </span>
+                  </div>
+                  <div className="bg-white p-3 rounded-2xl mb-2 shadow-sm group-hover:scale-110 transition-transform border border-[#14362d]/6">
                     <FileText className="w-5 h-5 text-[#14362d]" />
                   </div>
-                  <span className="font-black text-[#14362d] text-xs sm:text-sm">{test.name}</span>
+                  <span className="font-black text-[#14362d] text-xs sm:text-sm">Đề {idx + 1}</span>
                   <span className="text-[10px] text-[#637770] mt-0.5 font-bold">100 câu</span>
                 </div>
               );
