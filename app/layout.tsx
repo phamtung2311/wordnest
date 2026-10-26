@@ -5,6 +5,7 @@ import StudyStopwatchWidget from '@/components/StudyStopwatchWidget';
 import VocabFloatingWidget from '@/components/VocabFloatingWidget';
 import TodoFloatingWidget from '@/components/TodoFloatingWidget';
 import EnglishNotesFloatingWidget from '@/components/EnglishNotesFloatingWidget';
+import TranslateFloatingWidget from '@/components/TranslateFloatingWidget';
 
 const nunito = Nunito({ variable: '--font-nunito', subsets: ['latin', 'vietnamese'] });
 const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin', 'vietnamese'] });
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${nunito.variable} ${fraunces.variable} antialiased selection:bg-[#fef3c7] selection:text-[#92400e]`}>
         {children}
         <StudyStopwatchWidget />
+        <TranslateFloatingWidget />
         <EnglishNotesFloatingWidget />
         <VocabFloatingWidget />
         <TodoFloatingWidget />

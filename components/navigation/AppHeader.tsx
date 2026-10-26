@@ -21,6 +21,7 @@ import {
   X,
   Layers,
   Lightbulb,
+  Languages,
 } from 'lucide-react';
 
 interface AppHeaderProps {
@@ -230,6 +231,25 @@ export function AppHeader({
                           <span className="rounded-full bg-amber-100 px-1.5 py-0.2 text-[9px] font-black text-amber-900">Mới</span>
                         </div>
                         <div className="text-[11px] text-[#637770]">Mẹo làm bài Part 1-7 · Ngữ pháp · Tra cứu nhanh</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setToeicMenuOpen(false);
+                        window.dispatchEvent(new CustomEvent('wordnest-open-translate'));
+                      }}
+                      className="flex w-full items-start gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-[#f4f8f5] border-t border-gray-100"
+                    >
+                      <div className="rounded-lg bg-sky-50 p-2 text-sky-700">
+                        <Languages size={16} className="text-sky-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs font-black text-[#14362d]">
+                          <span>Dịch nghĩa & Tra từ (Bong bóng)</span>
+                          <span className="rounded-full bg-sky-100 px-1.5 py-0.2 text-[9px] font-black text-sky-900">Mới</span>
+                        </div>
+                        <div className="text-[11px] text-[#637770]">Dịch trực tiếp Anh - Việt · Tra phiên âm & loa đọc</div>
                       </div>
                     </button>
                   </div>
@@ -442,6 +462,18 @@ export function AppHeader({
             >
               <Lightbulb size={16} className="text-amber-600 fill-amber-300" />
               <span>Sổ tay Cấu trúc & Mẹo (Bong bóng)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.dispatchEvent(new CustomEvent('wordnest-open-translate'));
+              }}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-black text-[#14362d] bg-sky-50/70 hover:bg-sky-100"
+            >
+              <Languages size={16} className="text-sky-600" />
+              <span>Dịch nghĩa & Tra từ (Bong bóng)</span>
             </button>
 
             <button

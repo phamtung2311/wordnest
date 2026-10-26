@@ -23,6 +23,7 @@ import {
   updateWordReview,
   getOrCreateDefaultDeck,
 } from '@/lib/vocabService';
+import { translateText } from '@/lib/translateService';
 
 function speak(text: string, lang = 'en') {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -581,17 +582,36 @@ export default function VocabFloatingWidget() {
               </div>
 
               <div>
-                <label className="text-[10px] font-black text-[#71817b] uppercase tracking-wider block mb-1">
-                  Từ vựng (bắt buộc):
-                  <input
-                    ref={termInputRef}
-                    value={addTerm}
-                    onChange={(e) => setAddTerm(e.target.value)}
-                    placeholder="Ví dụ: itinerary, destination..."
-                    className="w-full bg-white border border-[#213a34]/25 focus:border-[#213a34] rounded-xl px-3 py-2 text-sm font-bold text-[#213a34] outline-none mt-1 normal-case font-sans"
-                    required
-                  />
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-black text-[#71817b] uppercase tracking-wider">
+                    Từ vựng (bắt buộc):
+                  </span>
+                  {addTerm.trim() && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const res = await translateText(addTerm.trim(), 'en', 'vi');
+                        if (res) {
+                          setAddMeaning(res.translated);
+                          if (res.phonetic) setAddPhonetic(res.phonetic);
+                          if (res.examples?.[0]?.en) setAddExample(res.examples[0].en);
+                        }
+                      }}
+                      className="text-[10px] font-black text-[#213a34] bg-sky-100 hover:bg-sky-200 px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
+                    >
+                      <Sparkles size={11} className="text-sky-600" />
+                      <span>Tự tìm nghĩa</span>
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={termInputRef}
+                  value={addTerm}
+                  onChange={(e) => setAddTerm(e.target.value)}
+                  placeholder="Ví dụ: itinerary, destination..."
+                  className="w-full bg-white border border-[#213a34]/25 focus:border-[#213a34] rounded-xl px-3 py-2 text-sm font-bold text-[#213a34] outline-none normal-case font-sans"
+                  required
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
