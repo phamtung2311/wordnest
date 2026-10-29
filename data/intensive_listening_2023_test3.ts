@@ -518,8 +518,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 7",
     "title": "Part 2 - Câu 7: Cuộc kiểm tra an ninh hôm nay thế nào?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 288.34,
-    "endTime": 310.12,
+    "startTime": 288.40,
+    "endTime": 308.50,
     "transcript": [
       {
         "id": "p2-7-q",
@@ -592,8 +592,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 8",
     "title": "Part 2 - Câu 8: Bữa tối hôm nay bạn có món gì đặc biệt?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 310.12,
-    "endTime": 328.38,
+    "startTime": 308.50,
+    "endTime": 327.00,
     "transcript": [
       {
         "id": "p2-8-q",
@@ -666,8 +666,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 9",
     "title": "Part 2 - Câu 9: Khi nào đơn hàng sẽ được giao?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 328.38,
-    "endTime": 342.54,
+    "startTime": 327.00,
+    "endTime": 345.50,
     "transcript": [
       {
         "id": "p2-9-q",
@@ -740,8 +740,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 10",
     "title": "Part 2 - Câu 10: Phí thành viên hàng tháng cho dịch vụ đó là bao nhiêu?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 342.54,
-    "endTime": 361.06,
+    "startTime": 345.50,
+    "endTime": 364.50,
     "transcript": [
       {
         "id": "p2-10-q",
@@ -814,8 +814,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 11",
     "title": "Part 2 - Câu 11: Bạn có nhận được email tôi gửi không?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 361.06,
-    "endTime": 379.66,
+    "startTime": 364.50,
+    "endTime": 383.50,
     "transcript": [
       {
         "id": "p2-11-q",
@@ -893,8 +893,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 12",
     "title": "Part 2 - Câu 12: Tại sao bạn không có cuộc họp chiều nay?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 379.66,
-    "endTime": 399.14,
+    "startTime": 383.50,
+    "endTime": 404.00,
     "transcript": [
       {
         "id": "p2-12-q",
@@ -967,8 +967,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 13",
     "title": "Part 2 - Câu 13: Bạn đăng lịch trình ở đâu vậy?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 399.14,
-    "endTime": 417.72,
+    "startTime": 404.00,
+    "endTime": 423.50,
     "transcript": [
       {
         "id": "p2-13-q",
@@ -1046,8 +1046,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 14",
     "title": "Part 2 - Câu 14: Ai là người chủ trì buổi hội thảo về an toàn?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 417.72,
-    "endTime": 435.33,
+    "startTime": 423.50,
+    "endTime": 442.50,
     "transcript": [
       {
         "id": "p2-14-q",
@@ -1120,8 +1120,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 15",
     "title": "Part 2 - Câu 15: Bạn có thể vui lòng điền vào bảng chấm công trước 3 giờ c...",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 435.33,
-    "endTime": 456.84,
+    "startTime": 442.50,
+    "endTime": 464.00,
     "transcript": [
       {
         "id": "p2-15-q",
@@ -1194,8 +1194,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 16",
     "title": "Part 2 - Câu 16: Khi nào thợ điện phải tới đây?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 456.84,
-    "endTime": 481.45,
+    "startTime": 464.00,
+    "endTime": 484.00,
     "transcript": [
       {
         "id": "p2-16-q",
@@ -1268,8 +1268,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 17",
     "title": "Part 2 - Câu 17: Tôi muốn lên lịch cuộc họp đánh giá hiệu suất của bạn.",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 481.45,
-    "endTime": 501.99,
+    "startTime": 484.00,
+    "endTime": 505.00,
     "transcript": [
       {
         "id": "p2-17-q",
@@ -1347,8 +1347,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 18",
     "title": "Part 2 - Câu 18: Bạn chưa được đào tạo cách sử dụng máy này à?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 501.99,
-    "endTime": 521.47,
+    "startTime": 505.00,
+    "endTime": 525.00,
     "transcript": [
       {
         "id": "p2-18-q",
@@ -1421,8 +1421,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 19",
     "title": "Part 2 - Câu 19: Bạn mang máy tính về nhà hay để ở nơi làm việc?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 521.47,
-    "endTime": 541.02,
+    "startTime": 525.00,
+    "endTime": 544.00,
     "transcript": [
       {
         "id": "p2-19-q",
@@ -1495,8 +1495,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 20",
     "title": "Part 2 - Câu 20: Tại sao chúng ta không tạo một video giới thiệu không gia...",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 541.02,
-    "endTime": 561.3,
+    "startTime": 544.00,
+    "endTime": 564.00,
     "transcript": [
       {
         "id": "p2-20-q",
@@ -1569,8 +1569,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 21",
     "title": "Part 2 - Câu 21: Không phải đồ ăn thường được phục vụ vào thời điểm này sao?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 561.3,
-    "endTime": 581.75,
+    "startTime": 564.00,
+    "endTime": 585.00,
     "transcript": [
       {
         "id": "p2-21-q",
@@ -1648,8 +1648,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 22",
     "title": "Part 2 - Câu 22: Bạn đi xe buýt hoặc xe lửa để đi làm?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 581.75,
-    "endTime": 601.36,
+    "startTime": 585.00,
+    "endTime": 605.00,
     "transcript": [
       {
         "id": "p2-22-q",
@@ -1727,8 +1727,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 23",
     "title": "Part 2 - Câu 23: Bạn có muốn tôi đặt chỗ cho bạn không?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 601.36,
-    "endTime": 627.5,
+    "startTime": 605.00,
+    "endTime": 625.00,
     "transcript": [
       {
         "id": "p2-23-q",
@@ -1796,8 +1796,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 24",
     "title": "Part 2 - Câu 24: Tại sao bạn lại dọn dẹp phòng thí nghiệm?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 627.5,
-    "endTime": 641.26,
+    "startTime": 625.00,
+    "endTime": 645.00,
     "transcript": [
       {
         "id": "p2-24-q",
@@ -1875,8 +1875,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 25",
     "title": "Part 2 - Câu 25: Bạn nghĩ gì về các đoạn được đánh dấu trong tài liệu này?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 641.26,
-    "endTime": 662.58,
+    "startTime": 645.00,
+    "endTime": 667.00,
     "transcript": [
       {
         "id": "p2-25-q",
@@ -1944,8 +1944,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 26",
     "title": "Part 2 - Câu 26: Ai sẽ nhận chuyến hàng cuối cùng?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 662.58,
-    "endTime": 682.09,
+    "startTime": 667.00,
+    "endTime": 686.50,
     "transcript": [
       {
         "id": "p2-26-q",
@@ -2023,8 +2023,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 27",
     "title": "Part 2 - Câu 27: Bây giờ tôi có thể tắt đèn được không?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 682.09,
-    "endTime": 702.6,
+    "startTime": 686.50,
+    "endTime": 706.50,
     "transcript": [
       {
         "id": "p2-27-q",
@@ -2097,8 +2097,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 28",
     "title": "Part 2 - Câu 28: Tại sao chúng ta phải lên lịch lại sự kiện này?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 702.6,
-    "endTime": 724.02,
+    "startTime": 706.50,
+    "endTime": 727.50,
     "transcript": [
       {
         "id": "p2-28-q",
@@ -2171,8 +2171,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 29",
     "title": "Part 2 - Câu 29: Chúng ta thực sự nên xem xét việc mở rộng mặt tiền cửa hà...",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 724.02,
-    "endTime": 745.34,
+    "startTime": 727.50,
+    "endTime": 748.50,
     "transcript": [
       {
         "id": "p2-29-q",
@@ -2250,8 +2250,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 30",
     "title": "Part 2 - Câu 30: Bạn có biết chiếc áo khoác trong phòng họp của ai không?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 745.34,
-    "endTime": 772.1,
+    "startTime": 748.50,
+    "endTime": 770.50,
     "transcript": [
       {
         "id": "p2-30-q",
@@ -2329,8 +2329,8 @@ export const test3_2023_IntensiveData: IntensiveListeningItem[] = [
     "questionRange": "Câu 31",
     "title": "Part 2 - Câu 31: Bạn thường tập thể dục khi nào?",
     "audioSrc": "/audio/test3_2023.mp3",
-    "startTime": 772.1,
-    "endTime": 788.39,
+    "startTime": 770.50,
+    "endTime": 793.00,
     "transcript": [
       {
         "id": "p2-31-q",
