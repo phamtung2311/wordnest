@@ -1,7 +1,7 @@
 {
   "hosting": {
     "public": "dist/client",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/*.original_bak"],
     "cleanUrls": true,
     "trailingSlash": false,
     "headers": [

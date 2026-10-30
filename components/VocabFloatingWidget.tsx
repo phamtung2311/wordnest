@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import {
   WordItem,
+  DeckItem,
   getSavedDecks,
   subscribeDecks,
   addWordToDeck,
@@ -153,15 +154,15 @@ export default function VocabFloatingWidget({
     deckId: number;
   })[] =
     selectedDeckId === 'all'
-      ? decks.flatMap((d) =>
-          d.words.map((w) => ({
+      ? decks.flatMap((d: DeckItem) =>
+          d.words.map((w: WordItem) => ({
             ...w,
             deckName: d.name,
             deckLanguage: d.language ?? 'en',
             deckId: d.id,
           })),
         )
-      : (activeDeck?.words ?? []).map((w) => ({
+      : (activeDeck?.words ?? []).map((w: WordItem) => ({
           ...w,
           deckName: activeDeck?.name,
           deckLanguage: activeDeck?.language ?? 'en',
@@ -169,15 +170,15 @@ export default function VocabFloatingWidget({
         }));
 
   // Filter due words for review using stored timestamp
-  const dueWords = allWords.filter((w) => w.nextReview <= reviewTimestamp);
+  const dueWords = allWords.filter((w: WordItem) => w.nextReview <= reviewTimestamp);
   // If no due words, fallback to all words so user can always study!
   const studyQueue = dueWords.length > 0 ? dueWords : allWords;
   const currentCard = studyQueue[cardIndex % Math.max(studyQueue.length, 1)];
 
   // Total review due count across all decks
   const totalDueCount = decks.reduce(
-    (sum, d) =>
-      sum + d.words.filter((w) => w.nextReview <= reviewTimestamp).length,
+    (sum, d: DeckItem) =>
+      sum + d.words.filter((w: WordItem) => w.nextReview <= reviewTimestamp).length,
     0,
   );
 

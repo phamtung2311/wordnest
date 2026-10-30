@@ -148,8 +148,8 @@ export default function PracticeTestPlayPage() {
   };
 
   const pdfUrl = testId.toString().includes("-") 
-    ? `/tests/reading${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf?v=2` 
-    : `/tests/test${testId}.pdf?v=2`;
+    ? `/tests/reading${testId.toString().split("-")[0]}_${testId.toString().split("-")[1]}.pdf?v=ocr_v3` 
+    : `/tests/test${testId}.pdf?v=ocr_v3`;
 
   const testTitle = testId.toString().includes("-") 
     ? `ETS ${testId.toString().split("-")[0]} Đề ${testId.toString().split("-")[1]}` 
@@ -414,7 +414,7 @@ export default function PracticeTestPlayPage() {
         {mounted && (
           <iframe 
             key={testId}
-            src={`/pdfjs/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-width&pagemode=none`}
+            src={`/pdfjs/web/viewer.html?v=ocr3&file=${encodeURIComponent(pdfUrl)}#zoom=page-width&pagemode=none`}
             onLoad={() => setPdfLoading(false)}
             className="w-full h-full border-0 relative z-0" 
             title={`Test ${testId} PDF`} 

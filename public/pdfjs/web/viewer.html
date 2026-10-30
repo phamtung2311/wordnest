@@ -482,5 +482,77 @@ See https://github.com/adobe-type-tools/cmap-resources
     <div id="printContainer"></div>
 
     <input type="file" id="fileInput" class="hidden">
+
+    <!-- WordNest Quick Translate Bridge -->
+    <script>
+      (function() {
+        function getSelectedTextInfo() {
+          const sel = window.getSelection();
+          if (!sel || sel.rangeCount === 0) return null;
+          const text = sel.toString().trim();
+          if (!text || text.length < 2) return null;
+          try {
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            if (rect.width === 0 && rect.height === 0) return null;
+            return {
+              text: text,
+              rect: {
+                top: rect.top,
+                left: rect.left,
+                bottom: rect.bottom,
+                right: rect.right,
+                width: rect.width,
+                height: rect.height,
+              }
+            };
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function triggerQuickTranslate() {
+          const info = getSelectedTextInfo();
+          if (info && info.text) {
+            console.log('[WordNest Bridge] Triggering quick translate for:', info.text, info.rect);
+            window.parent.postMessage({
+              type: 'WORDNEST_QUICK_TRANSLATE',
+              text: info.text,
+              rect: info.rect,
+              source: 'pdfjs'
+            }, '*');
+          }
+        }
+
+        // Double-click on any word
+        document.addEventListener('dblclick', function(e) {
+          setTimeout(triggerQuickTranslate, 40);
+        });
+
+        // Mouseup after drag-selection (phrases / sentences)
+        document.addEventListener('mouseup', function(e) {
+          setTimeout(function() {
+            const sel = window.getSelection();
+            if (sel && sel.toString().trim().length > 1 && sel.type === 'Range') {
+              triggerQuickTranslate();
+            }
+          }, 60);
+        });
+
+        // Dismiss when clicking on empty space without text selection
+        document.addEventListener('click', function(e) {
+          setTimeout(function() {
+            const sel = window.getSelection();
+            if (!sel || !sel.toString().trim()) {
+              window.parent.postMessage({ type: 'WORDNEST_DISMISS_QUICK_TRANSLATE' }, '*');
+            }
+          }, 30);
+        });
+
+        window.addEventListener('scroll', function() {
+          window.parent.postMessage({ type: 'WORDNEST_DISMISS_QUICK_TRANSLATE' }, '*');
+        }, true);
+      })();
+    </script>
   </body>
 </html>

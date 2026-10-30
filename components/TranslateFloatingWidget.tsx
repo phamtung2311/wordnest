@@ -81,6 +81,8 @@ export default function TranslateFloatingWidget({
   const widgetRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleTranslateRef = useRef<(text?: string) => Promise<void>>(async () => {});
+
   // Close when another bubble opens, or open on explicit event
   useEffect(() => {
     const handleActive = (e: Event) => {
@@ -89,11 +91,17 @@ export default function TranslateFloatingWidget({
         setIsOpen(false);
       }
     };
-    const handleOpen = () => {
+    const handleOpen = (e?: Event) => {
+      const custom = e as CustomEvent<string | { text?: string }>;
+      const query = typeof custom?.detail === 'string' ? custom.detail : custom?.detail?.text;
       setIsOpen(true);
       window.dispatchEvent(
         new CustomEvent('wordnest-active-bubble', { detail: 'translate' }),
       );
+      if (query && typeof query === 'string') {
+        setInputText(query);
+        void handleTranslateRef.current(query);
+      }
     };
 
     window.addEventListener('wordnest-active-bubble', handleActive);
@@ -153,6 +161,7 @@ export default function TranslateFloatingWidget({
     setResult(res);
     setIsLoading(false);
   };
+  handleTranslateRef.current = handleTranslate;
 
   const handleSwapLang = () => {
     if (sourceLang === 'zh') {

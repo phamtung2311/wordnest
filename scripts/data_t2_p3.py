@@ -351,7 +351,8 @@ part3_items = [
                 "options": [
                     {"key": "A", "text": "To plan an office celebration", "vietnamese": "Để lên kế hoạch liên hoan văn phòng."},
                     {"key": "B", "text": "To arrange a training session", "vietnamese": "Để sắp xếp một buổi đào tạo."},
-                    {"key": "C", "text": "To request a document", "vietnamese": "Để yêu cầu một tài liệu (hồ sơ xin việc)."}
+                    {"key": "C", "text": "To request a document", "vietnamese": "Để yêu cầu một tài liệu (hồ sơ xin việc)."},
+                    {"key": "D", "text": "To order some supplies", "vietnamese": "Để đặt mua một số đồ dùng/văn phòng phẩm."}
                 ],
                 "correctAnswer": "C",
                 "explanation": "Bác sĩ yêu cầu bảo Kelly gửi CV: 'Could you tell Kelly to send me her résumé?' (hồ sơ xin việc là một loại tài liệu - a document)."

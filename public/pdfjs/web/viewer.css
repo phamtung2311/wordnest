@@ -83,13 +83,13 @@
 }
 
 .textLayer ::-moz-selection {
-  background: blue;
-  background: AccentColor; /* stylelint-disable-line declaration-block-no-duplicate-properties */
+  background: rgba(245, 158, 11, 0.38) !important;
+  color: transparent !important;
 }
 
 .textLayer ::selection {
-  background: blue;
-  background: AccentColor; /* stylelint-disable-line declaration-block-no-duplicate-properties */
+  background: rgba(245, 158, 11, 0.38) !important;
+  color: transparent !important;
 }
 
 /* Avoids https://github.com/mozilla/pdf.js/issues/13840 in Chrome */

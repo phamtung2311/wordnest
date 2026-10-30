@@ -3213,6 +3213,11 @@ export const test2IntensiveData: IntensiveListeningItem[] = [
             "key": "C",
             "text": "To request a document",
             "vietnamese": "Để yêu cầu một tài liệu (hồ sơ xin việc)."
+          },
+          {
+            "key": "D",
+            "text": "To order some supplies",
+            "vietnamese": "Để đặt mua một số đồ dùng/văn phòng phẩm."
           }
         ],
         "correctAnswer": "C",

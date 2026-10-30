@@ -17,6 +17,7 @@ import TranslateFloatingWidget from '@/components/TranslateFloatingWidget';
 import EnglishNotesFloatingWidget from '@/components/EnglishNotesFloatingWidget';
 import VocabFloatingWidget from '@/components/VocabFloatingWidget';
 import TodoFloatingWidget from '@/components/TodoFloatingWidget';
+import QuickTranslateTooltip from '@/components/QuickTranslateTooltip';
 
 interface SafeWidgetBoundaryProps {
   name: string;
@@ -118,6 +119,10 @@ export default function FloatingWidgetsContainer() {
 
       <SafeWidgetBoundary name="TodoFloatingWidget">
         <TodoFloatingWidget position={position} isCollapsed={isCollapsed} />
+      </SafeWidgetBoundary>
+
+      <SafeWidgetBoundary name="QuickTranslateTooltip">
+        <QuickTranslateTooltip />
       </SafeWidgetBoundary>
 
       {/* Floating Control Toolbar / Collapsed Trigger */}
