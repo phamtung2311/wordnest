@@ -22,6 +22,8 @@ import {
   Volume2,
   Sparkles
 } from 'lucide-react';
+import { QuestionMap, QuestionMapModal } from '@/components/QuestionMap';
+import { getListeningToeicScore } from '@/lib/toeicScoreConverter';
 
 type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
 type FilterPart = 'all' | 'part1' | 'part2' | 'part3' | 'part4' | 'unanswered';
@@ -58,6 +60,7 @@ export default function ListeningTestPlayPage() {
   const [dockCollapsed, setDockCollapsed] = useState<boolean>(false);
   const [filterPart, setFilterPart] = useState<FilterPart>('all');
   const [pdfLoading, setPdfLoading] = useState<boolean>(true);
+  const [showMapModal, setShowMapModal] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
@@ -515,6 +518,14 @@ export default function ListeningTestPlayPage() {
               <Sparkles className="w-3 h-3 text-[#213a34]" />
               <span className="hidden xs:inline">Chi tiết</span>
             </button>
+            <button
+              onClick={() => setShowMapModal(true)}
+              className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+              title="Xem bản đồ câu hỏi"
+            >
+              <span>🗺️</span>
+              <span className="hidden xs:inline">Bản đồ</span>
+            </button>
             {appState === 'playing' && (
               <>
                 <button
@@ -793,6 +804,14 @@ export default function ListeningTestPlayPage() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowMapModal(true)}
+              className="flex items-center gap-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
+              title="Xem bản đồ câu hỏi / phổ đáp án"
+            >
+              <span>🗺️</span>
+              Bản đồ câu hỏi
+            </button>
+            <button
               onClick={() => router.push(`/intensive-listening?test=${intensiveTestId}`)}
               className="flex items-center gap-1.5 rounded-full bg-[#f8d467] hover:bg-[#f5c842] text-[#213a34] px-3.5 py-1.5 font-black text-xs transition-transform active:scale-95 shadow-xs cursor-pointer"
               title="Chuyển sang chế độ Luyện nghe chi tiết (STUDY4 style) cho đề này"
@@ -938,6 +957,14 @@ export default function ListeningTestPlayPage() {
               Chưa làm ({unansweredCount})
             </button>
           )}
+          <button
+            onClick={() => setShowMapModal(true)}
+            className="flex items-center gap-1 text-[11px] font-black text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-full transition-colors whitespace-nowrap cursor-pointer shadow-2xs ml-auto shrink-0"
+            title="Mở bản đồ câu hỏi toàn màn hình"
+          >
+            <span>🗺️</span>
+            Bản đồ
+          </button>
         </div>
 
         {/* Content Area */}
@@ -972,25 +999,46 @@ export default function ListeningTestPlayPage() {
                 <div className="text-4xl sm:text-5xl font-black text-[#213a34] mb-1">
                   {results.totalCorrect} <span className="text-xl sm:text-2xl text-gray-400">/ 100</span>
                 </div>
+                <div className="inline-flex items-center gap-1.5 bg-[#213a34] text-white px-4 py-1.5 rounded-full text-xs font-bold mt-2 shadow-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Điểm TOEIC Listening ước tính: ~{getListeningToeicScore(results.totalCorrect)} / 495</span>
+                </div>
               </div>
 
-              <div className="grid gap-3 mb-6">
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 1 (1-6)</span>
-                  <span className="font-black text-[#f29f77]">{results.part1.correct}/{results.part1.total}</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 1</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part1.correct}/{results.part1.total}</div>
                 </div>
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 2 (7-31)</span>
-                  <span className="font-black text-[#f29f77]">{results.part2.correct}/{results.part2.total}</span>
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 2</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part2.correct}/{results.part2.total}</div>
                 </div>
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 3 (32-70)</span>
-                  <span className="font-black text-[#f29f77]">{results.part3.correct}/{results.part3.total}</span>
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 3</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part3.correct}/{results.part3.total}</div>
                 </div>
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 4 (71-100)</span>
-                  <span className="font-black text-[#f29f77]">{results.part4.correct}/{results.part4.total}</span>
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 4</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part4.correct}/{results.part4.total}</div>
                 </div>
+              </div>
+
+              {/* BẢN ĐỒ CÂU HỎI TRỰC TIẾP TRÊN TRANG KẾT QUẢ */}
+              <div className="mb-6">
+                <QuestionMap
+                  mode="result"
+                  testType="listening"
+                  testId={testId}
+                  testTitle={`ETS ${testYear} Đề ${testNum} (Listening)`}
+                  answers={answers}
+                  keyObj={results.key}
+                  onSelectQuestion={(q) => {
+                    setActiveQuestion(q);
+                    setAppState('reviewing');
+                    jumpToQuestionInPdf(q);
+                  }}
+                />
               </div>
 
               <div className="flex flex-col gap-2 mt-auto">
@@ -1114,6 +1162,23 @@ export default function ListeningTestPlayPage() {
           </div>
         )}
       </div>
+
+      {/* Question Map Modal */}
+      <QuestionMapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        mode={appState === 'playing' ? 'playing' : (appState === 'result' ? 'result' : 'reviewing')}
+        testType="listening"
+        testId={testId}
+        testTitle={`ETS ${testYear} Đề ${testNum} (Listening)`}
+        answers={answers}
+        keyObj={results?.key || partialResults?.key}
+        currentQuestion={activeQuestion}
+        onSelectQuestion={(q) => {
+          setActiveQuestion(q);
+          jumpToQuestionInPdf(q);
+        }}
+      />
     </div>
   );
 }

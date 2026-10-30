@@ -18,8 +18,11 @@ import {
   Check, 
   Maximize2,
   RotateCcw,
+  Sparkles,
   X
 } from 'lucide-react';
+import { QuestionMap, QuestionMapModal } from '@/components/QuestionMap';
+import { getReadingToeicScore } from '@/lib/toeicScoreConverter';
 
 type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
 type FilterPart = 'all' | 'part5' | 'part6' | 'part7' | 'unanswered';
@@ -46,6 +49,7 @@ export default function PracticeTestPlayPage() {
   const [filterPart, setFilterPart] = useState<FilterPart>('all');
   const [pdfLoading, setPdfLoading] = useState<boolean>(true);
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
+  const [showMapModal, setShowMapModal] = useState<boolean>(false);
   const [resetToast, setResetToast] = useState<string | null>(null);
 
   const questionItemRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -323,6 +327,14 @@ export default function PracticeTestPlayPage() {
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden xs:inline">Làm lại</span>
             </button>
+            <button
+              onClick={() => setShowMapModal(true)}
+              className="flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+              title="Xem bản đồ câu hỏi"
+            >
+              <span>🗺️</span>
+              <span className="hidden xs:inline">Bản đồ</span>
+            </button>
           </div>
           <div className="text-center">
             <span className="font-extrabold text-sm text-[#213a34] block leading-tight">{testTitle}</span>
@@ -539,6 +551,14 @@ export default function PracticeTestPlayPage() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowMapModal(true)}
+              className="flex items-center gap-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
+              title="Xem bản đồ câu hỏi / phổ đáp án"
+            >
+              <span>🗺️</span>
+              Bản đồ câu hỏi
+            </button>
+            <button
               onClick={() => setShowResetModal(true)}
               className="flex items-center gap-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
               title="Làm lại bài thi hoặc từng Part"
@@ -664,6 +684,14 @@ export default function PracticeTestPlayPage() {
                 Làm lại...
               </button>
             )}
+            <button
+              onClick={() => setShowMapModal(true)}
+              className="flex items-center gap-1 text-[11px] font-black text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-full transition-colors whitespace-nowrap cursor-pointer shadow-2xs ml-1"
+              title="Mở bản đồ câu hỏi toàn màn hình"
+            >
+              <span>🗺️</span>
+              Bản đồ
+            </button>
           </div>
         </div>
 
@@ -699,21 +727,42 @@ export default function PracticeTestPlayPage() {
                 <div className="text-4xl sm:text-5xl font-black text-[#213a34] mb-1">
                   {results.totalCorrect} <span className="text-xl sm:text-2xl text-gray-400">/ 100</span>
                 </div>
+                <div className="inline-flex items-center gap-1.5 bg-[#213a34] text-white px-4 py-1.5 rounded-full text-xs font-bold mt-2 shadow-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Điểm TOEIC Reading ước tính: ~{getReadingToeicScore(results.totalCorrect)} / 495</span>
+                </div>
               </div>
 
-              <div className="grid gap-3 mb-6">
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 5 (101-130)</span>
-                  <span className="font-black text-[#f29f77]">{results.part5.correct}/{results.part5.total}</span>
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 5</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part5.correct}/{results.part5.total}</div>
                 </div>
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 6 (131-146)</span>
-                  <span className="font-black text-[#f29f77]">{results.part6.correct}/{results.part6.total}</span>
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 6</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part6.correct}/{results.part6.total}</div>
                 </div>
-                <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-bold text-gray-700">Part 7 (147-200)</span>
-                  <span className="font-black text-[#f29f77]">{results.part7.correct}/{results.part7.total}</span>
+                <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs text-center">
+                  <div className="text-xs text-gray-500 font-semibold mb-0.5">Part 7</div>
+                  <div className="font-black text-base sm:text-lg text-[#213a34]">{results.part7.correct}/{results.part7.total}</div>
                 </div>
+              </div>
+
+              {/* BẢN ĐỒ CÂU HỎI TRỰC TIẾP TRÊN TRANG KẾT QUẢ */}
+              <div className="mb-6">
+                <QuestionMap
+                  mode="result"
+                  testType="reading"
+                  testId={testId}
+                  testTitle={testTitle}
+                  answers={answers}
+                  keyObj={results.key}
+                  onSelectQuestion={(q) => {
+                    setActiveQuestion(q);
+                    setAppState('reviewing');
+                    jumpToQuestionInPdf(q);
+                  }}
+                />
               </div>
 
               <div className="flex flex-col gap-2 mt-auto">
@@ -978,6 +1027,23 @@ export default function PracticeTestPlayPage() {
           {resetToast}
         </div>
       )}
+
+      {/* Question Map Modal */}
+      <QuestionMapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        mode={appState === 'playing' ? 'playing' : (appState === 'result' ? 'result' : 'reviewing')}
+        testType="reading"
+        testId={testId}
+        testTitle={testTitle}
+        answers={answers}
+        keyObj={results?.key || partialResults?.key}
+        currentQuestion={activeQuestion}
+        onSelectQuestion={(q) => {
+          setActiveQuestion(q);
+          jumpToQuestionInPdf(q);
+        }}
+      />
     </div>
   );
 }

@@ -48,6 +48,7 @@ __pycache__/
 *.pyc
 *.tsbuildinfo
 test*.json
+*.original_bak
 scripts/*.png
 data/cleaned_ocr_2023/
 data/extracted_2023/
