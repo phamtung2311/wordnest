@@ -28,6 +28,7 @@ interface IntensiveSidebarProps {
   availableTests?: IntensiveTestOption[];
   onOpenTestSelector?: () => void;
   onOpenResultModal?: () => void;
+  onOpenQuestionMap?: () => void;
   statusFilter?: 'all' | 'wrong' | 'correct';
   onStatusFilterChange?: (filter: 'all' | 'wrong' | 'correct') => void;
 }
@@ -45,6 +46,7 @@ export function IntensiveSidebar({
   availableTests,
   onOpenTestSelector,
   onOpenResultModal,
+  onOpenQuestionMap,
   statusFilter: propStatusFilter,
   onStatusFilterChange,
 }: IntensiveSidebarProps) {
@@ -487,17 +489,30 @@ export function IntensiveSidebar({
         )}
       </div>
 
-      {/* Sticky Bottom Result Button */}
-      {onOpenResultModal && (
-        <div className="p-2.5 border-t border-[#213a34]/10 bg-[#f5f0e6]/60 shrink-0">
-          <button
-            type="button"
-            onClick={onOpenResultModal}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#213a34] hover:bg-[#2c4e46] text-white text-xs font-black shadow-xs transition-all active:scale-95 cursor-pointer"
-          >
-            <Trophy className="w-4 h-4 text-amber-300" />
-            <span>Xem bảng kết quả ({allStats.correctQuestions}/{allStats.totalQuestions})</span>
-          </button>
+      {/* Sticky Bottom Result & Question Map Buttons */}
+      {(onOpenResultModal || onOpenQuestionMap) && (
+        <div className="p-2.5 border-t border-[#213a34]/10 bg-[#f5f0e6]/60 shrink-0 flex flex-col gap-1.5">
+          {onOpenResultModal && (
+            <button
+              type="button"
+              onClick={onOpenResultModal}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#213a34] hover:bg-[#2c4e46] text-white text-xs font-black shadow-xs transition-all active:scale-95 cursor-pointer"
+            >
+              <Trophy className="w-4 h-4 text-amber-300" />
+              <span>Xem bảng kết quả ({allStats.correctQuestions}/{allStats.totalQuestions})</span>
+            </button>
+          )}
+          {onOpenQuestionMap && (
+            <button
+              type="button"
+              onClick={onOpenQuestionMap}
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black shadow-2xs transition-all active:scale-95 cursor-pointer"
+              title="Xem bản đồ câu hỏi và phổ đáp án chi tiết"
+            >
+              <span>🗺️</span>
+              <span>Bản đồ câu hỏi (Phổ đáp án)</span>
+            </button>
+          )}
         </div>
       )}
     </div>

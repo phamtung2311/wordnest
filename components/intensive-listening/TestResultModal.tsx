@@ -17,6 +17,18 @@ import {
 } from 'lucide-react';
 import type { IntensiveListeningItem } from '@/data/intensive_listening_index';
 import type { QuizItemResult } from './types';
+import { QuestionMap } from '@/components/QuestionMap';
+import { getLcAnswers } from '@/data/lc_answers';
+
+function getStandardTestId(id: number): string {
+  if (id >= 20241 && id <= 202410) {
+    return `2024-${id - 20240}`;
+  }
+  if (id >= 20231 && id <= 202310) {
+    return `2023-${id - 20230}`;
+  }
+  return String(id);
+}
 
 // Authentic ETS TOEIC Listening Scaled Score Table (100 questions -> 5 to 495)
 export function calculateToeicListeningScore(correct: number): number {
@@ -103,6 +115,7 @@ interface TestResultModalProps {
   onReviewWrong: () => void;
   onResetTest: (testId: number) => void;
   onOpenTestSelector: () => void;
+  onSelectQuestion?: (q: number) => void;
 }
 
 export function TestResultModal({
@@ -115,10 +128,44 @@ export function TestResultModal({
   onReviewWrong,
   onResetTest,
   onOpenTestSelector,
+  onSelectQuestion,
 }: TestResultModalProps) {
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
   if (!isOpen) return null;
+
+  const stdTestId = getStandardTestId(currentTestId);
+  const userAnswers: Record<number, string> = {};
+  const keyObj: Record<string, string> = { ...getLcAnswers(stdTestId) };
+
+  items.forEach((item) => {
+    let quizData: any = null;
+    try {
+      const raw = localStorage.getItem(`toeic_intensive_quiz_t${currentTestId}_${item.id}`)
+        || (currentTestId === 1 ? localStorage.getItem(`toeic_intensive_quiz_${item.id}`) : null);
+      if (raw) quizData = JSON.parse(raw);
+    } catch {}
+
+    item.questions.forEach((q) => {
+      keyObj[String(q.num)] = q.correctAnswer;
+      if (quizData?.selectedAnswers?.[q.num]) {
+        userAnswers[q.num] = quizData.selectedAnswers[q.num];
+      }
+    });
+  });
+
+  try {
+    const fullRaw = localStorage.getItem(`toeic_listening_progress_${stdTestId}`);
+    if (fullRaw) {
+      const parsed = JSON.parse(fullRaw);
+      for (const [k, v] of Object.entries(parsed)) {
+        const qNum = Number(k);
+        if (!userAnswers[qNum] && typeof v === 'string') {
+          userAnswers[qNum] = v;
+        }
+      }
+    }
+  } catch {}
 
   // Calculate stats
   let totalQuestions = 0;
@@ -183,7 +230,7 @@ export function TestResultModal({
         }
       }}
     >
-      <div className="relative w-full max-w-2xl bg-[#fcfaf6] rounded-3xl shadow-2xl border-2 border-[#213a34]/15 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-4xl bg-[#fcfaf6] rounded-3xl shadow-2xl border-2 border-[#213a34]/15 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
         {/* Modal Header with Festive Gradient Banner */}
         <div className="relative bg-gradient-to-r from-[#213a34] via-[#28483f] to-[#1c322c] text-white p-5 sm:p-6 pb-7 shrink-0 overflow-hidden">
           {/* Subtle Decorative Background Circles */}
@@ -352,6 +399,22 @@ export function TestResultModal({
                 );
               })}
             </div>
+          </div>
+
+          {/* Bản đồ câu hỏi / Phổ đáp án chi tiết */}
+          <div className="pt-2">
+            <QuestionMap
+              mode="result"
+              testType="listening"
+              testId={stdTestId}
+              testTitle={testTitle || `ETS 2026 · Test ${currentTestId}`}
+              answers={userAnswers}
+              keyObj={keyObj}
+              onSelectQuestion={(q) => {
+                onSelectQuestion?.(q);
+                onClose();
+              }}
+            />
           </div>
 
           {/* Reset Confirmation Box if triggered */}

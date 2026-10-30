@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -16,6 +16,18 @@ import { TranscriptTab } from './TranscriptTab';
 import { DictationTab } from './DictationTab';
 import { TestSelectorModal } from './TestSelectorModal';
 import { TestResultModal } from './TestResultModal';
+import { QuestionMapModal } from '@/components/QuestionMap';
+import { getLcAnswers } from '@/data/lc_answers';
+
+function getStandardTestId(id: number): string {
+  if (id >= 20241 && id <= 202410) {
+    return `2024-${id - 20240}`;
+  }
+  if (id >= 20231 && id <= 202310) {
+    return `2023-${id - 20230}`;
+  }
+  return String(id);
+}
 import {
   ArrowLeft,
   Headphones,
@@ -91,6 +103,7 @@ export function IntensiveListeningHub() {
   const [currentTestId, setCurrentTestId] = useState<number>(1);
   const [isTestSelectorOpen, setIsTestSelectorOpen] = useState<boolean>(false);
   const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
+  const [isQuestionMapOpen, setIsQuestionMapOpen] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<'all' | 'wrong' | 'correct'>('all');
   const currentTestData = getIntensiveDataByTestId(currentTestId);
 
@@ -470,6 +483,52 @@ export function IntensiveListeningHub() {
     0
   );
 
+  const { allUserAnswers, allKeyObj } = useMemo(() => {
+    const stdId = getStandardTestId(currentTestId);
+    const answers: Record<number, string> = {};
+    const keyObj: Record<string, string> = { ...getLcAnswers(stdId) };
+
+    currentTestData.forEach((item) => {
+      let quizData: any = null;
+      try {
+        const raw = localStorage.getItem(`toeic_intensive_quiz_t${currentTestId}_${item.id}`)
+          || (currentTestId === 1 ? localStorage.getItem(`toeic_intensive_quiz_${item.id}`) : null);
+        if (raw) quizData = JSON.parse(raw);
+      } catch {}
+
+      item.questions.forEach((q) => {
+        keyObj[String(q.num)] = q.correctAnswer;
+        if (quizData?.selectedAnswers?.[q.num]) {
+          answers[q.num] = quizData.selectedAnswers[q.num];
+        }
+      });
+    });
+
+    try {
+      const fullRaw = localStorage.getItem(`toeic_listening_progress_${stdId}`);
+      if (fullRaw) {
+        const parsed = JSON.parse(fullRaw);
+        for (const [k, v] of Object.entries(parsed)) {
+          const qNum = Number(k);
+          if (!answers[qNum] && typeof v === 'string') {
+            answers[qNum] = v;
+          }
+        }
+      }
+    } catch {}
+
+    return { allUserAnswers: answers, allKeyObj: keyObj };
+  }, [currentTestId, currentTestData, quizResults]);
+
+  const handleSelectQuestionFromMap = (q: number) => {
+    const targetItem = currentTestData.find((item) =>
+      item.questions.some((quest) => quest.num === q)
+    );
+    if (targetItem) {
+      handleSelectItem(targetItem.id);
+    }
+  };
+
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#faf8f5] text-[#14362d] flex flex-col font-sans pb-16 lg:pb-0">
       {/* Top Navigation Bar */}
@@ -536,6 +595,18 @@ export function IntensiveListeningHub() {
 
           {/* Right: Progress & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Question Map / Phổ đáp án Button */}
+            <button
+              type="button"
+              onClick={() => setIsQuestionMapOpen(true)}
+              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black shadow-2xs transition-all active:scale-95 cursor-pointer"
+              title="Xem bản đồ câu hỏi và phổ đáp án chi tiết"
+            >
+              <span>🗺️</span>
+              <span className="hidden md:inline">Bản đồ câu hỏi</span>
+              <span className="md:hidden">Bản đồ</span>
+            </button>
+
             {/* Score & Progress Pill (Desktop) */}
             <button
               type="button"
@@ -592,6 +663,7 @@ export function IntensiveListeningHub() {
           availableTests={availableIntensiveTests}
           onOpenTestSelector={() => setIsTestSelectorOpen(true)}
           onOpenResultModal={() => setIsResultModalOpen(true)}
+          onOpenQuestionMap={() => setIsQuestionMapOpen(true)}
           statusFilter={statusFilter}
           onStatusFilterChange={setStatusFilter}
         />
@@ -734,6 +806,20 @@ export function IntensiveListeningHub() {
         onReviewWrong={handleReviewWrong}
         onResetTest={handleResetEntireTest}
         onOpenTestSelector={() => setIsTestSelectorOpen(true)}
+        onSelectQuestion={handleSelectQuestionFromMap}
+      />
+
+      {/* Question Map Modal */}
+      <QuestionMapModal
+        isOpen={isQuestionMapOpen}
+        onClose={() => setIsQuestionMapOpen(false)}
+        mode="result"
+        testType="listening"
+        testId={getStandardTestId(currentTestId)}
+        testTitle={activeTestInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`}
+        answers={allUserAnswers}
+        keyObj={allKeyObj}
+        onSelectQuestion={handleSelectQuestionFromMap}
       />
     </div>
   );
