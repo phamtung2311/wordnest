@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   availableIntensiveTests,
-  getIntensiveDataByTestId,
+  loadIntensiveDataByTestId,
 } from '@/data/intensive_listening_index';
 import type { IntensiveListeningItem } from '@/data/intensive_listening_index';
 import type { PracticeTab, QuizItemResult } from './types';
@@ -105,12 +105,13 @@ export function IntensiveListeningHub() {
   const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
   const [isQuestionMapOpen, setIsQuestionMapOpen] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<'all' | 'wrong' | 'correct'>('all');
-  const currentTestData = getIntensiveDataByTestId(currentTestId);
+
+  // Dữ liệu đề được nạp lazy (code-split) theo đề đang chọn
+  const [currentTestData, setCurrentTestData] = useState<IntensiveListeningItem[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
 
   // Item & practice State
-  const [currentItemId, setCurrentItemId] = useState<string>(
-    currentTestData[0]?.id || 'part1-1'
-  );
+  const [currentItemId, setCurrentItemId] = useState<string>('');
   const [activeTab, setActiveTab] = useState<PracticeTab>('quiz');
   const [isLooping, setIsLooping] = useState<boolean>(false);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
@@ -164,18 +165,18 @@ export function IntensiveListeningHub() {
       }
       setCurrentTestId(initialTestId);
 
-      const activeData = getIntensiveDataByTestId(initialTestId);
-
-      // 2. Load last active item for that test (chính xác câu đang làm dở)
+      // Item đang làm dở & quiz results sẽ được resolve bởi effect nạp data lazy
+      // bên dưới (data tải async theo đề). Giữ "last active item" để hiệu ứng
+      // khôi phục đúng câu sau khi data về.
       const savedLastItem =
         initialItemId ||
         localStorage.getItem(`toeic_intensive_last_item_t${initialTestId}`) ||
         (initialTestId === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
 
-      if (savedLastItem && activeData.some((i) => i.id === savedLastItem)) {
-        setCurrentItemId(savedLastItem);
-      } else if (activeData.length > 0) {
-        setCurrentItemId(activeData[0].id);
+      if (savedLastItem) {
+        try {
+          localStorage.setItem(`toeic_intensive_last_item_t${initialTestId}`, savedLastItem);
+        } catch {}
       }
 
       // Auto-cleanup dirty cross-contaminated test caches (t2 to t10)
@@ -198,25 +199,8 @@ export function IntensiveListeningHub() {
         localStorage.setItem('toeic_intensive_scoped_v1', 'true');
       }
 
-      // 3. Load quiz results & score stats for that test
-      const initialResults = loadQuizResultsForTest(initialTestId, activeData);
-      setQuizResults(initialResults);
-
-      // 4. Load completed items for that test
-      const savedCompleted =
-        localStorage.getItem(`toeic_intensive_completed_t${initialTestId}`) ||
-        (initialTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
-
-      if (savedCompleted && (initialTestId === 1 || Object.keys(initialResults).length > 0)) {
-        setCompletedItems(JSON.parse(savedCompleted));
-      } else {
-        setCompletedItems({});
-        try {
-          if (initialTestId > 1 && Object.keys(initialResults).length === 0) {
-            localStorage.removeItem(`toeic_intensive_completed_t${initialTestId}`);
-          }
-        } catch {}
-      }
+      // 3. Quiz results & completed items: được khôi phục trong effect nạp data
+      // (cần dữ liệu đề để tính điểm chuẩn), không cần chạy ở đây nữa.
 
       // 4. Other playback settings
       const savedLoop = localStorage.getItem('toeic_intensive_loop');
@@ -238,6 +222,76 @@ export function IntensiveListeningHub() {
     }
   }, []);
 
+  // Nạp (lazy) dữ liệu đề đang chọn; hoàn tất thì khôi phục item/results/completed
+  // đã lưu trước đó (bằng cách mount hiệu ứng này, chạy lại mỗi khi đổi đề)
+  useEffect(() => {
+    let cancelled = false;
+    setIsDataLoading(true);
+    loadIntensiveDataByTestId(currentTestId).then((data) => {
+      if (cancelled) return;
+      setCurrentTestData(data);
+      if (data.length === 0) {
+        setCurrentItemId('');
+        setIsDataLoading(false);
+        return;
+      }
+
+      // Khôi phục câu đang làm dở của đề này
+      const savedLastItem = localStorage.getItem(`toeic_intensive_last_item_t${currentTestId}`);
+      let restoredItemId: string;
+      if (savedLastItem && data.some((i) => i.id === savedLastItem)) {
+        restoredItemId = savedLastItem;
+      } else {
+        restoredItemId = data[0].id;
+      }
+      setCurrentItemId(restoredItemId);
+
+      const targetItem = data.find((i) => i.id === restoredItemId);
+      const testInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
+      try {
+        if (targetItem) {
+          const histData = {
+            testId: currentTestId,
+            testTitle: testInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`,
+            testShortTitle: testInfo?.shortTitle || `Test ${currentTestId}`,
+            itemId: targetItem.id,
+            itemRange: targetItem.questionRange,
+            itemTitle: targetItem.title,
+            part: targetItem.part,
+            updatedAt: Date.now(),
+          };
+          localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
+        }
+      } catch {}
+
+      // Khôi phục quiz results & completed items
+      const initialResults = loadQuizResultsForTest(currentTestId, data);
+      setQuizResults(initialResults);
+      const savedCompleted =
+        localStorage.getItem(`toeic_intensive_completed_t${currentTestId}`) ||
+        (currentTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
+      if (savedCompleted && (currentTestId === 1 || Object.keys(initialResults).length > 0)) {
+        try {
+          setCompletedItems(JSON.parse(savedCompleted));
+        } catch {
+          setCompletedItems({});
+        }
+      } else {
+        setCompletedItems({});
+        try {
+          if (currentTestId > 1 && Object.keys(initialResults).length === 0) {
+            localStorage.removeItem(`toeic_intensive_completed_t${currentTestId}`);
+          }
+        } catch {}
+      }
+
+      setIsDataLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentTestId]);
+
   const handleTabChange = (tab: PracticeTab) => {
     setActiveTab(tab);
     try {
@@ -245,60 +299,16 @@ export function IntensiveListeningHub() {
     } catch {}
   };
 
-  // Handler: Change Test
+  // Handler: Change Test — chuyển đề; item/results/completed được khôi phục
+  // bởi effect nạp data khi chunk data của đề mới được tải xong
   const handleSelectTest = (testId: number) => {
     if (testId === currentTestId) return;
     setCurrentTestId(testId);
-    const newTestData = getIntensiveDataByTestId(testId);
+    setCurrentTestData([]);
 
     try {
       localStorage.setItem('toeic_intensive_current_test', String(testId));
-
-      // Load saved item for the new test (câu đang làm dở của đề đó)
-      const savedItemForTest = localStorage.getItem(`toeic_intensive_last_item_t${testId}`);
-      let targetItem = newTestData[0];
-      if (savedItemForTest && newTestData.some((i) => i.id === savedItemForTest)) {
-        targetItem = newTestData.find((i) => i.id === savedItemForTest) || newTestData[0];
-        setCurrentItemId(savedItemForTest);
-      } else if (newTestData.length > 0) {
-        setCurrentItemId(newTestData[0].id);
-      }
-
-      // Save global history
-      if (targetItem) {
-        const testInfo = availableIntensiveTests.find((t) => t.id === testId);
-        const histData = {
-          testId: testId,
-          testTitle: testInfo?.title || `ETS TOEIC 2026 - Test ${testId}`,
-          testShortTitle: testInfo?.shortTitle || `Test ${testId}`,
-          itemId: targetItem.id,
-          itemRange: targetItem.questionRange,
-          itemTitle: targetItem.title,
-          part: targetItem.part,
-          updatedAt: Date.now(),
-        };
-        localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
-      }
-
-      // Load quiz results for the new test first
-      const testResults = loadQuizResultsForTest(testId, newTestData);
-      setQuizResults(testResults);
-
-      // Load completed items for the new test
-      const savedCompleted = localStorage.getItem(`toeic_intensive_completed_t${testId}`);
-      if (savedCompleted && (testId === 1 || Object.keys(testResults).length > 0)) {
-        setCompletedItems(JSON.parse(savedCompleted));
-      } else {
-        setCompletedItems({});
-        try {
-          if (testId > 1 && Object.keys(testResults).length === 0) {
-            localStorage.removeItem(`toeic_intensive_completed_t${testId}`);
-          }
-        } catch {}
-      }
-    } catch (e) {
-      console.error('Error switching test', e);
-    }
+    } catch {}
   };
 
   // Handler: Select an item in current test
@@ -323,6 +333,11 @@ export function IntensiveListeningHub() {
           updatedAt: Date.now(),
         };
         localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
+        // Lưu metadata câu để selector (không tải data) hiển thị "Đang làm"
+        localStorage.setItem(
+          `toeic_intensive_last_item_meta_t${currentTestId}`,
+          JSON.stringify({ range: targetItem.questionRange, title: targetItem.title })
+        );
       }
     } catch (e) {}
   };
@@ -427,9 +442,8 @@ export function IntensiveListeningHub() {
       setQuizResults({});
       setCompletedItems({});
       setStatusFilter('all');
-      const testData = getIntensiveDataByTestId(testId);
-      if (testData.length > 0) {
-        setCurrentItemId(testData[0].id);
+      if (currentTestData.length > 0) {
+        setCurrentItemId(currentTestData[0].id);
       }
       setActiveTab('quiz');
     }
@@ -451,7 +465,7 @@ export function IntensiveListeningHub() {
 
   // Find current item and indices within active test
   const currentItemIndex = currentTestData.findIndex((i) => i.id === currentItemId);
-  const currentItem: IntensiveListeningItem =
+  const currentItem: IntensiveListeningItem | undefined =
     currentTestData[currentItemIndex >= 0 ? currentItemIndex : 0] || currentTestData[0];
 
   const hasNext = currentItemIndex < currentTestData.length - 1;
@@ -528,6 +542,18 @@ export function IntensiveListeningHub() {
       handleSelectItem(targetItem.id);
     }
   };
+
+  // Guard: khi chunk data của đề chưa tải xong thì chỉ render skeleton
+  if (isDataLoading || !currentItem) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-[#faf8f5] text-[#14362d]">
+        <div className="flex items-center gap-3 text-sm font-black text-[#213a34]">
+          <span className="w-4 h-4 rounded-full border-2 border-[#213a34] border-t-transparent animate-spin" />
+          Đang tải đề thi...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#faf8f5] text-[#14362d] flex flex-col font-sans pb-16 lg:pb-0">

@@ -51,7 +51,7 @@ export interface IntensiveListeningItem {
   vocabulary?: VocabItem[];
 }
 
-export interface IntensiveTestOption {
+export interface IntensiveTestMeta {
   id: number;
   title: string;
   shortTitle: string;
@@ -59,6 +59,5 @@ export interface IntensiveTestOption {
   edition?: string;
   badge?: string;
   itemCount: number;
-  data: IntensiveListeningItem[];
 }
 

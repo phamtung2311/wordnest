@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import {
   availableIntensiveTests,
-  type IntensiveTestOption,
+  type IntensiveTestMeta,
 } from '@/data/intensive_listening_index';
 
 interface TestSelectorModalProps {
@@ -71,18 +71,20 @@ export function TestSelectorModal({
           stats[t.id] = { completed: 0, total: t.itemCount || 54, percentage: 0 };
         }
 
-        // Find last active item
+        // Find last active item (metadata được lưu sẵn khi chọn câu trong Hub,
+        // không cần tải data để tránh kéo 30 chunk)
         const lastItemId =
           localStorage.getItem(`toeic_intensive_last_item_t${t.id}`) ||
           (t.id === 1 ? localStorage.getItem('toeic_intensive_last_item') : null);
 
         if (lastItemId) {
-          const found = t.data.find((i) => i.id === lastItemId);
+          let found: { range: string; title: string } | null = null;
+          try {
+            const metaRaw = localStorage.getItem(`toeic_intensive_last_item_meta_t${t.id}`);
+            if (metaRaw) found = JSON.parse(metaRaw);
+          } catch {}
           if (found) {
-            activeMap[t.id] = {
-              range: found.questionRange,
-              title: found.title,
-            };
+            activeMap[t.id] = found;
           }
         }
 

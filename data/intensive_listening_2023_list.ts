@@ -1,17 +1,7 @@
 // Danh sách các đề thi Luyện nghe chi tiết - Bộ đề ETS TOEIC 2023 (Test 1 - Test 10)
-import type { IntensiveTestOption } from './intensive_listening_types';
-import { test1_2023_IntensiveData } from './intensive_listening_2023_test1';
-import { test2_2023_IntensiveData } from './intensive_listening_2023_test2';
-import { test3_2023_IntensiveData } from './intensive_listening_2023_test3';
-import { test4_2023_IntensiveData } from './intensive_listening_2023_test4';
-import { test5_2023_IntensiveData } from './intensive_listening_2023_test5';
-import { test6_2023_IntensiveData } from './intensive_listening_2023_test6';
-import { test7_2023_IntensiveData } from './intensive_listening_2023_test7';
-import { test8_2023_IntensiveData } from './intensive_listening_2023_test8';
-import { test9_2023_IntensiveData } from './intensive_listening_2023_test9';
-import { test10_2023_IntensiveData } from './intensive_listening_2023_test10';
+import type { IntensiveTestMeta } from './intensive_listening_types';
 
-export const intensiveTests2023: IntensiveTestOption[] = [
+export const intensiveTests2023: IntensiveTestMeta[] = [
   {
     id: 20231,
     title: 'ETS TOEIC 2023 - Test 1',
@@ -19,8 +9,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 1 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T1",
-    itemCount: test1_2023_IntensiveData.length,
-    data: test1_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20232,
@@ -29,8 +18,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 2 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T2",
-    itemCount: test2_2023_IntensiveData.length,
-    data: test2_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20233,
@@ -39,8 +27,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 3 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T3",
-    itemCount: test3_2023_IntensiveData.length,
-    data: test3_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20234,
@@ -49,8 +36,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 4 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T4",
-    itemCount: test4_2023_IntensiveData.length,
-    data: test4_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20235,
@@ -59,8 +45,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 5 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T5",
-    itemCount: test5_2023_IntensiveData.length,
-    data: test5_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20236,
@@ -69,8 +54,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 6 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T6",
-    itemCount: test6_2023_IntensiveData.length,
-    data: test6_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20237,
@@ -79,8 +63,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 7 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T7",
-    itemCount: test7_2023_IntensiveData.length,
-    data: test7_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20238,
@@ -89,8 +72,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 8 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T8",
-    itemCount: test8_2023_IntensiveData.length,
-    data: test8_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 20239,
@@ -99,8 +81,7 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 9 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T9",
-    itemCount: test9_2023_IntensiveData.length,
-    data: test9_2023_IntensiveData,
+    itemCount: 54,
   },
   {
     id: 202310,
@@ -109,7 +90,6 @@ export const intensiveTests2023: IntensiveTestOption[] = [
     description: 'Đề thi ETS TOEIC 2023 Test 10 - Luyện nghe chi tiết từng câu Part 1-4 với audio, transcript song ngữ và giải thích chi tiết',
     edition: 'ETS 2023',
     badge: "'23 T10",
-    itemCount: test10_2023_IntensiveData.length,
-    data: test10_2023_IntensiveData,
+    itemCount: 54,
   },
 ];

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import type { IntensiveListeningItem, IntensiveTestOption } from '@/data/intensive_listening_index';
+import type { IntensiveListeningItem, IntensiveTestMeta } from '@/data/intensive_listening_index';
 import type { PartFilter, QuizItemResult } from './types';
 import {
   Search,
@@ -25,7 +25,7 @@ interface IntensiveSidebarProps {
   onCloseMobile: () => void;
   currentTestId?: number;
   onSelectTest?: (testId: number) => void;
-  availableTests?: IntensiveTestOption[];
+  availableTests?: IntensiveTestMeta[];
   onOpenTestSelector?: () => void;
   onOpenResultModal?: () => void;
   onOpenQuestionMap?: () => void;

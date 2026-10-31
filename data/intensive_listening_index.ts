@@ -1,16 +1,12 @@
-import { test1IntensiveData } from './intensive_listening_test1';
-import { test2IntensiveData } from './intensive_listening_test2';
-import { test3IntensiveData } from './intensive_listening_test3';
-import { test4IntensiveData } from './intensive_listening_test4';
-import { test5IntensiveData } from './intensive_listening_test5';
-import { test6IntensiveData } from './intensive_listening_test6';
-import { test7IntensiveData } from './intensive_listening_test7';
-import { test8IntensiveData } from './intensive_listening_test8';
-import { test9IntensiveData } from './intensive_listening_test9';
-import { test10IntensiveData } from './intensive_listening_test10';
+// Index đề thi Luyện nghe chi tiết.
+//
+// `availableIntensiveTests` chứa DUY NHẤT metadata nhẹ (tiêu đề, edition, itemCount)
+// để UI (selector, sidebar) không phải tải trước 30 file dữ liệu ~6MB.
+// Nội dung từng đề được nạp theo yêu cầu (lazy) qua `loadIntensiveDataByTestId` — Vite tự
+// code-split mỗi file data thành 1 chunk riêng, chỉ tải khi người dùng mở đề đó.
+import type { IntensiveListeningItem, IntensiveTestMeta } from './intensive_listening_types';
 import { intensiveTests2024 } from './intensive_listening_2024_list';
 import { intensiveTests2023 } from './intensive_listening_2023_list';
-import type { IntensiveListeningItem } from './intensive_listening_test1';
 
 export type {
   DialogueLine,
@@ -18,20 +14,10 @@ export type {
   QuestionItem,
   VocabItem,
   IntensiveListeningItem,
-} from './intensive_listening_test1';
+  IntensiveTestMeta,
+} from './intensive_listening_types';
 
-export interface IntensiveTestOption {
-  id: number;
-  title: string;
-  shortTitle: string;
-  description: string;
-  edition?: string;
-  badge?: string;
-  itemCount: number;
-  data: IntensiveListeningItem[];
-}
-
-export const availableIntensiveTests: IntensiveTestOption[] = [
+export const availableIntensiveTests: IntensiveTestMeta[] = [
   {
     id: 1,
     title: 'ETS TOEIC 2026 - Test 1',
@@ -39,8 +25,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 1 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T1',
-    itemCount: test1IntensiveData.length,
-    data: test1IntensiveData,
+    itemCount: 54,
   },
   {
     id: 2,
@@ -49,8 +34,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 2 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T2',
-    itemCount: test2IntensiveData.length,
-    data: test2IntensiveData,
+    itemCount: 54,
   },
   {
     id: 3,
@@ -59,8 +43,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 3 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T3',
-    itemCount: test3IntensiveData.length,
-    data: test3IntensiveData,
+    itemCount: 54,
   },
   {
     id: 4,
@@ -69,8 +52,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 4 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T4',
-    itemCount: test4IntensiveData.length,
-    data: test4IntensiveData,
+    itemCount: 54,
   },
   {
     id: 5,
@@ -79,8 +61,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 5 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T5',
-    itemCount: test5IntensiveData.length,
-    data: test5IntensiveData,
+    itemCount: 54,
   },
   {
     id: 6,
@@ -89,8 +70,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 6 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T6',
-    itemCount: test6IntensiveData.length,
-    data: test6IntensiveData,
+    itemCount: 54,
   },
   {
     id: 7,
@@ -99,8 +79,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 7 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T7',
-    itemCount: test7IntensiveData.length,
-    data: test7IntensiveData,
+    itemCount: 54,
   },
   {
     id: 8,
@@ -109,8 +88,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 8 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T8',
-    itemCount: test8IntensiveData.length,
-    data: test8IntensiveData,
+    itemCount: 54,
   },
   {
     id: 9,
@@ -119,8 +97,7 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 9 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T9',
-    itemCount: test9IntensiveData.length,
-    data: test9IntensiveData,
+    itemCount: 54,
   },
   {
     id: 10,
@@ -129,14 +106,47 @@ export const availableIntensiveTests: IntensiveTestOption[] = [
     description: 'Luyện nghe chi tiết Test 10 (Part 1 - 4)',
     edition: 'ETS 2026',
     badge: 'T10',
-    itemCount: test10IntensiveData.length,
-    data: test10IntensiveData,
+    itemCount: 54,
   },
   ...intensiveTests2024,
   ...intensiveTests2023,
 ];
 
-export function getIntensiveDataByTestId(testId: number): IntensiveListeningItem[] {
-  const found = availableIntensiveTests.find((t) => t.id === testId);
-  return found ? found.data : test1IntensiveData;
+// Buggy: key là testId, value là function import động (Vite code-split từng đề)
+const loadTestDataById: Record<number, () => Promise<IntensiveListeningItem[]>> = {
+  1: () => import('./intensive_listening_test1').then((m) => m.test1IntensiveData),
+  2: () => import('./intensive_listening_test2').then((m) => m.test2IntensiveData),
+  3: () => import('./intensive_listening_test3').then((m) => m.test3IntensiveData),
+  4: () => import('./intensive_listening_test4').then((m) => m.test4IntensiveData),
+  5: () => import('./intensive_listening_test5').then((m) => m.test5IntensiveData),
+  6: () => import('./intensive_listening_test6').then((m) => m.test6IntensiveData),
+  7: () => import('./intensive_listening_test7').then((m) => m.test7IntensiveData),
+  8: () => import('./intensive_listening_test8').then((m) => m.test8IntensiveData),
+  9: () => import('./intensive_listening_test9').then((m) => m.test9IntensiveData),
+  10: () => import('./intensive_listening_test10').then((m) => m.test10IntensiveData),
+  20241: () => import('./intensive_listening_2024_test1').then((m) => m.test1_2024_IntensiveData),
+  20242: () => import('./intensive_listening_2024_test2').then((m) => m.test2_2024_IntensiveData),
+  20243: () => import('./intensive_listening_2024_test3').then((m) => m.test3_2024_IntensiveData),
+  20244: () => import('./intensive_listening_2024_test4').then((m) => m.test4_2024_IntensiveData),
+  20245: () => import('./intensive_listening_2024_test5').then((m) => m.test5_2024_IntensiveData),
+  20246: () => import('./intensive_listening_2024_test6').then((m) => m.test6_2024_IntensiveData),
+  20247: () => import('./intensive_listening_2024_test7').then((m) => m.test7_2024_IntensiveData),
+  20248: () => import('./intensive_listening_2024_test8').then((m) => m.test8_2024_IntensiveData),
+  20249: () => import('./intensive_listening_2024_test9').then((m) => m.test9_2024_IntensiveData),
+  202410: () => import('./intensive_listening_2024_test10').then((m) => m.test10_2024_IntensiveData),
+  20231: () => import('./intensive_listening_2023_test1').then((m) => m.test1_2023_IntensiveData),
+  20232: () => import('./intensive_listening_2023_test2').then((m) => m.test2_2023_IntensiveData),
+  20233: () => import('./intensive_listening_2023_test3').then((m) => m.test3_2023_IntensiveData),
+  20234: () => import('./intensive_listening_2023_test4').then((m) => m.test4_2023_IntensiveData),
+  20235: () => import('./intensive_listening_2023_test5').then((m) => m.test5_2023_IntensiveData),
+  20236: () => import('./intensive_listening_2023_test6').then((m) => m.test6_2023_IntensiveData),
+  20237: () => import('./intensive_listening_2023_test7').then((m) => m.test7_2023_IntensiveData),
+  20238: () => import('./intensive_listening_2023_test8').then((m) => m.test8_2023_IntensiveData),
+  20239: () => import('./intensive_listening_2023_test9').then((m) => m.test9_2023_IntensiveData),
+  202310: () => import('./intensive_listening_2023_test10').then((m) => m.test10_2023_IntensiveData),
+};
+
+export async function loadIntensiveDataByTestId(testId: number): Promise<IntensiveListeningItem[]> {
+  const loader = loadTestDataById[testId] ?? loadTestDataById[1];
+  return loader();
 }
