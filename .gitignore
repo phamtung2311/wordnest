@@ -54,3 +54,11 @@ data/cleaned_ocr_2023/
 data/extracted_2023/
 data/segments_2023/
 data/*.json
+
+# Android build outputs & IDE (keep source, not generated binaries)
+android/.gradle/
+android/.idea/
+android/**/build/
+android/local.properties
+*.apk
+*.aab
