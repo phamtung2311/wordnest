@@ -227,66 +227,72 @@ export function IntensiveListeningHub() {
   useEffect(() => {
     let cancelled = false;
     setIsDataLoading(true);
-    loadIntensiveDataByTestId(currentTestId).then((data) => {
-      if (cancelled) return;
-      setCurrentTestData(data);
-      if (data.length === 0) {
-        setCurrentItemId('');
-        setIsDataLoading(false);
-        return;
-      }
+    loadIntensiveDataByTestId(currentTestId)
+      .then((data) => {
+        if (cancelled) return;
+        setCurrentTestData(data);
+        if (data.length === 0) {
+          setCurrentItemId('');
+          setIsDataLoading(false);
+          return;
+        }
 
       // Khôi phục câu đang làm dở của đề này
-      const savedLastItem = localStorage.getItem(`toeic_intensive_last_item_t${currentTestId}`);
-      let restoredItemId: string;
-      if (savedLastItem && data.some((i) => i.id === savedLastItem)) {
-        restoredItemId = savedLastItem;
-      } else {
-        restoredItemId = data[0].id;
-      }
-      setCurrentItemId(restoredItemId);
-
-      const targetItem = data.find((i) => i.id === restoredItemId);
-      const testInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
-      try {
-        if (targetItem) {
-          const histData = {
-            testId: currentTestId,
-            testTitle: testInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`,
-            testShortTitle: testInfo?.shortTitle || `Test ${currentTestId}`,
-            itemId: targetItem.id,
-            itemRange: targetItem.questionRange,
-            itemTitle: targetItem.title,
-            part: targetItem.part,
-            updatedAt: Date.now(),
-          };
-          localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
+        const savedLastItem = localStorage.getItem(`toeic_intensive_last_item_t${currentTestId}`);
+        let restoredItemId: string;
+        if (savedLastItem && data.some((i) => i.id === savedLastItem)) {
+          restoredItemId = savedLastItem;
+        } else {
+          restoredItemId = data[0].id;
         }
-      } catch {}
+        setCurrentItemId(restoredItemId);
 
-      // Khôi phục quiz results & completed items
-      const initialResults = loadQuizResultsForTest(currentTestId, data);
-      setQuizResults(initialResults);
-      const savedCompleted =
-        localStorage.getItem(`toeic_intensive_completed_t${currentTestId}`) ||
-        (currentTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
-      if (savedCompleted && (currentTestId === 1 || Object.keys(initialResults).length > 0)) {
+        const targetItem = data.find((i) => i.id === restoredItemId);
+        const testInfo = availableIntensiveTests.find((t) => t.id === currentTestId);
         try {
-          setCompletedItems(JSON.parse(savedCompleted));
-        } catch {
-          setCompletedItems({});
-        }
-      } else {
-        setCompletedItems({});
-        try {
-          if (currentTestId > 1 && Object.keys(initialResults).length === 0) {
-            localStorage.removeItem(`toeic_intensive_completed_t${currentTestId}`);
+          if (targetItem) {
+            const histData = {
+              testId: currentTestId,
+              testTitle: testInfo?.title || `ETS TOEIC 2026 - Test ${currentTestId}`,
+              testShortTitle: testInfo?.shortTitle || `Test ${currentTestId}`,
+              itemId: targetItem.id,
+              itemRange: targetItem.questionRange,
+              itemTitle: targetItem.title,
+              part: targetItem.part,
+              updatedAt: Date.now(),
+            };
+            localStorage.setItem('toeic_intensive_global_history', JSON.stringify(histData));
           }
         } catch {}
-      }
 
-      setIsDataLoading(false);
-    });
+        // Khôi phục quiz results & completed items
+        const initialResults = loadQuizResultsForTest(currentTestId, data);
+        setQuizResults(initialResults);
+        const savedCompleted =
+          localStorage.getItem(`toeic_intensive_completed_t${currentTestId}`) ||
+          (currentTestId === 1 ? localStorage.getItem('toeic_intensive_completed') : null);
+        if (savedCompleted && (currentTestId === 1 || Object.keys(initialResults).length > 0)) {
+          try {
+            setCompletedItems(JSON.parse(savedCompleted));
+          } catch {
+            setCompletedItems({});
+          }
+        } else {
+          setCompletedItems({});
+          try {
+            if (currentTestId > 1 && Object.keys(initialResults).length === 0) {
+              localStorage.removeItem(`toeic_intensive_completed_t${currentTestId}`);
+            }
+          } catch {}
+        }
+
+        setIsDataLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('Error loading intensive test data', err);
+        setIsDataLoading(false);
+      });
     return () => {
       cancelled = true;
     };
