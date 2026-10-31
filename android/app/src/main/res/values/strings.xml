@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WordNest</string>
+    <string name="deck_toeic_essential">TOEIC Essential 600</string>
+    <string name="deck_toeic_desc">Bộ từ vựng trọng tâm ôn thi TOEIC</string>
+</resources>

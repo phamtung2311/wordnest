@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "605822510451",
+    "project_id": "wordnest-english-vocab",
+    "storage_bucket": "wordnest-english-vocab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605822510451:android:9b751aa90e0c0070b49106",
+        "android_client_info": {
+          "package_name": "com.tung.wordnest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605822510451-b6qf2she2gaeq1d1a6c01uraojd15u9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tung.wordnest",
+            "certificate_hash": "3db3320bc2711e7e01d8f6cfe3c15ced3243bf96"
+          }
+        },
+        {
+          "client_id": "605822510451-vh9f79f14gt6pape65njbrfrj5i1vi32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS3PER7YcvhzsesfW98v4ZpBmnAfJW1tU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605822510451-ugl9v8ivciodcvsr6vk36moentg3v9r1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
