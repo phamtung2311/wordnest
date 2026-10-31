@@ -204,14 +204,23 @@ fun OnboardingPagerScreen(
 // ==========================================
 // 3. AUTH SCREEN
 // ==========================================
+sealed class AuthStatus {
+    object IDLE : AuthStatus()
+    object SUCCESS : AuthStatus()
+    data class ERROR(val message: String) : AuthStatus()
+}
+
 @Composable
 fun AuthScreen(
     isNetworkError: Boolean,
-    onGoogleSignInClick: () -> Unit,
+    onGoogleSignInClick: suspend () -> Unit,
     onGuestModeClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    authStatus: AuthStatus = AuthStatus.IDLE,
+    onNavigateHome: () -> Unit = {}
 ) {
     var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -281,22 +290,53 @@ fun AuthScreen(
 
             PrimaryButton(
                 text = "Tiếp tục với Google",
-                onClick = { 
-                    isLoading = true
-                    onGoogleSignInClick()
+                onClick = {
+                    scope.launch {
+                        isLoading = true
+                        onGoogleSignInClick()
+                        isLoading = false
+                    }
                 },
                 isLoading = isLoading,
                 modifier = Modifier.fillMaxWidth()
             )
             
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             OutlinedWordNestButton(
                 text = "Trải nghiệm ngay không cần đăng nhập",
                 onClick = onGuestModeClick,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !isLoading
+                enabled = !isLoading && authStatus !is AuthStatus.SUCCESS
             )
+
+            when (val status = authStatus) {
+                is AuthStatus.ERROR -> {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Surface(
+                        color = WordNestTheme.colors.coralTint,
+                        shape = WordNestTheme.shapes.small,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Đăng nhập thất bại: ${status.message}. Vui lòng thử lại.",
+                            style = WordNestTheme.typography.labelMedium,
+                            color = WordNestTheme.colors.error600,
+                            modifier = Modifier.padding(12.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                is AuthStatus.SUCCESS -> {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    PrimaryButton(
+                        text = "Đăng nhập thành công — Vào ứng dụng",
+                        onClick = onNavigateHome,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                else -> {}
+            }
         }
     }
 }

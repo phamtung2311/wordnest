@@ -44,7 +44,7 @@ class SyncRepository(
                         meaning = wordDoc.getString("meaning") ?: "",
                         phonetic = wordDoc.getString("phonetic") ?: "",
                         example = wordDoc.getString("example") ?: "",
-                        level = wordDoc.getString("level") ?: "new",
+                        level = wordDoc.getString("level")?.uppercase() ?: "NEW", // web lưu chữ thường ("new"/"learning"/"known"), app dùng hoa
                         nextReviewTime = wordDoc.getLong("nextReview") ?: 0L,
                         createdAt = wordDoc.getLong("createdAt") ?: 0L
                     )
@@ -68,8 +68,9 @@ class SyncRepository(
                 .collection("decks").document(deckId.toString())
                 .collection("words").document(word.id.toString())
 
+            // Web dùng level chữ thường ("new"/"learning"/"known") — phải push đúng case này
             val updates = mapOf(
-                "level" to word.level,
+                "level" to word.level.lowercase(),
                 "nextReview" to word.nextReviewTime,
                 "reviewCount" to word.reviewCount
             )
@@ -121,7 +122,7 @@ class SyncRepository(
                     "meaning" to word.meaning,
                     "phonetic" to word.phonetic,
                     "example" to word.example,
-                    "level" to word.level,
+                    "level" to word.level.lowercase(),
                     "nextReview" to word.nextReviewTime,
                     "reviewCount" to word.reviewCount,
                     "createdAt" to word.createdAt

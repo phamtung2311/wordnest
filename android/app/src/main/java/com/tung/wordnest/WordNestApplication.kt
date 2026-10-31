@@ -11,6 +11,7 @@ import com.tung.wordnest.data.remote.SyncRepository
 import com.tung.wordnest.service.notification.SrsReviewWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -18,12 +19,16 @@ class WordNestApplication : Application() {
 
     lateinit var repository: WordRepository
         private set
-        
+
     lateinit var authRepository: AuthRepository
         private set
-        
+
     lateinit var syncRepository: SyncRepository
         private set
+
+    // Scope sống cùng Application — an toàn cho các tác vụ sync nền / chạy ngang việc
+    // (không nên dùng rememberCoroutineScope của Composable vì bị forget khi màn hình rời composition)
+    val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
         super.onCreate()
