@@ -3,6 +3,13 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { getLcAnswers } from '@/data/lc_answers';
+import {
+  checkPartialAnswers,
+  gradeAnswers,
+  recordExamHistory,
+  LISTENING_PART_BUCKETS,
+  LISTENING_QUESTION_RANGE,
+} from '@/lib/examGrading';
 import { 
   CheckCircle2, 
   XCircle, 
@@ -328,26 +335,16 @@ export default function ListeningTestPlayPage() {
 
   const handlePartialCheck = () => {
     const key = getLcAnswers(testId);
-    let answered = 0;
-    let correct = 0;
-    let part1 = { correct: 0, total: 6 };
-    let part2 = { correct: 0, total: 25 };
-    let part3 = { correct: 0, total: 39 };
-    let part4 = { correct: 0, total: 30 };
-
-    for (const [qStr, ans] of Object.entries(answers)) {
-      answered++;
-      const qNum = parseInt(qStr);
-      const isCorrect = key[qStr] === ans;
-      if (isCorrect) {
-        correct++;
-        if (qNum <= 6) part1.correct++;
-        else if (qNum <= 31) part2.correct++;
-        else if (qNum <= 70) part3.correct++;
-        else part4.correct++;
-      }
-    }
-    setPartialResults({ answered, correct, part1, part2, part3, part4, key });
+    const partial = checkPartialAnswers(answers, key, LISTENING_PART_BUCKETS);
+    setPartialResults({
+      answered: partial.answered,
+      correct: partial.correct,
+      part1: partial.parts.part1,
+      part2: partial.parts.part2,
+      part3: partial.parts.part3,
+      part4: partial.parts.part4,
+      key,
+    });
     setAppState('partial_reviewing');
     setMobileTab('sheet');
   };
@@ -358,42 +355,24 @@ export default function ListeningTestPlayPage() {
 
   const calculateResults = () => {
     const key = getLcAnswers(testId);
-    let totalCorrect = 0;
-    let part1 = { correct: 0, total: 6 };
-    let part2 = { correct: 0, total: 25 };
-    let part3 = { correct: 0, total: 39 };
-    let part4 = { correct: 0, total: 30 };
-
-    for (let i = 1; i <= 100; i++) {
-      const isCorrect = answers[i] === key[String(i)];
-      if (isCorrect) {
-        totalCorrect++;
-        if (i <= 6) part1.correct++;
-        else if (i <= 31) part2.correct++;
-        else if (i <= 70) part3.correct++;
-        else part4.correct++;
-      }
-    }
-
-    setResults({ totalCorrect, part1, part2, part3, part4, key });
+    const graded = gradeAnswers(answers, key, LISTENING_PART_BUCKETS, LISTENING_QUESTION_RANGE);
+    setResults({
+      totalCorrect: graded.totalCorrect,
+      part1: graded.parts.part1,
+      part2: graded.parts.part2,
+      part3: graded.parts.part3,
+      part4: graded.parts.part4,
+      key,
+    });
     setAppState('result');
     setMobileTab('sheet');
-    
+
     try {
       localStorage.removeItem(`toeic_listening_progress_${testId}`);
       localStorage.removeItem(`toeic_listening_time_${testId}`);
     } catch (e) {}
-    
-    try {
-      const historyStr = localStorage.getItem('toeic_listening_history');
-      const history = historyStr ? JSON.parse(historyStr) : [];
-      history.unshift({
-        testId,
-        score: totalCorrect,
-        date: new Date().toISOString(),
-      });
-      localStorage.setItem('toeic_listening_history', JSON.stringify(history.slice(0, 50)));
-    } catch (e) {}
+
+    recordExamHistory('toeic_listening_history', testId, graded.totalCorrect);
   };
 
   const jumpToQuestionInPdf = (q: number) => {

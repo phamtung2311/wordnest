@@ -23,6 +23,13 @@ import {
 } from 'lucide-react';
 import { QuestionMap, QuestionMapModal } from '@/components/QuestionMap';
 import { getReadingToeicScore } from '@/lib/toeicScoreConverter';
+import {
+  checkPartialAnswers,
+  gradeAnswers,
+  recordExamHistory,
+  READING_PART_BUCKETS,
+  READING_QUESTION_RANGE,
+} from '@/lib/examGrading';
 
 type AppState = 'playing' | 'confirming' | 'result' | 'reviewing' | 'partial_reviewing';
 type FilterPart = 'all' | 'part5' | 'part6' | 'part7' | 'unanswered';
@@ -178,24 +185,15 @@ export default function PracticeTestPlayPage() {
 
   const handlePartialCheck = () => {
     const key = getAnswers(testId);
-    let answered = 0;
-    let correct = 0;
-    let part5 = { correct: 0, total: 30 };
-    let part6 = { correct: 0, total: 16 };
-    let part7 = { correct: 0, total: 54 };
-
-    for (const [qStr, ans] of Object.entries(answers)) {
-      answered++;
-      const qNum = parseInt(qStr);
-      const isCorrect = key[qStr] === ans;
-      if (isCorrect) {
-        correct++;
-        if (qNum <= 130) part5.correct++;
-        else if (qNum <= 146) part6.correct++;
-        else part7.correct++;
-      }
-    }
-    setPartialResults({ answered, correct, part5, part6, part7, key });
+    const partial = checkPartialAnswers(answers, key, READING_PART_BUCKETS);
+    setPartialResults({
+      answered: partial.answered,
+      correct: partial.correct,
+      part5: partial.parts.part5,
+      part6: partial.parts.part6,
+      part7: partial.parts.part7,
+      key,
+    });
     setAppState('partial_reviewing');
     setMobileTab('sheet');
   };
@@ -206,39 +204,22 @@ export default function PracticeTestPlayPage() {
 
   const calculateResults = () => {
     const key = getAnswers(testId);
-    let totalCorrect = 0;
-    let part5 = { correct: 0, total: 30 };
-    let part6 = { correct: 0, total: 16 };
-    let part7 = { correct: 0, total: 54 };
-
-    for (let i = 101; i <= 200; i++) {
-      const isCorrect = answers[i] === key[String(i)];
-      if (isCorrect) {
-        totalCorrect++;
-        if (i <= 130) part5.correct++;
-        else if (i <= 146) part6.correct++;
-        else part7.correct++;
-      }
-    }
-
-    setResults({ totalCorrect, part5, part6, part7, key });
+    const graded = gradeAnswers(answers, key, READING_PART_BUCKETS, READING_QUESTION_RANGE);
+    setResults({
+      totalCorrect: graded.totalCorrect,
+      part5: graded.parts.part5,
+      part6: graded.parts.part6,
+      part7: graded.parts.part7,
+      key,
+    });
     setAppState('result');
     setMobileTab('sheet');
-    
+
     try {
       localStorage.removeItem(`toeic_reading_progress_${testId}`);
     } catch (e) {}
-    
-    try {
-      const historyStr = localStorage.getItem('toeic_reading_history');
-      const history = historyStr ? JSON.parse(historyStr) : [];
-      history.unshift({
-        testId,
-        score: totalCorrect,
-        date: new Date().toISOString(),
-      });
-      localStorage.setItem('toeic_reading_history', JSON.stringify(history.slice(0, 50)));
-    } catch (e) {}
+
+    recordExamHistory('toeic_reading_history', testId, graded.totalCorrect);
   };
 
   const jumpToQuestionInPdf = (q: number) => {
