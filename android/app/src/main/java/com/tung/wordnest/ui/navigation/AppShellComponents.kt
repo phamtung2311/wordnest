@@ -20,6 +20,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tung.wordnest.ui.theme.FrauncesFontFamily
@@ -31,6 +32,8 @@ fun WordNestTopBar(
     onOpenTimerSheet: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToMe: () -> Unit,
+    timerText: String = "00:00:00", // Thời gian học hôm nay (HH:MM:SS) — data thật từ ProgressStore
+    streakDays: Int = 0,             // Chuỗi ngày học — data thật (đã merge progress web khi login)
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -97,7 +100,7 @@ fun WordNestTopBar(
                         .background(WordNestTheme.colors.mint500)
                 )
                 Text(
-                    text = "00:15:20",
+                    text = timerText,
                     style = TimerMonoStyle,
                     color = WordNestTheme.colors.ink900
                 )
@@ -116,7 +119,7 @@ fun WordNestTopBar(
             ) {
                 Text(text = "🔥", fontSize = 14.sp)
                 Text(
-                    text = "12",
+                    text = streakDays.toString(),
                     style = WordNestTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                     color = WordNestTheme.colors.orange600
                 )
@@ -206,6 +209,7 @@ fun QuickActionDock(
     isVisible: Boolean,
     onToggle: () -> Unit,
     onActionSelected: (String) -> Unit,
+    bottomInset: Dp = 0.dp, // Chiều cao bottom bar — FAB/action buttons nằm TRÊN nó, không đè tab "Tôi"
     modifier: Modifier = Modifier
 ) {
     val actionItems = listOf(
@@ -236,7 +240,7 @@ fun QuickActionDock(
         // Action Buttons with staggered animation
         Column(
             horizontalAlignment = Alignment.End,
-            modifier = Modifier.padding(bottom = 80.dp, end = 16.dp)
+            modifier = Modifier.padding(bottom = bottomInset + 80.dp, end = 16.dp)
         ) {
             actionItems.forEachIndexed { index, (label, icon) ->
                 AnimatedVisibility(
@@ -294,7 +298,7 @@ fun QuickActionDock(
             FloatingActionButton(
                 onClick = onToggle,
                 modifier = Modifier
-                    .padding(end = 16.dp, bottom = 16.dp)
+                    .padding(end = 16.dp, bottom = bottomInset + 16.dp)
                     .size(56.dp),
                 containerColor = WordNestTheme.colors.forest900,
                 contentColor = WordNestTheme.colors.amber500,

@@ -346,7 +346,7 @@ export function updateWordReview(
     nextInterval = DAY; // 1 day
     nextLevel = 'learning';
   } else {
-    nextInterval = DAY * 3; // 3 days
+    nextInterval = DAY * 14; // 14 days (nửa tháng)
     nextLevel = 'known';
   }
 

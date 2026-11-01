@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Android: Run App (Cài & Mở app)",
+      "type": "shell",
+      "command": "cd android && ./gradlew installDebug && adb shell am start -n com.tung.wordnest/.MainActivity",
+      "problemMatcher": ["$gradle"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Android: Khởi động giả lập (Medium_Phone)",
+      "type": "shell",
+      "command": "/home/tung/Android/Sdk/emulator/emulator -avd Medium_Phone",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Xem Logcat (WordNest)",
+      "type": "shell",
+      "command": "adb logcat -v color --pid=$(adb shell pidof -s com.tung.wordnest) 2>/dev/null || adb logcat -v color *:E",
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Clean & Build lại",
+      "type": "shell",
+      "command": "cd android && ./gradlew clean assembleDebug",
+      "problemMatcher": ["$gradle"]
+    }
+  ]
+}
+

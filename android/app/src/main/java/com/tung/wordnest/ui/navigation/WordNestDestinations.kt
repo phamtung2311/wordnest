@@ -21,8 +21,16 @@ object WordNestRoutes {
     const val HISTORY = "history"
     const val SETTINGS = "settings"
 
+    // Path cho route động
+    const val STUDY_PATH = "study/{deckId}"
+    const val DECK_DETAIL_PATH = "deck_detail/{deckId}"
+    const val HISTORY_PATH = "history"
+    const val TOEIC_READING_PATH = "toeic/reading/{testId}"
+    const val TOEIC_LISTENING_PATH = "toeic/listening/{testId}"
+    const val TOEIC_INTENSIVE_PATH = "toeic/intensive/{testId}"
+
     // Dynamic routes
-    fun deckDetail(deckId: String) = "deck/$deckId"
+    fun deckDetail(deckId: String) = "deck_detail/$deckId"
     fun wordDetail(wordId: String) = "word/$wordId"
     fun study(deckId: String) = "study/$deckId"
     fun toeicReading(testId: String) = "toeic/reading/$testId"
@@ -40,7 +48,8 @@ object WordNestRoutes {
         return !currentRoute.startsWith("study/") &&
                !currentRoute.startsWith("toeic/reading/") &&
                !currentRoute.startsWith("toeic/listening/") &&
-               !currentRoute.startsWith("toeic/intensive/")
+               !currentRoute.startsWith("toeic/intensive/") &&
+               !currentRoute.startsWith("deck_detail/")
     }
 }
 

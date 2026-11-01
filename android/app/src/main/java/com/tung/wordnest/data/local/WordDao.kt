@@ -41,4 +41,36 @@ interface WordDao {
 
     @Query("SELECT COUNT(*) FROM decks")
     suspend fun getDeckCount(): Int
+
+    @Query("SELECT * FROM words ORDER BY createdAt DESC LIMIT :limit")
+    fun getRecentWords(limit: Int): Flow<List<WordEntity>>
+
+    @Query("DELETE FROM decks WHERE id = :deckId")
+    suspend fun deleteDeck(deckId: Long)
+
+    @Query("DELETE FROM words WHERE deckId = :deckId")
+    suspend fun deleteWordsOfDeck(deckId: Long)
+
+    @Query("SELECT * FROM words WHERE deckId = :deckId")
+    suspend fun getWordsByDeckSync(deckId: Long): List<WordEntity>
+
+    // ===== CRUD đầy đủ cho tính năng quản lý Bộ từ & Từ vựng =====
+
+    @Query("SELECT * FROM decks WHERE id = :deckId")
+    suspend fun getDeckById(deckId: Long): DeckEntity?
+
+    @Query("SELECT * FROM decks WHERE id = :deckId")
+    fun getDeckFlow(deckId: Long): Flow<DeckEntity?>
+
+    @Update
+    suspend fun updateDeck(deck: DeckEntity)
+
+    @Query("SELECT * FROM words WHERE id = :wordId")
+    suspend fun getWordById(wordId: Long): WordEntity?
+
+    @Query("SELECT COUNT(*) FROM words WHERE deckId = :deckId AND LOWER(term) = LOWER(:term)")
+    suspend fun countWordsByTermInDeck(deckId: Long, term: String): Int
+
+    @Query("DELETE FROM words WHERE id = :wordId")
+    suspend fun deleteWord(wordId: Long)
 }

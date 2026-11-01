@@ -24,6 +24,7 @@ data class WordEntity(
     val term: String,
     val meaning: String,
     val phonetic: String? = null,
+    val partOfSpeech: String? = null,
     val example: String? = null,
     val level: String = "NEW", // NEW, LEARNING, KNOWN
     val nextReviewTime: Long = System.currentTimeMillis(),

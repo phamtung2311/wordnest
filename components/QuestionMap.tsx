@@ -255,11 +255,41 @@ export function QuestionMap({
           const qCount = part.end - part.start + 1;
           const questionsInPart = Array.from({ length: qCount }, (_, i) => part.start + i);
 
+          let partCorrect = 0;
+          let partAnswered = 0;
+          for (const q of questionsInPart) {
+            const userAns = mergedData.answers[q];
+            const correctAns = mergedData.keys[String(q)];
+            if (userAns) {
+              partAnswered++;
+              if (correctAns && userAns === correctAns) {
+                partCorrect++;
+              }
+            }
+          }
+
           return (
             <div key={part.id} className="space-y-2">
-              <h3 className="text-xs sm:text-sm font-bold text-gray-700 flex items-center justify-between">
-                <span>{part.name}</span>
-              </h3>
+              <div className="flex items-center justify-between pb-1 border-b border-gray-100/60">
+                <span className="text-xs sm:text-sm font-extrabold text-[#213a34]">{part.name}</span>
+
+                {isReviewOrResult ? (
+                  <span className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-black px-2.5 py-0.5 rounded-full border shadow-2xs ${
+                    partCorrect === qCount
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : partCorrect >= qCount * 0.6
+                      ? 'bg-teal-50 text-teal-800 border-teal-200'
+                      : 'bg-amber-50 text-amber-800 border-amber-200'
+                  }`}>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Đúng: {partCorrect}/{qCount}</span>
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold text-gray-500 bg-gray-50 px-2 py-0.5 rounded-full border border-gray-200">
+                    Đã làm: {partAnswered}/{qCount}
+                  </span>
+                )}
+              </div>
 
               {/* Circles Row / Grid */}
               <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center">
@@ -303,19 +333,40 @@ export function QuestionMap({
 
                   // 3-digit numbers get tighter tracking and slightly smaller font to fit comfortably
                   const isThreeDigit = q >= 100;
-                  const textSize = isThreeDigit 
-                    ? 'text-[10px] sm:text-[11px] tracking-tighter' 
-                    : 'text-[11px] sm:text-xs tracking-tight';
+                  const hasAnswer = Boolean(userAns);
+
+                  let textSize = 'text-[11px] sm:text-xs';
+                  if (hasAnswer) {
+                    if (isThreeDigit) {
+                      textSize = 'text-[9.5px] sm:text-[10px] tracking-tighter';
+                    } else if (q >= 10) {
+                      textSize = 'text-[10px] sm:text-[11px] tracking-tight';
+                    } else {
+                      textSize = 'text-[11px] sm:text-xs tracking-tight';
+                    }
+                  } else {
+                    if (isThreeDigit) {
+                      textSize = 'text-[10px] sm:text-[11px] tracking-tight';
+                    }
+                  }
 
                   return (
                     <button
                       key={q}
                       type="button"
                       onClick={() => onSelectQuestion?.(q)}
-                      className={`w-7 h-7 sm:w-8 sm:h-8 min-w-[28px] sm:min-w-[32px] rounded-full flex items-center justify-center font-bold ${textSize} cursor-pointer transition-all hover:scale-110 active:scale-95 ${circleStyle}`}
+                      className={`min-w-[30px] sm:min-w-[34px] h-[30px] sm:h-[34px] px-1 rounded-full flex items-center justify-center font-bold ${textSize} cursor-pointer transition-all hover:scale-110 active:scale-95 ${circleStyle}`}
                       title={`${statusTitle} - Bấm để chuyển đến câu này`}
                     >
-                      {q}
+                      {hasAnswer ? (
+                        <span className="inline-flex items-center justify-center leading-none">
+                          <span>{q}</span>
+                          <span className="opacity-60 text-[0.85em] mx-[0.5px]">.</span>
+                          <span className="font-black">{String(userAns).toUpperCase()}</span>
+                        </span>
+                      ) : (
+                        <span className="leading-none">{q}</span>
+                      )}
                     </button>
                   );
                 })}
@@ -362,7 +413,7 @@ export function QuestionMap({
         </div>
 
         <span className="text-[11px] text-gray-400 italic">
-          💡 Bấm vào số câu bất kỳ để xem câu hỏi đó
+          💡 Ô tròn hiển thị [Số câu].[Đáp án chọn] (Ví dụ: 1.A) · Bấm vào câu bất kỳ để xem câu hỏi đó
         </span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, FileText, History, Headphones, Sparkles, ChevronRight, Award, RotateCcw, X, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, FileText, History, Headphones, Sparkles, ChevronRight, Award, RotateCcw, X, CheckCircle2, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
 
@@ -18,6 +18,31 @@ export default function PracticeTestSelectionPage() {
   const [selectedYear, setSelectedYear] = useState<'2026' | '2024' | '2023'>('2026');
   const [resetModalTest, setResetModalTest] = useState<{ id: string; name: string } | null>(null);
   const [resetToast, setResetToast] = useState<string | null>(null);
+  const [confirmClearAllHistory, setConfirmClearAllHistory] = useState<boolean>(false);
+
+  const handleDeleteHistoryItem = (indexToDelete: number) => {
+    try {
+      const newHistory = history.filter((_, idx) => idx !== indexToDelete);
+      setHistory(newHistory);
+      localStorage.setItem('toeic_reading_history', JSON.stringify(newHistory));
+      setResetToast('Đã xóa 1 mục lịch sử làm bài!');
+      setTimeout(() => setResetToast(null), 3000);
+    } catch (e) {
+      console.error('Delete reading history item error:', e);
+    }
+  };
+
+  const handleClearAllHistory = () => {
+    try {
+      localStorage.removeItem('toeic_reading_history');
+      setHistory([]);
+      setConfirmClearAllHistory(false);
+      setResetToast('Đã xóa toàn bộ lịch sử làm bài!');
+      setTimeout(() => setResetToast(null), 3000);
+    } catch (e) {
+      console.error('Clear all reading history error:', e);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -259,16 +284,28 @@ export default function PracticeTestSelectionPage() {
         {/* History Table */}
         {history.length > 0 && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#14362d]/8">
-            <h2 className="font-display text-lg sm:text-xl font-black text-[#14362d] mb-4 flex items-center">
-              <History className="w-5 h-5 mr-2 text-[#e11d48]" /> Lịch sử làm bài gần đây
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg sm:text-xl font-black text-[#14362d] flex items-center">
+                <History className="w-5 h-5 mr-2 text-[#e11d48]" /> Lịch sử làm bài gần đây
+              </h2>
+              <button
+                type="button"
+                onClick={() => setConfirmClearAllHistory(true)}
+                className="flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-xl border border-rose-200/60 transition-colors cursor-pointer"
+                title="Xóa toàn bộ lịch sử làm bài"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Xóa tất cả</span>
+              </button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-gray-100">
                     <th className="pb-2.5 text-[#637770] font-bold">Thời gian</th>
                     <th className="pb-2.5 text-[#637770] font-bold">Đề thi</th>
-                    <th className="pb-2.5 text-[#637770] font-bold text-right sm:text-left">Điểm số</th>
+                    <th className="pb-2.5 text-[#637770] font-bold">Điểm số</th>
+                    <th className="pb-2.5 text-[#637770] font-bold text-right">Xóa</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -281,10 +318,20 @@ export default function PracticeTestSelectionPage() {
                         })}
                       </td>
                       <td className="py-3 font-black text-[#14362d]">{getTestName(String(h.testId))}</td>
-                      <td className="py-3 text-right sm:text-left">
+                      <td className="py-3">
                         <span className="bg-[#f4f8f5] text-[#14362d] font-black px-2.5 py-1 rounded-full text-xs border border-[#14362d]/10">
                           {h.score}/100 câu
                         </span>
+                      </td>
+                      <td className="py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteHistoryItem(idx)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer inline-flex items-center"
+                          title="Xóa lần làm bài này"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -399,6 +446,39 @@ export default function PracticeTestSelectionPage() {
                 className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors cursor-pointer"
               >
                 Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Clear All History Modal */}
+      {confirmClearAllHistory && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 text-center animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <h3 className="font-display text-lg font-black text-[#14362d] mb-1.5">
+              Xóa toàn bộ lịch sử?
+            </h3>
+            <p className="text-xs text-[#637770] mb-5">
+              Tất cả kết quả các lần luyện Reading trước đây sẽ bị xóa hoàn toàn khỏi trình duyệt và không thể khôi phục.
+            </p>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setConfirmClearAllHistory(false)}
+                className="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAllHistory}
+                className="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black transition-colors cursor-pointer shadow-xs"
+              >
+                Xác nhận xóa
               </button>
             </div>
           </div>

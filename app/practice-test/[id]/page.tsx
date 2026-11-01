@@ -384,7 +384,7 @@ export default function PracticeTestPlayPage() {
       <div 
         className={`relative flex-col bg-[#212529] border-r border-[#213a34]/10 
           ${mobileTab === 'pdf' ? 'flex flex-1 h-full' : 'hidden'} 
-          lg:flex lg:h-full lg:w-[70%]`}
+          lg:flex lg:h-full lg:w-[68%] xl:w-[70%]`}
       >
 
         {/* Loading Spinner / Overlay */}
@@ -519,50 +519,48 @@ export default function PracticeTestPlayPage() {
       <div 
         className={`flex-col bg-[#e9f2ed] relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)] 
           ${mobileTab === 'sheet' ? 'flex flex-1 h-full min-h-0' : 'hidden'} 
-          lg:flex lg:h-full lg:min-h-0 lg:w-[30%]`
+          lg:flex lg:h-full lg:min-h-0 lg:w-[32%] xl:w-[30%]`
         }
       >
-        {/* Desktop Header (hidden on mobile, mobile uses its own top header) */}
-        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-5 bg-white shrink-0 lg:pr-36">
-          <div>
-            <h2 className="font-display text-xl font-black text-[#213a34]">{testTitle}</h2>
-            <p className="text-xs text-gray-500 font-bold mt-0.5">
-              100 câu hỏi (101 - 200) · Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
-            </p>
+        {/* Desktop Header: 2-row layout ensuring no overflow */}
+        <div className="hidden lg:flex flex-col border-b border-[#213a34]/10 bg-white shrink-0 p-3 sm:px-4 sm:py-3 gap-2">
+          {/* Row 1: Title (pr-28 leaves space for fixed top-right study timer) */}
+          <div className="flex items-center justify-between gap-2 pr-28">
+            <h2 className="font-display text-base sm:text-lg font-black text-[#213a34] truncate">{testTitle}</h2>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowMapModal(true)}
-              className="flex items-center gap-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
-              title="Xem bản đồ câu hỏi / phổ đáp án"
-            >
-              <span>🗺️</span>
-              Bản đồ câu hỏi
-            </button>
-            <button
-              onClick={() => setShowResetModal(true)}
-              className="flex items-center gap-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
-              title="Làm lại bài thi hoặc từng Part"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Làm lại đề
-            </button>
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-full bg-white hover:bg-gray-100 border border-gray-300 px-3.5 py-1.5 font-bold text-xs text-gray-700 transition-colors shadow-sm"
-              title="Mở PDF gốc sang tab mới"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-[#213a34]" />
-              Mở PDF tab mới
-            </a>
-            <button
-              onClick={() => router.push('/practice-test')}
-              className="rounded-full bg-white border border-gray-300 px-4 py-1.5 font-bold text-xs text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              Đóng
-            </button>
+
+          {/* Row 2: Progress counter and Action buttons (full width, never clipped) */}
+          <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-gray-100">
+            <span className="text-xs text-gray-500 font-semibold shrink-0">
+              Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
+            </span>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => setShowMapModal(true)}
+                className="flex items-center gap-1 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-2.5 py-1 font-bold text-xs transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
+                title="Xem bản đồ câu hỏi / phổ đáp án"
+              >
+                <span>🗺️</span>
+                <span>Bản đồ câu hỏi</span>
+              </button>
+              <button
+                onClick={() => setShowResetModal(true)}
+                className="flex items-center gap-1 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 px-2.5 py-1 font-bold text-xs transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
+                title="Làm lại bài thi hoặc từng Part"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Làm lại đề</span>
+              </button>
+              <button
+                onClick={() => router.push('/practice-test')}
+                className="flex items-center gap-1 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 px-3 py-1 font-bold text-xs text-[#213a34] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                title="Đóng phòng thi"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Đóng</span>
+              </button>
+            </div>
           </div>
         </div>
 

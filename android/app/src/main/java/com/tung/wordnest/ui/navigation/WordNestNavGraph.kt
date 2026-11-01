@@ -1,5 +1,7 @@
 package com.tung.wordnest.ui.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,59 +14,93 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
+import com.tung.wordnest.data.local.ProgressStore
+import com.tung.wordnest.data.model.WordLevel
 import com.tung.wordnest.ui.screens.decks.DeckListScreen
-import com.tung.wordnest.ui.screens.home.HomeUiState
 import com.tung.wordnest.ui.screens.home.HomeScreen
+import com.tung.wordnest.ui.screens.home.HomeUiState
+import com.tung.wordnest.ui.screens.home.WordPreviewUiModel
 import com.tung.wordnest.ui.screens.life.LifeTopicUiModel
 import com.tung.wordnest.ui.screens.life.LifeTopicsScreen
 import com.tung.wordnest.ui.screens.onboarding.AuthScreen
 import com.tung.wordnest.ui.screens.onboarding.AuthStatus
 import com.tung.wordnest.ui.screens.onboarding.OnboardingPagerScreen
 import com.tung.wordnest.ui.screens.onboarding.SplashView
+import com.tung.wordnest.ui.screens.profile.DailyStudyRecord
 import com.tung.wordnest.ui.screens.profile.ProfileAndSettingsScreen
 import com.tung.wordnest.ui.screens.profile.ProfileUiState
+import com.tung.wordnest.ui.screens.profile.StudyHistoryScreen
+import com.tung.wordnest.ui.screens.profile.StudyHistoryUiState
 import com.tung.wordnest.ui.screens.profile.SyncStatus
 import com.tung.wordnest.ui.screens.profile.UserProfileUiModel
 import com.tung.wordnest.ui.screens.profile.UserSettingsUiModel
+import com.tung.wordnest.ui.screens.study.StudyScreenHost
 import com.tung.wordnest.ui.screens.toeic.ToeicHubScreen
 import com.tung.wordnest.ui.screens.toeic.ToeicHubUiState
 import com.tung.wordnest.ui.theme.WordNestTheme
 import androidx.compose.ui.graphics.Color
+import com.google.firebase.auth.FirebaseAuth
+import com.tung.wordnest.util.TtsProvider
+import java.time.LocalDate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun WordNestNavGraph(modifier: Modifier = Modifier) {
+    val app = LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    WordNestAppShell(
-        currentRoute = currentRoute,
-        onNavigate = { route -> 
-            navController.navigate(route) {
-                popUpTo(WordNestRoutes.HOME) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
-        },
-        onOpenTimerSheet = { /* Mở Timer Sheet logic */ },
-        modifier = modifier
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = WordNestRoutes.SPLASH
+    // Sheet dock đang mở: "Sổ tay ghi chú" | "Ôn từ đến hạn" | "Việc cần làm" | "Dịch nhanh"
+    var activeSheet by remember { mutableStateOf<String?>(null) }
+    // Sheet quản lý Bộ từ & Từ vựng: Tạo/Sửa bộ, Thêm/Sửa từ, Chi tiết từ
+    var activeDeckSheet by remember { mutableStateOf<com.tung.wordnest.ui.screens.decks.DeckSheet?>(null) }
+
+    Box(modifier = modifier) {
+        WordNestAppShell(
+            currentRoute = currentRoute,
+            onNavigate = { route ->
+                navController.navigate(route) {
+                    popUpTo(WordNestRoutes.HOME) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            onOpenTimerSheet = { activeSheet = "Ôn từ đến hạn" },
+            onDockAction = { action -> activeSheet = action },
+            modifier = Modifier.fillMaxSize()
         ) {
+            NavHost(
+                navController = navController,
+                startDestination = WordNestRoutes.SPLASH
+            ) {
             composable(WordNestRoutes.SPLASH) {
+                val progress = (LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication).progressStore
                 SplashView(onSplashComplete = {
-                    navController.navigate(WordNestRoutes.ONBOARDING) {
-                        popUpTo(WordNestRoutes.SPLASH) { inclusive = true }
+                    // Đã hoàn thành onboarding + còn đăng nhập Firebase -> vào thẳng HOME
+                    // (không lặp lại splash -> onboarding -> auth mỗi lần mở app)
+                    val stillLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser != null
+                    if (progress.onboardingDone && stillLoggedIn) {
+                        navController.navigate(WordNestRoutes.HOME) {
+                            popUpTo(WordNestRoutes.SPLASH) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(WordNestRoutes.ONBOARDING) {
+                            popUpTo(WordNestRoutes.SPLASH) { inclusive = true }
+                        }
                     }
                 })
             }
 
             composable(WordNestRoutes.ONBOARDING) {
+                val progress = (LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication).progressStore
                 OnboardingPagerScreen(
                     onFinishOnboarding = {
+                        // Ghi nhớ đã qua onboarding (điều kiện skip-login lần sau)
+                        progress.onboardingDone = true
                         navController.navigate(WordNestRoutes.AUTH) {
                             popUpTo(WordNestRoutes.ONBOARDING) { inclusive = true }
                         }
@@ -119,19 +155,59 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
             }
 
             composable(WordNestRoutes.HOME) {
+                val app = LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication
+                val progress = app.progressStore
+
+                // Dữ liệu thật từ Room (đã sync từ Firestore)
+                val deckItems by app.repository.getDecksWithCounts()
+                    .collectAsState(initial = emptyList())
+                val recentWords by app.repository.getRecentWords(6)
+                    .collectAsState(initial = emptyList())
+                val dueNow = System.currentTimeMillis()
+
+                val totalDue = deckItems.sumOf { it.dueWords }
+                val totalWords = deckItems.sumOf { it.totalWords }
+                val totalNew = recentWords.count { it.level == WordLevel.NEW }
+
+                val homeState = HomeUiState(
+                    dueWordsCount = totalDue,
+                    newWordsCount = totalNew,
+                    reviewWordsCount = totalDue.coerceAtMost(999),
+                    isTodayCompleted = progress.isCompletedToday(ProgressStore.todayKey()),
+                    hasAnyDeck = deckItems.isNotEmpty(),
+                    recentWords = recentWords.take(6).map {
+                        WordPreviewUiModel(it.id.toString(), it.term, it.meaning)
+                    },
+                    totalAddedWords = totalWords,
+                    todayStudyMinutes = progress.getSecondsOn(ProgressStore.todayKey()) / 60,
+                    dailyGoalMinutes = progress.targetMinutes.takeIf { it > 0 } ?: 15,
+                    currentStreakDays = progress.getStreakDays(),
+                    totalSuccessDays = progress.completedDays.count { it.value }
+                )
+
                 HomeScreen(
-                    state = HomeUiState(), // Mock empty state
-                    onStudyClick = {},
+                    state = homeState,
+                    onStudyClick = {
+                        navController.navigate(WordNestRoutes.study("all"))
+                    },
                     onCreateDeckClick = { navController.navigate(WordNestRoutes.DECKS) },
                     onWordClick = {},
-                    onSpeakerClick = {},
-                    onViewAllWordsClick = {},
-                    onAddWordClick = {},
-                    onSessionClick = {},
-                    onToeicReadingClick = {},
-                    onToeicListeningClick = {},
+                    onSpeakerClick = { term -> TtsProvider.speak(term) },
+                    onViewAllWordsClick = { navController.navigate(WordNestRoutes.DECKS) },
+                    onAddWordClick = {
+                        activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.WordEditor(
+                            deckId = null,
+                            initial = null
+                        )
+                    },
+                    onSessionClick = { sessionId ->
+                        // sessionId = deckId (hoặc "all") → mở phiên học
+                        navController.navigate(WordNestRoutes.study(sessionId))
+                    },
+                    onToeicReadingClick = { navController.navigate(WordNestRoutes.TOEIC) },
+                    onToeicListeningClick = { navController.navigate(WordNestRoutes.TOEIC) },
                     onAdjustGoalClick = {},
-                    onViewHistoryClick = {}
+                    onViewHistoryClick = { navController.navigate(WordNestRoutes.HISTORY) }
                 )
             }
 
@@ -167,34 +243,106 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                 DeckListScreen(
                     decks = decks,
                     onCreateDeckClick = {
+                        activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.DeckEditor(initial = null)
+                    },
+                    onDeckClick = { deckIdStr ->
+                        navController.navigate(WordNestRoutes.deckDetail(deckIdStr))
+                    },
+                    onEditDeck = { deckIdStr ->
                         scope.launch {
-                            val uid = com.google.firebase.auth.FirebaseAuth.getInstance()
-                                .currentUser?.uid
-                            val deck = com.tung.wordnest.data.local.DeckEntity(
-                                name = "Bộ từ mới",
-                                emoji = "📚",
-                                description = "Tạo trên ứng dụng WordNest"
-                            )
-                            app.syncRepository.createDeckAndSync(uid, deck)
+                            val entity = deckIdStr.toLongOrNull()?.let { app.repository.getDeckById(it) }
+                            activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.DeckEditor(initial = entity)
                         }
                     },
-                    onDeckClick = {},
-                    onEditDeck = {},
-                    onAddWordToDeck = {},
-                    onResetProgress = {},
-                    onDeleteDeck = {}
+                    onAddWordToDeck = { deckIdStr ->
+                        activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.WordEditor(
+                            deckId = deckIdStr.toLongOrNull(),
+                            initial = null
+                        )
+                    },
+                    onResetProgress = { deckIdStr ->
+                        scope.launch {
+                            val uid = FirebaseAuth.getInstance().currentUser?.uid
+                            deckIdStr.toLongOrNull()?.let {
+                                app.syncRepository.resetDeckProgressAndSync(uid, it)
+                            }
+                        }
+                    },
+                    onDeleteDeck = { deckIdStr ->
+                        scope.launch {
+                            val uid = FirebaseAuth.getInstance().currentUser?.uid
+                            deckIdStr.toLongOrNull()?.let {
+                                app.syncRepository.deleteDeckAndSync(uid, it)
+                            }
+                        }
+                    }
                 )
             }
 
             composable(WordNestRoutes.TOEIC) {
-                ToeicHubScreen(
-                    state = ToeicHubUiState(850, null, emptyList()),
+                val context = LocalContext.current
+                val app = context.applicationContext as com.tung.wordnest.WordNestApplication
+                val progressStore = app.toeicProgressStore
+
+                val readingTests = remember {
+                    com.tung.wordnest.ui.screens.toeic.ToeicAssets.READING_TESTS.map { meta ->
+                        val savedProgress = progressStore.getReadingProgress(meta.id)
+                        val bestScore = progressStore.getBestScore(meta.id, "reading")
+                        com.tung.wordnest.ui.screens.toeic.ToeicMockTestUiModel(
+                            id = meta.id,
+                            name = meta.title,
+                            completedQuestions = savedProgress.size,
+                            totalQuestions = 100,
+                            bestScore = bestScore,
+                            kind = "reading",
+                            hasTextContent = meta.hasTextContent
+                        )
+                    }
+                }
+
+                val listeningTests = remember {
+                    com.tung.wordnest.ui.screens.toeic.ToeicAssets.LISTENING_TESTS.map { meta ->
+                        val savedProgress = progressStore.getListeningProgress(meta.id)
+                        val bestScore = progressStore.getBestScore(meta.id, "listening")
+                        com.tung.wordnest.ui.screens.toeic.ToeicMockTestUiModel(
+                            id = meta.id,
+                            name = meta.title,
+                            completedQuestions = savedProgress.size,
+                            totalQuestions = 100,
+                            bestScore = bestScore,
+                            kind = "listening"
+                        )
+                    }
+                }
+
+                val allTests = remember(readingTests, listeningTests) {
+                    readingTests + listeningTests
+                }
+
+                com.tung.wordnest.ui.screens.toeic.ToeicHubScreen(
+                    state = com.tung.wordnest.ui.screens.toeic.ToeicHubUiState(
+                        currentScoreGoal = 850,
+                        activeSession = null,
+                        mockTests = allTests
+                    ),
                     onEditGoalClick = {},
                     onActiveSessionClick = {},
-                    onIntensiveListeningClick = {},
-                    onReadingTestClick = {},
-                    onListeningTestClick = {},
-                    onMockTestClick = {}
+                    onIntensiveListeningClick = {
+                        android.widget.Toast.makeText(context, "Sẽ có ở bản sau", android.widget.Toast.LENGTH_SHORT).show()
+                    },
+                    onReadingTestClick = { testId ->
+                        navController.navigate(WordNestRoutes.toeicReading(testId))
+                    },
+                    onListeningTestClick = { testId ->
+                        navController.navigate(WordNestRoutes.toeicListening(testId))
+                    },
+                    onMockTestClick = { testId, kind ->
+                        if (kind == "reading") {
+                            navController.navigate(WordNestRoutes.toeicReading(testId))
+                        } else {
+                            navController.navigate(WordNestRoutes.toeicListening(testId))
+                        }
+                    }
                 )
             }
 
@@ -266,12 +414,13 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                         } else {
                             scope.launch {
                                 syncState = SyncStatus.SYNCING
-                                val result = app.syncRepository.syncDecksAndWords(uid)
+                                // Đồng bộ 2 chiều TOÀN BỘ: decks/words/SRS + progress + notes + todos
+                                val result = app.syncRepository.syncAll(uid)
                                 syncState = if (result.isSuccess) SyncStatus.SYNCED else SyncStatus.ERROR
                             }
                         }
                     },
-                    onOpenHistoryClick = {},
+                    onOpenHistoryClick = { navController.navigate(WordNestRoutes.HISTORY) },
                     onSettingsChange = {},
                     onExportDataClick = {},
                     onClearCacheClick = {},
@@ -295,6 +444,122 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                     onTopicClick = {}
                 )
             }
+
+            // ===== PHIÊN HỌC (toàn màn hình, SRS + progress sync 2 chiều) =====
+            composable(
+                route = WordNestRoutes.STUDY_PATH,
+                arguments = listOf(
+                    navArgument("deckId") {
+                        defaultValue = "all"
+                    }
+                )
+            ) { backStackEntry ->
+                val app = LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication
+                val deckIdArg = backStackEntry.arguments?.getString("deckId") ?: "all"
+                StudyScreenHost(
+                    app = app,
+                    deckIdString = deckIdArg,
+                    onClose = { navController.popBackStack() }
+                )
+            }
+
+            // ===== LỊCH SỬ HỌC (data thật từ ProgressStore) =====
+            composable(WordNestRoutes.HISTORY) {
+                val app = LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication
+                val progress = app.progressStore
+                val today = java.time.LocalDate.now()
+
+                fun recordFor(day: java.time.LocalDate) = DailyStudyRecord(
+                    date = day,
+                    minutes = progress.getSecondsOn(day.toString()) / 60,
+                    wordsLearned = 0,
+                    testsTaken = 0
+                )
+
+                val weekly = (0 until 7).map { recordFor(today.minusDays((6 - it).toLong())) }
+                val monthly = (0 until 35).map { recordFor(today.minusDays((34 - it).toLong())) }
+
+                StudyHistoryScreen(
+                    state = StudyHistoryUiState(
+                        weeklyMinutes = weekly.sumOf { it.minutes.toLong() }.toInt(),
+                        currentStreak = progress.getStreakDays(),
+                        bestStreak = progress.getStreakDays(),
+                        dailyGoalMinutes = progress.targetMinutes,
+                        weeklyRecords = weekly,
+                        monthlyRecords = monthly
+                    ),
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            // ===== PHÒNG THI TOEIC READING (PDF + Phiếu 101-200) =====
+            composable(
+                route = WordNestRoutes.TOEIC_READING_PATH,
+                arguments = listOf(navArgument("testId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val testId = backStackEntry.arguments?.getString("testId") ?: "2024_1"
+                com.tung.wordnest.ui.screens.toeic.ToeicReadingScreen(
+                    testId = testId,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            // ===== PHÒNG THI TOEIC LISTENING (Audio + Phiếu 1-100) =====
+            composable(
+                route = WordNestRoutes.TOEIC_LISTENING_PATH,
+                arguments = listOf(navArgument("testId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val testId = backStackEntry.arguments?.getString("testId") ?: "2024_1"
+                com.tung.wordnest.ui.screens.toeic.ToeicListeningScreen(
+                    testId = testId,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            // ===== PHÒNG THI INTENSIVE LISTENING (Placeholder) =====
+            composable(
+                route = WordNestRoutes.TOEIC_INTENSIVE_PATH,
+                arguments = listOf(navArgument("testId") { type = NavType.StringType })
+            ) {
+                val context = LocalContext.current
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    android.widget.Toast.makeText(context, "Sẽ có ở bản sau", android.widget.Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                }
+            }
+
+            // ===== CHI TIẾT BỘ TỪ (danh sách từ thật, phát âm, sửa/xóa/thêm) =====
+            composable(
+                route = WordNestRoutes.DECK_DETAIL_PATH,
+                arguments = listOf(navArgument("deckId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val deckIdStr = backStackEntry.arguments?.getString("deckId") ?: return@composable
+                val deckId = deckIdStr.toLongOrNull() ?: return@composable
+                com.tung.wordnest.ui.screens.decks.DeckDetailScreenHost(
+                    app = app,
+                    deckId = deckId,
+                    onBack = { navController.popBackStack() },
+                    onStudy = { id -> navController.navigate(WordNestRoutes.study(id.toString())) },
+                    onOpenSheet = { activeDeckSheet = it }
+                )
+            }
         }
+    }
+
+    // Overlay: sheets đồng bộ 2 chiều (Notes / Todos / Timer / Dịch) — nằm trên shell
+    SyncedSheetHost(
+        app = app,
+        activeSheet = activeSheet,
+        onDismiss = { activeSheet = null },
+        modifier = Modifier.fillMaxSize()
+    )
+
+    // Overlay: ModalBottomSheet quản lý Bộ từ & Từ vựng (Tạo/Sửa deck, Thêm/Sửa word, Chi tiết word)
+    com.tung.wordnest.ui.screens.decks.DeckWordSheetHost(
+        app = app,
+        activeSheet = activeDeckSheet,
+        onSheetChange = { activeDeckSheet = it },
+        modifier = Modifier.fillMaxSize()
+    )
     }
 }

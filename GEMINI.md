@@ -30,3 +30,7 @@ Mọi thiết kế giao diện, bố cục màn hình và Prompt sinh code Compo
   - Áp dụng Unidirectional Data Flow (`UiState` & `UiEvent`).
   - Đảm bảo ma trận 5 trạng thái: `Loading` (Shimmer Skeleton), `Empty` (CTA định hướng), `Offline` (Banner thông báo không chặn học), `Error`, `Interrupted Session` (khôi phục tiến độ qua Spotlight Card).
   - `statusBarsPadding()`, `navigationBarsPadding()`, `contentPadding(bottom = 96.dp)` cho `LazyColumn` để không bị che bởi BottomBar/FAB.
+
+## 3. WORDNEST WEB SPECIFICATION REFERENCE (Tham chiếu Chức năng Web)
+Mọi tính năng, luồng nghiệp vụ, thuật toán (SRS, tính giờ, streak, chấm điểm TOEIC 5–495, diff-check) và cấu trúc dữ liệu Firestore/Room được đặc tả chi tiết tại: `docs/WORDNEST_WEB_FULL_FEATURES.md`. Agent trong Android Studio BẮT BUỘC đối chiếu file này để đảm bảo chuyển đổi (port) đầy đủ 100% tính năng từ bản Web sang Android.
+

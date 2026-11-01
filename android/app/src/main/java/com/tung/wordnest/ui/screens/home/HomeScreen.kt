@@ -247,7 +247,7 @@ private fun HomeRecentWordsSection(
                                 englishWord = word.word,
                                 vietnameseMeaning = word.meaning,
                                 onClick = { onWordClick(word.id) },
-                                onSpeakerClick = { onSpeakerClick(word.id) },
+                                onSpeakerClick = { onSpeakerClick(word.word) },
                                 modifier = Modifier.weight(1f)
                             )
                         }

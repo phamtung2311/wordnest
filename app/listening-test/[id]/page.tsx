@@ -68,6 +68,7 @@ export default function ListeningTestPlayPage() {
   const [filterPart, setFilterPart] = useState<FilterPart>('all');
   const [pdfLoading, setPdfLoading] = useState<boolean>(true);
   const [showMapModal, setShowMapModal] = useState<boolean>(false);
+  const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
@@ -284,6 +285,29 @@ export default function ListeningTestPlayPage() {
     router.push('/listening-test');
   };
 
+  const handleResetExam = () => {
+    try {
+      localStorage.removeItem(`toeic_listening_progress_${testId}`);
+      localStorage.removeItem(`toeic_listening_time_${testId}`);
+      setAnswers({});
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.pause();
+      }
+      setCurrentTime(0);
+      lastSavedTime.current = 0;
+      targetTimeRef.current = 0;
+      setIsPlaying(false);
+      setActiveQuestion(1);
+      setAppState('playing');
+      setResults(null);
+      setPartialResults(null);
+      setShowResetConfirm(false);
+    } catch (e) {
+      console.error('Reset exam error:', e);
+    }
+  };
+
   const answeredCount = Object.keys(answers).length;
   const unansweredCount = 100 - answeredCount;
 
@@ -457,21 +481,19 @@ export default function ListeningTestPlayPage() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={handleClose}
-              className="flex items-center gap-1 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors"
+              className="flex items-center gap-1 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Đóng
             </button>
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 px-2.5 py-1.5 rounded-full transition-colors"
-              title="Mở PDF ra tab mới"
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+              title="Làm lại đề thi từ đầu"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">PDF</span>
-            </a>
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Làm lại</span>
+            </button>
           </div>
           <div className="text-center flex flex-col items-center">
             <div className="flex items-center gap-1.5">
@@ -489,14 +511,6 @@ export default function ListeningTestPlayPage() {
             <span className="text-[10px] font-semibold text-gray-500">Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => router.push(`/intensive-listening?test=${intensiveTestId}`)}
-              className="flex items-center gap-1 text-[11px] font-black text-[#213a34] bg-[#f8d467] hover:bg-[#f5c842] px-2.5 py-1.5 rounded-full transition-all shadow-2xs shrink-0 cursor-pointer active:scale-95"
-              title="Chuyển sang chế độ Luyện nghe chi tiết từng câu cho đề này"
-            >
-              <Sparkles className="w-3 h-3 text-[#213a34]" />
-              <span className="hidden xs:inline">Chi tiết</span>
-            </button>
             <button
               onClick={() => setShowMapModal(true)}
               className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
@@ -624,7 +638,7 @@ export default function ListeningTestPlayPage() {
       <div 
         className={`relative flex-col bg-[#212529] border-r border-[#213a34]/10 
           ${mobileTab === 'pdf' ? 'flex flex-1 h-full' : 'hidden'} 
-          lg:flex lg:h-full lg:w-[70%]`}
+          lg:flex lg:h-full lg:w-[68%] xl:w-[70%]`}
       >
 
         {/* Loading Spinner / Overlay */}
@@ -759,61 +773,63 @@ export default function ListeningTestPlayPage() {
       <div 
         className={`flex-col bg-[#e9f2ed] relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)] 
           ${mobileTab === 'sheet' ? 'flex flex-1 h-full min-h-0' : 'hidden'} 
-          lg:flex lg:h-full lg:min-h-0 lg:w-[30%]`
+          lg:flex lg:h-full lg:min-h-0 lg:w-[32%] xl:w-[30%]`
         }
       >
-        {/* Desktop Header */}
-        <div className="hidden lg:flex justify-between items-center border-b border-[#213a34]/10 p-4 sm:p-5 bg-white shrink-0 lg:pr-36">
-          <div className="flex items-center gap-3">
-            <span className={`px-2.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${
-              testYear === '2023' 
-                ? 'bg-amber-100 text-amber-900 border border-amber-300' 
-                : testYear === '2024'
-                ? 'bg-blue-100 text-blue-900 border border-blue-300'
-                : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-            }`}>
-              ETS {testYear}
-            </span>
-            <div>
-              <h2 className="font-display text-lg sm:text-xl font-black text-[#213a34]">Đề thi {testNum} (Listening)</h2>
-              <p className="text-xs text-gray-500 font-bold mt-0.5">
-                100 câu hỏi (1 - 100) · Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
-              </p>
+        {/* Desktop Header: 2-row layout ensuring no overflow */}
+        <div className="hidden lg:flex flex-col border-b border-[#213a34]/10 bg-white shrink-0 p-3 sm:px-4 sm:py-3 gap-2">
+          {/* Row 1: Title and Badge (pr-28 leaves space for fixed top-right study timer) */}
+          <div className="flex items-center justify-between gap-2 pr-28">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider shrink-0 ${
+                testYear === '2023' 
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+                  : testYear === '2024'
+                  ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                  : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+              }`}>
+                ETS {testYear}
+              </span>
+              <h2 className="font-display text-base font-black text-[#213a34] truncate">
+                Đề thi {testNum} (Listening)
+              </h2>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowMapModal(true)}
-              className="flex items-center gap-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-3.5 py-1.5 font-bold text-xs transition-colors shadow-2xs cursor-pointer"
-              title="Xem bản đồ câu hỏi / phổ đáp án"
-            >
-              <span>🗺️</span>
-              Bản đồ câu hỏi
-            </button>
-            <button
-              onClick={() => router.push(`/intensive-listening?test=${intensiveTestId}`)}
-              className="flex items-center gap-1.5 rounded-full bg-[#f8d467] hover:bg-[#f5c842] text-[#213a34] px-3.5 py-1.5 font-black text-xs transition-transform active:scale-95 shadow-xs cursor-pointer"
-              title="Chuyển sang chế độ Luyện nghe chi tiết (STUDY4 style) cho đề này"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#213a34]" />
-              Luyện chi tiết
-            </button>
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-full bg-white hover:bg-gray-100 border border-gray-300 px-3.5 py-1.5 font-bold text-xs text-gray-700 transition-colors shadow-sm"
-              title="Mở PDF gốc sang tab mới"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-[#213a34]" />
-              Mở PDF
-            </a>
-            <button
-              onClick={handleClose}
-              className="rounded-full bg-white border border-gray-300 px-4 py-1.5 font-bold text-xs text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              Đóng
-            </button>
+
+          {/* Row 2: Progress counter and Action buttons (full width, never clipped) */}
+          <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-gray-100">
+            <span className="text-xs text-gray-500 font-semibold shrink-0">
+              Đã làm: <b className="text-[#f29f77]">{answeredCount}</b>/100
+            </span>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => setShowMapModal(true)}
+                className="flex items-center gap-1 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 px-2.5 py-1 font-bold text-xs transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
+                title="Xem bản đồ câu hỏi / phổ đáp án"
+              >
+                <span>🗺️</span>
+                <span>Bản đồ câu hỏi</span>
+              </button>
+
+              <button
+                onClick={() => setShowResetConfirm(true)}
+                className="flex items-center gap-1 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200/90 px-2.5 py-1 font-bold text-xs text-amber-900 transition-colors shadow-xs cursor-pointer whitespace-nowrap"
+                title="Xóa toàn bộ đáp án đã làm để làm lại từ đầu"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-amber-700" />
+                <span>Làm lại từ đầu</span>
+              </button>
+
+              <button
+                onClick={handleClose}
+                className="flex items-center gap-1 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 px-3 py-1 font-bold text-xs text-[#213a34] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                title="Đóng phòng thi"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Đóng</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1021,10 +1037,17 @@ export default function ListeningTestPlayPage() {
               </div>
 
               <div className="flex flex-col gap-2 mt-auto">
-                <button onClick={() => setAppState('reviewing')} className="w-full bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3.5 px-6 rounded-full transition-colors shadow-md text-sm sm:text-base">
+                <button onClick={() => setAppState('reviewing')} className="w-full bg-[#213a34] hover:bg-[#1a2f2a] text-white font-bold py-3.5 px-6 rounded-full transition-colors shadow-md text-sm sm:text-base cursor-pointer">
                   Xem chi tiết đáp án
                 </button>
-                <button onClick={() => router.push('/listening-test')} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-full transition-colors text-sm">
+                <button
+                  onClick={handleResetExam}
+                  className="w-full bg-[#fef3c7] hover:bg-[#fde68a] text-[#92400e] border border-amber-300 font-bold py-3 px-6 rounded-full transition-colors text-sm flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Làm lại đề này từ đầu
+                </button>
+                <button onClick={() => router.push('/listening-test')} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-full transition-colors text-sm cursor-pointer">
                   Trở về danh sách đề thi
                 </button>
               </div>
@@ -1158,6 +1181,39 @@ export default function ListeningTestPlayPage() {
           jumpToQuestionInPdf(q);
         }}
       />
+
+      {/* Confirm Reset Exam Modal */}
+      {showResetConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 text-center animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto mb-3">
+              <RotateCcw className="w-6 h-6" />
+            </div>
+            <h3 className="font-display text-lg font-black text-[#213a34] mb-1.5">
+              Làm lại đề từ đầu?
+            </h3>
+            <p className="text-xs text-gray-500 mb-5 leading-relaxed">
+              Toàn bộ {answeredCount > 0 ? `${answeredCount} đáp án đã chọn` : 'tiến trình làm bài'} sẽ bị xóa sạch và audio sẽ được tua về đầu (00:00).
+            </p>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowResetConfirm(false)}
+                className="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleResetExam}
+                className="py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-colors cursor-pointer shadow-xs"
+              >
+                Xác nhận làm lại
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
