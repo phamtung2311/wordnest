@@ -64,6 +64,8 @@ object ToeicAssets {
         return "ETS $year · Test $num"
     }
 
+    fun getTestTitle(testId: String): String = getToeicTitle(testId)
+
     fun getToeicReadingPdfUrl(testId: String): String {
         val (year, num) = parseYearAndNumber(testId)
         return "$TOEIC_ASSET_BASE_URL/tests/reading${year}_$num.pdf"

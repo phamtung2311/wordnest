@@ -42,7 +42,24 @@ fun DeckListScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("Tất cả") }
-    val filters = listOf("Tất cả", "Cần ôn", "Của tôi", "TOEIC", "Chủ đề")
+    val filters = listOf("Tất cả", "Cần ôn", "Của tôi", "TOEIC", "Đời sống")
+
+    // Lọc danh sách bộ từ theo tìm kiếm và Filter Chip
+    val filteredDecks = remember(decks, searchQuery, selectedFilter) {
+        val q = searchQuery.trim().lowercase()
+        decks.filter { deck ->
+            val matchesSearch = q.isEmpty() || deck.name.lowercase().contains(q)
+            val matchesFilter = when (selectedFilter) {
+                "Cần ôn" -> deck.reviewWords > 0
+                "TOEIC" -> deck.name.contains("toeic", ignoreCase = true)
+                "Đời sống" -> deck.name.contains("đời sống", ignoreCase = true) ||
+                              deck.name.contains("giao tiếp", ignoreCase = true) ||
+                              deck.name.contains("cuộc sống", ignoreCase = true)
+                else -> true
+            }
+            matchesSearch && matchesFilter
+        }
+    }
 
     // Trạng thái cho Dropdown Menu & Dialog Xóa
     var expandedDeckId by remember { mutableStateOf<String?>(null) }
@@ -89,11 +106,11 @@ fun DeckListScreen(
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
             val columns = if (maxWidth >= 600.dp) 2 else 1
 
-            if (decks.isEmpty()) {
+            if (filteredDecks.isEmpty()) {
                 EmptyStateView(
-                    title = "Chưa có bộ từ nào",
-                    description = "Tạo bộ từ đầu tiên của bạn để bắt đầu lưu trữ và ôn tập từ vựng mỗi ngày.",
-                    buttonText = "Tạo bộ từ đầu tiên",
+                    title = if (searchQuery.isNotBlank() || selectedFilter != "Tất cả") "Không tìm thấy bộ từ" else "Chưa có bộ từ nào",
+                    description = if (searchQuery.isNotBlank() || selectedFilter != "Tất cả") "Thử tìm kiếm với từ khóa khác hoặc chuyển bộ lọc." else "Tạo bộ từ đầu tiên của bạn để bắt đầu lưu trữ và ôn tập từ vựng mỗi ngày.",
+                    buttonText = "Tạo bộ từ mới",
                     onButtonClick = onCreateDeckClick
                 )
             } else {
@@ -104,7 +121,7 @@ fun DeckListScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(decks) { deck ->
+                    items(filteredDecks) { deck ->
                         Box {
                             DeckCard(
                                 deckName = deck.name,

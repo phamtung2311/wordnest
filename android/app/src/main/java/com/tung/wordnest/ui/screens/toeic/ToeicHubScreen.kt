@@ -164,7 +164,7 @@ fun ToeicHubScreen(
                 
                 ShortcutCard(
                     title = "Intensive Listening",
-                    subtitle = "Nghe chép chính tả từng câu (Sắp có)",
+                    subtitle = "20 đề ETS · Chép chính tả & Lời thoại song ngữ",
                     icon = { Icon(Icons.Default.Translate, contentDescription = null, tint = WordNestTheme.colors.forest900) },
                     onClick = onIntensiveListeningClick
                 )

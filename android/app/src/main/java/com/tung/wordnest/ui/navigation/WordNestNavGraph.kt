@@ -2,6 +2,8 @@ package com.tung.wordnest.ui.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,6 +42,8 @@ import com.tung.wordnest.ui.screens.study.StudyScreenHost
 import com.tung.wordnest.ui.screens.toeic.ToeicHubScreen
 import com.tung.wordnest.ui.screens.toeic.ToeicHubUiState
 import com.tung.wordnest.ui.theme.WordNestTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.graphics.Color
 import com.google.firebase.auth.FirebaseAuth
 import com.tung.wordnest.util.TtsProvider
@@ -50,6 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun WordNestNavGraph(modifier: Modifier = Modifier) {
     val app = LocalContext.current.applicationContext as com.tung.wordnest.WordNestApplication
+    val scope = app.appScope
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -58,6 +63,15 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
     var activeSheet by remember { mutableStateOf<String?>(null) }
     // Sheet quản lý Bộ từ & Từ vựng: Tạo/Sửa bộ, Thêm/Sửa từ, Chi tiết từ
     var activeDeckSheet by remember { mutableStateOf<com.tung.wordnest.ui.screens.decks.DeckSheet?>(null) }
+    var showGoalDialog by remember { mutableStateOf(false) }
+
+    val progress = app.progressStore
+    val todaySec = remember(progress) { progress.getSecondsOn(ProgressStore.todayKey()) }
+    val hours = todaySec / 3600
+    val mins = (todaySec % 3600) / 60
+    val secs = todaySec % 60
+    val timerText = String.format("%02d:%02d:%02d", hours, mins, secs)
+    val streakDays = remember(progress) { progress.getStreakDays() }
 
     Box(modifier = modifier) {
         WordNestAppShell(
@@ -71,6 +85,22 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
             },
             onOpenTimerSheet = { activeSheet = "Ôn từ đến hạn" },
             onDockAction = { action -> activeSheet = action },
+            timerText = timerText,
+            streakDays = streakDays,
+            overrideMainFab = if (currentRoute == WordNestRoutes.DECKS) {
+                {
+                    androidx.compose.material3.ExtendedFloatingActionButton(
+                        onClick = {
+                            activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.DeckEditor(initial = null)
+                        },
+                        icon = { androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Default.Add, contentDescription = null, tint = WordNestTheme.colors.forest900) },
+                        text = { androidx.compose.material3.Text("Tạo bộ mới", style = WordNestTheme.typography.labelLarge, color = WordNestTheme.colors.forest900) },
+                        containerColor = WordNestTheme.colors.amber400,
+                        contentColor = WordNestTheme.colors.forest900,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+            } else null,
             modifier = Modifier.fillMaxSize()
         ) {
             NavHost(
@@ -206,9 +236,26 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                     },
                     onToeicReadingClick = { navController.navigate(WordNestRoutes.TOEIC) },
                     onToeicListeningClick = { navController.navigate(WordNestRoutes.TOEIC) },
-                    onAdjustGoalClick = {},
+                    onAdjustGoalClick = { showGoalDialog = true },
                     onViewHistoryClick = { navController.navigate(WordNestRoutes.HISTORY) }
                 )
+
+                if (showGoalDialog) {
+                    com.tung.wordnest.ui.screens.home.DailyGoalDialog(
+                        currentMinutes = progress.targetMinutes,
+                        onDismiss = { showGoalDialog = false },
+                        onConfirm = { newTarget ->
+                            progress.targetMinutes = newTarget
+                            showGoalDialog = false
+                            val uid = FirebaseAuth.getInstance().currentUser?.uid
+                            if (uid != null) {
+                                scope.launch {
+                                    app.syncRepository.syncAll(uid)
+                                }
+                            }
+                        }
+                    )
+                }
             }
 
             composable(WordNestRoutes.DECKS) {
@@ -328,7 +375,7 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                     onEditGoalClick = {},
                     onActiveSessionClick = {},
                     onIntensiveListeningClick = {
-                        android.widget.Toast.makeText(context, "Sẽ có ở bản sau", android.widget.Toast.LENGTH_SHORT).show()
+                        navController.navigate(WordNestRoutes.toeicIntensive("2024_1"))
                     },
                     onReadingTestClick = { testId ->
                         navController.navigate(WordNestRoutes.toeicReading(testId))
@@ -516,16 +563,29 @@ fun WordNestNavGraph(modifier: Modifier = Modifier) {
                 )
             }
 
-            // ===== PHÒNG THI INTENSIVE LISTENING (Placeholder) =====
+            // ===== PHÒNG THI INTENSIVE LISTENING (Dictation + Quiz + Transcript song ngữ) =====
             composable(
                 route = WordNestRoutes.TOEIC_INTENSIVE_PATH,
                 arguments = listOf(navArgument("testId") { type = NavType.StringType })
-            ) {
-                val context = LocalContext.current
-                androidx.compose.runtime.LaunchedEffect(Unit) {
-                    android.widget.Toast.makeText(context, "Sẽ có ở bản sau", android.widget.Toast.LENGTH_SHORT).show()
-                    navController.popBackStack()
-                }
+            ) { backStackEntry ->
+                val testId = backStackEntry.arguments?.getString("testId") ?: "2024_1"
+                com.tung.wordnest.ui.screens.toeic.IntensiveListeningScreen(
+                    testId = testId,
+                    onBackClick = { navController.popBackStack() },
+                    onOpenSaveWordSheet = { term, meaning, ipa, pos, example ->
+                        activeDeckSheet = com.tung.wordnest.ui.screens.decks.DeckSheet.WordEditor(
+                            deckId = null,
+                            initial = com.tung.wordnest.data.model.WordItem(
+                                deckId = 0,
+                                term = term,
+                                meaning = meaning,
+                                phonetic = ipa,
+                                partOfSpeech = pos,
+                                example = example
+                            )
+                        )
+                    }
+                )
             }
 
             // ===== CHI TIẾT BỘ TỪ (danh sách từ thật, phát âm, sửa/xóa/thêm) =====

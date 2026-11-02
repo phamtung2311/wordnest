@@ -37,8 +37,9 @@ fun WordNestAppShell(
     // QuickActionDock State
     var isDockExpanded by remember { mutableStateOf(false) }
 
-    // Logic: Nếu màn hình có FAB riêng (overrideMainFab != null) thì ẩn Dock gốc để tránh xung đột
-    val shouldShowQuickDock = overrideMainFab == null && !isScrollInProgress
+    // Logic: Nếu màn hình có FAB riêng (overrideMainFab != null) hoặc ở tab ME thì ẩn Dock gốc để tránh xung đột
+    val isMeRoute = currentRoute == WordNestRoutes.ME
+    val shouldShowQuickDock = overrideMainFab == null && !isScrollInProgress && !isMeRoute
 
     // Chiều cao bottom bar thực (base + navigation bar inset) để dock tránh được BottomBar
     val navBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
