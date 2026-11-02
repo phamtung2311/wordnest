@@ -18,8 +18,10 @@ data class ToeicTestMetadata(
 object ToeicAssets {
     const val TOEIC_ASSET_BASE_URL = "https://wordnest-english-vocab.web.app"
 
+    val ALL_YEARS = listOf(2026, 2024, 2023)
+
     val READING_TESTS: List<ToeicTestMetadata> = buildList {
-        for (year in listOf(2024, 2023)) {
+        for (year in ALL_YEARS) {
             for (i in 1..10) {
                 val testId = "${year}_$i"
                 add(
@@ -37,7 +39,7 @@ object ToeicAssets {
     }
 
     val LISTENING_TESTS: List<ToeicTestMetadata> = buildList {
-        for (year in listOf(2024, 2023)) {
+        for (year in ALL_YEARS) {
             for (i in 1..10) {
                 add(
                     ToeicTestMetadata(
@@ -54,7 +56,14 @@ object ToeicAssets {
 
     fun parseYearAndNumber(testId: String): Pair<Int, Int> {
         val parts = testId.split('_', '-')
-        val year = parts.getOrNull(0)?.toIntOrNull() ?: 2024
+        if (parts.size == 1) {
+            val singleNum = parts[0].toIntOrNull()
+            if (singleNum != null) {
+                // Ví dụ "1" .. "10" đại diện cho ETS 2026
+                return Pair(2026, singleNum)
+            }
+        }
+        val year = parts.getOrNull(0)?.toIntOrNull() ?: 2026
         val num = parts.getOrNull(1)?.toIntOrNull() ?: 1
         return Pair(year, num)
     }
@@ -68,12 +77,29 @@ object ToeicAssets {
 
     fun getToeicReadingPdfUrl(testId: String): String {
         val (year, num) = parseYearAndNumber(testId)
-        return "$TOEIC_ASSET_BASE_URL/tests/reading${year}_$num.pdf"
+        return if (year == 2026) {
+            "$TOEIC_ASSET_BASE_URL/tests/test$num.pdf"
+        } else {
+            "$TOEIC_ASSET_BASE_URL/tests/reading${year}_$num.pdf"
+        }
+    }
+
+    fun getToeicListeningPdfUrl(testId: String): String {
+        val (year, num) = parseYearAndNumber(testId)
+        return if (year == 2026) {
+            "$TOEIC_ASSET_BASE_URL/tests/listening$num.pdf"
+        } else {
+            "$TOEIC_ASSET_BASE_URL/tests/listening${year}_$num.pdf"
+        }
     }
 
     fun getToeicAudioUrl(testId: String): String {
         val (year, num) = parseYearAndNumber(testId)
-        return "$TOEIC_ASSET_BASE_URL/audio/test${num}_$year.mp3"
+        return if (year == 2026) {
+            "$TOEIC_ASSET_BASE_URL/audio/test$num.mp3"
+        } else {
+            "$TOEIC_ASSET_BASE_URL/audio/test${num}_$year.mp3"
+        }
     }
 }
 

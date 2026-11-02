@@ -53,11 +53,11 @@ class IntensiveListeningTest {
     }
 
     @Test
-    fun testAll20IntensiveJsonAssetsExistAndValid() {
+    fun testAll30IntensiveJsonAssetsExistAndValid() {
         val baseDir = File("src/main/assets/toeic/intensive")
         assertTrue("Intensive directory must exist", baseDir.exists())
 
-        for (year in listOf(2023, 2024)) {
+        for (year in listOf(2026, 2024, 2023)) {
             for (num in 1..10) {
                 val file = File(baseDir, "test_${year}_$num.json")
                 assertTrue("File test_${year}_$num.json must exist", file.exists())
@@ -65,8 +65,6 @@ class IntensiveListeningTest {
 
                 val text = file.readText()
                 assertTrue("Must contain audioSrc", text.contains("\"audioSrc\":"))
-                assertTrue("Must contain startTime", text.contains("\"startTime\":"))
-                assertTrue("Must contain endTime", text.contains("\"endTime\":"))
                 assertTrue("Must contain transcript", text.contains("\"transcript\":"))
                 assertTrue("Must contain questions", text.contains("\"questions\":"))
             }

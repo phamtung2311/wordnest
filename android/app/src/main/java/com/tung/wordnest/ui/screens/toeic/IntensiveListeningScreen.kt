@@ -171,24 +171,40 @@ fun IntensiveListeningScreen(
     var playbackSpeed by remember { mutableFloatStateOf(1.0f) }
     var currentPositionMs by remember { mutableLongStateOf(0L) }
 
-    // Khởi tạo ExoPlayer
-    val audioUrl = remember(currentTestId) {
-        ToeicAssets.getToeicAudioUrl(currentTestId)
+    // Khởi tạo ExoPlayer (hỗ trợ cả audio cắt lẻ theo câu và audio nguyên đề ETS)
+    val currentAudioSrc = currentItem?.audioSrc ?: ""
+    val hasDedicatedCut = currentAudioSrc.contains("/cuts/")
+    val effectiveAudioUrl = remember(currentTestId, currentItemIndex, currentAudioSrc) {
+        if (hasDedicatedCut) {
+            if (currentAudioSrc.startsWith("http")) currentAudioSrc else "${ToeicAssets.TOEIC_ASSET_BASE_URL}$currentAudioSrc"
+        } else {
+            ToeicAssets.getToeicAudioUrl(currentTestId)
+        }
     }
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            val mediaItem = MediaItem.fromUri(audioUrl)
+            val mediaItem = MediaItem.fromUri(effectiveAudioUrl)
             setMediaItem(mediaItem)
             prepare()
         }
     }
 
-    // Đổi media item nếu đổi đề thi
-    LaunchedEffect(audioUrl) {
-        exoPlayer.setMediaItem(MediaItem.fromUri(audioUrl))
+    // Đổi media item nếu đổi đề thi hoặc đổi câu có audio cắt riêng
+    LaunchedEffect(effectiveAudioUrl) {
+        exoPlayer.setMediaItem(MediaItem.fromUri(effectiveAudioUrl))
         exoPlayer.prepare()
     }
+
+    // Điều khiển phân đoạn âm thanh (SeekTo startTime hoặc phát từ đầu nếu là audio cut)
+    val startMs = if (hasDedicatedCut) 0L else ((currentItem?.startTime ?: 0.0) * 1000.0).toLong()
+    val endMs = if (hasDedicatedCut) {
+        val dur = exoPlayer.duration
+        if (dur > 0) dur else 60000L
+    } else {
+        ((currentItem?.endTime ?: 0.0) * 1000.0).toLong().coerceAtLeast(startMs + 1000L)
+    }
+    val durationMs = (endMs - startMs).coerceAtLeast(1000L)
 
     // Lắng nghe Player events
     DisposableEffect(exoPlayer) {
@@ -198,6 +214,15 @@ fun IntensiveListeningScreen(
             }
             override fun onPlaybackStateChanged(playbackState: Int) {
                 isLoadingAudio = playbackState == Player.STATE_BUFFERING
+                if (playbackState == Player.STATE_ENDED) {
+                    if (isLooping) {
+                        exoPlayer.seekTo(startMs)
+                        exoPlayer.play()
+                    } else {
+                        isPlaying = false
+                        exoPlayer.seekTo(startMs)
+                    }
+                }
             }
         }
         exoPlayer.addListener(listener)
@@ -206,11 +231,6 @@ fun IntensiveListeningScreen(
             exoPlayer.release()
         }
     }
-
-    // Điều khiển phân đoạn âm thanh (SeekTo startTime)
-    val startMs = ((currentItem?.startTime ?: 0.0) * 1000.0).toLong()
-    val endMs = ((currentItem?.endTime ?: 0.0) * 1000.0).toLong().coerceAtLeast(startMs + 1000L)
-    val durationMs = (endMs - startMs).coerceAtLeast(1000L)
 
     // Khi chuyển Item: reset câu hỏi, input, tua audio đến startTime
     LaunchedEffect(currentItemIndex, currentTestId) {
@@ -520,7 +540,68 @@ fun IntensiveListeningScreen(
                     style = WordNestTheme.typography.titleMedium,
                     color = WordNestTheme.colors.ink900
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Trình đổi đề thi: 30 đề ETS (2026 · 2024 · 2023)
+                Text(
+                    text = "Đổi đề thi (30 đề ETS 2026 / 2024 / 2023)",
+                    style = WordNestTheme.typography.labelMedium,
+                    color = WordNestTheme.colors.slate500
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(listOf("2026", "2024", "2023")) { yr ->
+                        val isYrSelected = currentTestId.contains(yr)
+                        FilterChip(
+                            selected = isYrSelected,
+                            onClick = {
+                                val currentNum = ToeicAssets.parseYearAndNumber(currentTestId).second
+                                currentTestId = "${yr}_$currentNum"
+                                currentItemIndex = 0
+                            },
+                            label = { Text("ETS $yr") },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = WordNestTheme.colors.forest900,
+                                selectedLabelColor = Color.White
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(10) { i ->
+                        val testNum = i + 1
+                        val activeNum = ToeicAssets.parseYearAndNumber(currentTestId).second
+                        val isNumSelected = activeNum == testNum
+                        Surface(
+                            onClick = {
+                                val yr = ToeicAssets.parseYearAndNumber(currentTestId).first
+                                currentTestId = "${yr}_$testNum"
+                                currentItemIndex = 0
+                            },
+                            shape = CircleShape,
+                            color = if (isNumSelected) WordNestTheme.colors.amber400 else WordNestTheme.colors.beige100,
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = "$testNum",
+                                    style = WordNestTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = if (isNumSelected) WordNestTheme.colors.forest900 else WordNestTheme.colors.ink900
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(14.dp))
+                HorizontalDivider(color = WordNestTheme.colors.line200)
+                Spacer(modifier = Modifier.height(14.dp))
 
                 // Part Filter Chips
                 val partFilters = listOf("Tất cả", "Part 1", "Part 2", "Part 3", "Part 4")

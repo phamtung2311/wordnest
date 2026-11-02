@@ -59,12 +59,15 @@ fun ToeicHubScreen(
     onMockTestClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedFilter by remember { mutableStateOf("ALL") } // "ALL", "READING", "LISTENING"
+    var selectedFilter by remember { mutableStateOf("ALL") }
 
     val filteredTests = remember(state.mockTests, selectedFilter) {
         when (selectedFilter) {
             "READING" -> state.mockTests.filter { it.kind == "reading" }
             "LISTENING" -> state.mockTests.filter { it.kind == "listening" }
+            "2026" -> state.mockTests.filter { it.name.contains("2026") || it.id.startsWith("2026") }
+            "2024" -> state.mockTests.filter { it.name.contains("2024") || it.id.startsWith("2024") }
+            "2023" -> state.mockTests.filter { it.name.contains("2023") || it.id.startsWith("2023") }
             else -> state.mockTests
         }
     }
@@ -164,25 +167,25 @@ fun ToeicHubScreen(
                 
                 ShortcutCard(
                     title = "Intensive Listening",
-                    subtitle = "20 đề ETS · Chép chính tả & Lời thoại song ngữ",
+                    subtitle = "30 đề ETS (2026, 2024, 2023) · Chép chính tả & Lời thoại song ngữ",
                     icon = { Icon(Icons.Default.Translate, contentDescription = null, tint = WordNestTheme.colors.forest900) },
                     onClick = onIntensiveListeningClick
                 )
                 ShortcutCard(
                     title = "Luyện đề Reading",
-                    subtitle = "20 đề chuẩn ETS · Part 5, 6, 7 (PDF)",
+                    subtitle = "30 đề chuẩn ETS · Part 5, 6, 7 (PDF)",
                     icon = { Icon(Icons.Default.MenuBook, contentDescription = null, tint = WordNestTheme.colors.forest900) },
                     onClick = {
-                        val firstReading = state.mockTests.firstOrNull { it.kind == "reading" }?.id ?: "2024_1"
+                        val firstReading = state.mockTests.firstOrNull { it.kind == "reading" }?.id ?: "2026_1"
                         onReadingTestClick(firstReading)
                     }
                 )
                 ShortcutCard(
                     title = "Luyện đề Listening",
-                    subtitle = "20 đề chuẩn ETS · Part 1–4 (Audio)",
+                    subtitle = "30 đề chuẩn ETS · Part 1–4 (Audio)",
                     icon = { Icon(Icons.Default.Headphones, contentDescription = null, tint = WordNestTheme.colors.forest900) },
                     onClick = {
-                        val firstListening = state.mockTests.firstOrNull { it.kind == "listening" }?.id ?: "2024_1"
+                        val firstListening = state.mockTests.firstOrNull { it.kind == "listening" }?.id ?: "2026_1"
                         onListeningTestClick(firstListening)
                     }
                 )
@@ -205,34 +208,26 @@ fun ToeicHubScreen(
                 }
 
                 // Filter chips
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(
-                        selected = selectedFilter == "ALL",
-                        onClick = { selectedFilter = "ALL" },
-                        label = { Text("Tất cả (40)") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = WordNestTheme.colors.forest900,
-                            selectedLabelColor = Color.White
+                val filterOptions = listOf(
+                    "ALL" to "Tất cả (${state.mockTests.size})",
+                    "2026" to "ETS 2026",
+                    "2024" to "ETS 2024",
+                    "2023" to "ETS 2023",
+                    "READING" to "Reading (${state.mockTests.count { it.kind == "reading" }})",
+                    "LISTENING" to "Listening (${state.mockTests.count { it.kind == "listening" }})"
+                )
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(filterOptions) { (key, label) ->
+                        FilterChip(
+                            selected = selectedFilter == key,
+                            onClick = { selectedFilter = key },
+                            label = { Text(label) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = WordNestTheme.colors.forest900,
+                                selectedLabelColor = Color.White
+                            )
                         )
-                    )
-                    FilterChip(
-                        selected = selectedFilter == "READING",
-                        onClick = { selectedFilter = "READING" },
-                        label = { Text("Reading (20)") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = WordNestTheme.colors.forest900,
-                            selectedLabelColor = Color.White
-                        )
-                    )
-                    FilterChip(
-                        selected = selectedFilter == "LISTENING",
-                        onClick = { selectedFilter = "LISTENING" },
-                        label = { Text("Listening (20)") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = WordNestTheme.colors.forest900,
-                            selectedLabelColor = Color.White
-                        )
-                    )
+                    }
                 }
             }
         }

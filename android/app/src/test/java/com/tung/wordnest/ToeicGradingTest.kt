@@ -70,7 +70,7 @@ class ToeicGradingTest {
         assertTrue("File answers_reading.json must exist in assets", file.exists())
         val text = file.readText()
 
-        for (year in listOf(2023, 2024)) {
+        for (year in listOf(2026, 2024, 2023)) {
             for (i in 1..10) {
                 val testId = "${year}_$i"
                 assertTrue("Reading must contain test $testId", text.contains("\"$testId\""))
@@ -87,7 +87,7 @@ class ToeicGradingTest {
         assertTrue("File answers_listening.json must exist in assets", file.exists())
         val text = file.readText()
 
-        for (year in listOf(2023, 2024)) {
+        for (year in listOf(2026, 2024, 2023)) {
             for (i in 1..10) {
                 val testId = "${year}_$i"
                 assertTrue("Listening must contain test $testId", text.contains("\"$testId\""))

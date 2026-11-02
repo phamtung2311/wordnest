@@ -47,7 +47,7 @@ bo de 2023/
 __pycache__/
 *.pyc
 *.tsbuildinfo
-test*.json
+/test*.json
 *.original_bak
 scripts/*.png
 data/cleaned_ocr_2023/
